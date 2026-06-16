@@ -117,5 +117,15 @@ jobs:
         run: npm run lighthouse:ci
 
       - name: Add Lighthouse summary
+        id: lighthouse_summary
         if: always()
         run: npm run lighthouse:summary
+
+      - name: Upload Lighthouse reports
+        if: always() && steps.lighthouse_summary.outputs.needs_report == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: lighthouse-reports
+          path: lhci-reports
+          retention-days: 7
+          if-no-files-found: ignore

@@ -2,6 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
+const REPORT_THRESHOLD = 95;
+let needsReport = false;
+
 const manifestPath = path.join(process.cwd(), "lhci-reports", "manifest.json");
 
 if (!fs.existsSync(manifestPath)) {
@@ -30,11 +33,18 @@ markdown += "|---|---:|---:|---:|---:|\n";
 for (const run of representativeRuns.values()) {
   const summary = run.summary || {};
 
-  markdown += `| ${run.url} | ${formatScore(summary.performance)} | ${formatScore(
-    summary.accessibility
-  )} | ${formatScore(summary["best-practices"])} | ${formatScore(
-    summary.seo
-  )} |\n`;
+  const performance = formatScore(summary.performance);
+  const accessibility = formatScore(summary.accessibility);
+  const bestPractices = formatScore(summary["best-practices"]);
+  const seo = formatScore(summary.seo);
+
+  const scores = [performance, accessibility, bestPractices, seo];
+
+  if (scores.some((score) => typeof score === "number" && score < REPORT_THRESHOLD)) {
+    needsReport = true;
+  }
+
+  markdown += `| ${run.url} | ${performance} | ${accessibility} | ${bestPractices} | ${seo} |\n`;
 }
 
 markdown += "\n";
@@ -44,4 +54,11 @@ console.log(markdown);
 
 if (process.env.GITHUB_STEP_SUMMARY) {
   fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, markdown);
+}
+
+if (process.env.GITHUB_OUTPUT) {
+  fs.appendFileSync(
+    process.env.GITHUB_OUTPUT,
+    `needs_report=${needsReport}\n`
+  );
 }
