@@ -1,55 +1,67 @@
 "use client";
 import { Project } from "@/app/Features/Projects/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditProjectForm from "./editprojectform";
 import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
 
 type View = "list" | "grid";
-function ProjectThumb({
-  imageSrc,
-  className,
-}: {
+type ProjectThumbProps = Readonly<{
   imageSrc?: string | null;
   className: string;
-}) {
+}>;
+function ProjectThumb({ imageSrc, className }: ProjectThumbProps) {
   const hasImage = Boolean(imageSrc);
 
-   if (hasImage) {
-     return (
-       // eslint-disable-next-line @next/next/no-img-element
-       <img
-         src={imageSrc!}
-         alt="Project preview"
-         className={className}
-       />
-     );
-   }
+  if (hasImage) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={imageSrc!}
+        alt="Project preview"
+        className={className}
+      />
+    );
+  }
 
-   return (
-     <div
-       className={`${className} flex items-center justify-center bg-neutral-950 text-neutral-600`}
-     >
-       <ImageOff size={24} />
-     </div>
-   );
- }
+  return (
+    <div
+      className={`${className} flex items-center justify-center bg-neutral-950 text-neutral-600`}
+    >
+      <ImageOff size={24} />
+    </div>
+  );
+}
 export default function AdminProject({
   project,
   view = "list",
   OnCloseCreate,
   OnCreated,
-}: {
+}:Readonly<{
   project: Project | null;
   view?: View;
   OnCloseCreate?: () => void;
   OnCreated?: (project: Project) => void;
-}) {
+}>) {
   const isCreating = project === null;
 
   const [localProject, setLocalProject] = useState<Project | null>(project);
-  const [isopen, setOpen] = useState<boolean>(isCreating);
+  const [open, setOpen] = useState<boolean>(isCreating);
   const [isDeleted, setIsDeleted] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   async function handleToggle() {
     if (!localProject) return;
@@ -65,7 +77,7 @@ export default function AdminProject({
 
   async function handleDelete() {
     if (!localProject) return;
-    const sure = window.confirm("Are you sure you want to delete this project?");
+    const sure = globalThis.confirm("Are you sure you want to delete this project?");
     if (!sure) return;
     try {
       await deleteProject(localProject.id);
@@ -104,8 +116,8 @@ export default function AdminProject({
   const VisibilityPill = (
     <span
       className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${localProject.isVisible
-          ? "border-green-700/60 text-green-400 bg-green-900/20"
-          : "border-red-700/60 text-red-400 bg-red-900/20"
+        ? "border-green-700/60 text-green-400 bg-green-900/20"
+        : "border-red-700/60 text-red-400 bg-red-900/20"
         }`}
     >
       {localProject.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -152,7 +164,7 @@ export default function AdminProject({
 
 
 
-  const EditModal = isopen && (
+  const EditModal = open && (
     <EditProjectForm
       project={localProject}
       Onsaved={(updated) => {

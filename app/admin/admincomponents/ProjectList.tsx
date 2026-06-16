@@ -8,10 +8,10 @@ import { List, LayoutGrid } from "lucide-react";
 
 type View = "list" | "grid";
 
-export default function ProjectList({ projects }: { projects: Project[] }) {
+export default function ProjectList({ projects }:Readonly<{ projects: Project[] }>) {
   const [items, setItems] = useState(projects);
   const [view, setView] = useState<View>(() => {
-    if (typeof window === "undefined") return "list";
+    if (typeof globalThis.window === "undefined") return "list";
 
     const saved = localStorage.getItem("admin:view");
 
@@ -19,7 +19,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") localStorage.setItem("admin:view", view);
+    if (typeof globalThis.window !== "undefined") localStorage.setItem("admin:view", view);
   }, [view]);
 
   function handleCreated(newProject: Project) {

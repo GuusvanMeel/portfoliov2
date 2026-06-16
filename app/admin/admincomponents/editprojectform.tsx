@@ -5,15 +5,16 @@ import { useState, useTransition } from "react";
 import { createProject, updateProject } from "@/app/Features/Projects/actions";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { escape } from "querystring";
 export default function EditProjectForm({
   project,
   Onsaved,
   Onclose,
-}: {
+}:Readonly<{
   project: Project | null;
   Onsaved: (updated: Project) => void;
   Onclose: () => void;
-}) {
+}>) {
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(project?.isVisible ?? true);
   const [imagePreview, setImagePreview] = useState(project?.imageSrc ?? "");
@@ -47,12 +48,11 @@ export default function EditProjectForm({
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-9999 p-4"
-      onClick={Onclose}
+      onClick={() => { onclose }} role="button" 
+
     >
       <div
-        className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
+        className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
         <button
           onClick={Onclose}
           className="absolute top-3 right-3 p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-md transition"
@@ -67,8 +67,9 @@ export default function EditProjectForm({
           </h2>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">Title</label>
+            <label htmlFor="project-title" className="text-sm text-neutral-400">Title</label>
             <input
+              id="project-title"
               type="text"
               required
               name="title"
@@ -78,8 +79,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">Description</label>
+            <label htmlFor="project-description"className="text-sm text-neutral-400">Description</label>
             <textarea
+            id="project-description"
               name="description"
               defaultValue={project?.description ?? ""}
               className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500 min-h-80"
@@ -87,8 +89,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">Tags (comma-separated)</label>
+            <label htmlFor="project-tags" className="text-sm text-neutral-400">Tags (comma-separated)</label>
             <input
+              id="project-tags"
               type="text"
               name="tags"
               defaultValue={(project?.tags ?? []).join(", ")}
@@ -97,8 +100,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">Duration</label>
+            <label htmlFor="project-duration" className="text-sm text-neutral-400">Duration</label>
             <input
+              id="project-duration"
               type="text"
               name="duration"
               defaultValue={project?.duration ?? ""}
@@ -107,43 +111,45 @@ export default function EditProjectForm({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div className="flex flex-col gap-1">
-    <label className="text-sm text-neutral-400">Image URL</label>
-    <input
-      type="text"
-      name="image"
-      value={imagePreview}
-      onChange={(e) => {
-        setImagePreview(e.target.value);
-        setImageError(false);
-      }}
-      className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500"
-    />
-  </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="image" className="text-sm text-neutral-400">Image URL</label>
+              <input
+                id="project-image"
+                type="text"
+                name="image"
+                value={imagePreview}
+                onChange={(e) => {
+                  setImagePreview(e.target.value);
+                  setImageError(false);
+                }}
+                className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
 
-  {imagePreview && (
-    <div className="border border-neutral-700 rounded-lg overflow-hidden bg-neutral-900 min-h-32">
-      {!imageError ? (
-        <Image
-  src={imagePreview}
-  alt="Project preview"
-  width={600}
-  height={300}
-  className="w-full h-32 object-cover"
-  onError={() => setImageError(true)}
-/>
-      ) : (
-        <div className="h-32 flex items-center justify-center text-sm text-neutral-500">
-          Image could not be loaded
-        </div>
-      )}
-    </div>
-  )}
-</div>
+            {imagePreview && (
+              <div className="border border-neutral-700 rounded-lg overflow-hidden bg-neutral-900 min-h-32">
+                {imageError ? (
+                  <div className="h-32 flex items-center justify-center text-sm text-neutral-500">
+                    Image could not be loaded
+                  </div>
+                ) : (
+                  <Image
+                    src={imagePreview}
+                    alt="Project preview"
+                    width={600}
+                    height={300}
+                    className="w-full h-32 object-cover"
+                    onError={() => setImageError(true)}
+                  />
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">GitHub Link</label>
+            <label htmlFor="project-git" className="text-sm text-neutral-400">GitHub Link</label>
             <input
+            id="project-git"
               type="text"
               name="git"
               defaultValue={project?.githubLink ?? ""}
@@ -153,8 +159,9 @@ export default function EditProjectForm({
 
           <div className="flex flex-col gap-1">
             <label className="text-sm text-neutral-400">Visibility</label>
-            <label className="inline-flex items-center gap-3 cursor-pointer">
+            <label htmlFor="project-visibility" className="inline-flex items-center gap-3 cursor-pointer">
               <input
+              id="project-visibility"
                 type="checkbox"
                 name="isVisible"
                 checked={isVisible}
