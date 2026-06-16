@@ -18,10 +18,10 @@ export default function CreateProjectButton({
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    globalThis.window.addEventListener("keydown", handleKeyDown);
 
      return () => {
-       window.removeEventListener("keydown", handleKeyDown);
+       globalThis.window.removeEventListener("keydown", handleKeyDown);
      };
    }, []);
   return (

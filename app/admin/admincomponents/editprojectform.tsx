@@ -5,7 +5,6 @@ import { useState, useTransition } from "react";
 import { createProject, updateProject } from "@/app/Features/Projects/actions";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { escape } from "querystring";
 export default function EditProjectForm({
   project,
   Onsaved,
@@ -48,8 +47,6 @@ export default function EditProjectForm({
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-9999 p-4"
-      onClick={() => { onclose }} role="button" 
-
     >
       <div
         className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
