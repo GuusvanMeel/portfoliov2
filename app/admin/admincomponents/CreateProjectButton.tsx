@@ -1,29 +1,33 @@
-// app/admin/components/CreateProjectButton.tsx (Client Component)
-"use client"
-
+// app/admin/admincomponents/CreateProjectButton.tsx
+"use client";
 import { useState } from "react";
 import AdminProject from "./AdminProject";
+import { Plus } from "lucide-react";
 import { Project } from "@/app/Features/Projects/types";
 
 export default function CreateProjectButton({
-  OnCreated,
+  onCreated,
 }: {
-  OnCreated: (project: Project) => void;
-}) {  const [showCreate, setShowCreate] = useState(false);
+  onCreated?: (project: Project) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <button
-        onClick={() => setShowCreate(true)}
-        className="px-4 py-2  bg-blue-600 hover:bg-blue-500 rounded-md text-white transition"
+        onClick={() => setIsOpen(true)}
+        className="inline-flex items-center gap-3 px-6 py-3 text-base bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition"
       >
-        + Create New Project
+        <Plus size={22} />
+        Create New Project
       </button>
 
-      {showCreate && (
-        <AdminProject project={null}
-        OnCreated={OnCreated}
-        OnCloseCreate={() => setShowCreate(false)}    />
+      {isOpen && (
+        <AdminProject
+          project={null}
+          OnCreated={onCreated}
+          OnCloseCreate={() => setIsOpen(false)}
+        />
       )}
     </>
   );

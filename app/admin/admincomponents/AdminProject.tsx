@@ -81,7 +81,7 @@ export default function AdminProject({
       className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${
         localProject.isVisible
           ? "border-green-700/60 text-green-400 bg-green-900/20"
-          : "border-neutral-700 text-neutral-400 bg-neutral-900"
+        : "border-red-700/60 text-red-400 bg-red-900/20"
       }`}
     >
       {localProject.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -97,31 +97,31 @@ export default function AdminProject({
           target="_blank"
           rel="noopener noreferrer"
           title="Open GitHub repo"
-          className="p-1.5 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
+          className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
         >
-          <FolderGit2 size={15} />
+          <FolderGit2 size={18} />
         </a>
       )}
       <button
         onClick={handleToggle}
         title={localProject.isVisible ? "Hide" : "Show"}
-        className="p-1.5 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
+        className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
       >
-        {localProject.isVisible ? <EyeOff size={15} /> : <Eye size={15} />}
+        {localProject.isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
       </button>
       <button
         onClick={() => setOpen(true)}
         title="Edit"
-        className="p-1.5 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
+        className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
       >
         <Pencil size={15} />
       </button>
       <button
         onClick={handleDelete}
         title="Delete"
-        className="p-1.5 text-red-500 border border-red-700/70 rounded-md hover:bg-red-900/40 hover:text-red-300 transition"
+        className="p-3 text-red-500 border border-red-700/70 rounded-md hover:bg-red-900/40 hover:text-red-300 transition"
       >
-        <Trash2 size={15} />
+        <Trash2 size={18} />
       </button>
     </div>
   );
@@ -159,13 +159,13 @@ export default function AdminProject({
 
         <div className="flex flex-col gap-2 p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-base font-semibold text-white truncate">
+            <h2 className="text-xl font-semibold text-white truncate">
               {localProject.title}
             </h2>
             {VisibilityPill}
           </div>
 
-          <p className="text-neutral-400 text-sm line-clamp-2 min-h-10">
+          <p className="text-neutral-400 text-base line-clamp-2 min-h-10">
             {localProject.description}
           </p>
 
@@ -174,7 +174,7 @@ export default function AdminProject({
               {localProject.tags.map((t) => (
                 <span
                   key={t}
-                  className="px-2 py-0.5 text-xs rounded-md bg-neutral-800/80 text-neutral-300 border border-neutral-800"
+                  className="px-2.5 py-1 text-sm rounded-md bg-neutral-800/80 text-neutral-300 border border-neutral-800"
                 >
                   {t}
                 </span>
@@ -194,19 +194,19 @@ export default function AdminProject({
 
   // ---------- LIST VIEW ----------
   return (
-    <div className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-4 py-3 flex items-center gap-4 transition">
+    <div className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition">
       <Thumb className="w-16 h-16 rounded-md object-cover shrink-0 border border-neutral-800" />
 
       <div className="flex flex-col gap-1 min-w-0 flex-1">
         <div className="flex items-center gap-2 min-w-0">
-          <h2 className="text-base font-semibold text-white truncate">
+          <h2 className="text-xl font-semibold text-white truncate">
             {localProject.title}
           </h2>
           {VisibilityPill}
         </div>
-        <p className="text-neutral-400 text-sm truncate">{localProject.description}</p>
+        <p className="text-neutral-400 text-base truncate">{localProject.description}</p>
         {localProject.tags && localProject.tags.length > 0 && (
-          <div className="text-neutral-500 text-xs truncate">
+          <div className="text-neutral-500 text-sm truncate">
             <span className="text-neutral-400">{localProject.tags.join(", ")}</span>
           </div>
         )}

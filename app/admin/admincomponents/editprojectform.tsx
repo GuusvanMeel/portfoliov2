@@ -16,7 +16,8 @@ export default function EditProjectForm({
 }) {
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(project?.isVisible ?? true);
-
+  const [imagePreview, setImagePreview] = useState(project?.imageSrc ?? "");
+  const [imageError, setImageError] = useState(false);
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const payload: ProjectInputData = {
@@ -49,7 +50,7 @@ export default function EditProjectForm({
       onClick={Onclose}
     >
       <div
-        className="relative w-full max-w-lg bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -81,7 +82,7 @@ export default function EditProjectForm({
             <textarea
               name="description"
               defaultValue={project?.description ?? ""}
-              className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500 min-h-25"
+              className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500 min-h-80"
             />
           </div>
 
@@ -105,15 +106,38 @@ export default function EditProjectForm({
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">Image URL</label>
-            <input
-              type="text"
-              name="image"
-              defaultValue={project?.imageSrc ?? ""}
-              className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500"
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div className="flex flex-col gap-1">
+    <label className="text-sm text-neutral-400">Image URL</label>
+    <input
+      type="text"
+      name="image"
+      value={imagePreview}
+      onChange={(e) => {
+        setImagePreview(e.target.value);
+        setImageError(false);
+      }}
+      className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+    />
+  </div>
+
+  {imagePreview && (
+    <div className="border border-neutral-700 rounded-lg overflow-hidden bg-neutral-900 min-h-32">
+      {!imageError ? (
+        <img
+          src={imagePreview}
+          alt="Project preview"
+          className="w-full h-32 object-cover"
+          onError={() => setImageError(true)}
+        />
+      ) : (
+        <div className="h-32 flex items-center justify-center text-sm text-neutral-500">
+          Image could not be loaded
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
           <div className="flex flex-col gap-1">
             <label className="text-sm text-neutral-400">GitHub Link</label>
