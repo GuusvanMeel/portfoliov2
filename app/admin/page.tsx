@@ -10,7 +10,7 @@ import { logout } from "./action";
 export default async function AdminPage() {
 
   const projects = await getAllProjects();
-
+  
   return (
     <div className="w-full flex flex-col gap-10">
       <header className="flex flex-wrap items-center justify-between gap-6 border-b border-neutral-800 pb-8">
