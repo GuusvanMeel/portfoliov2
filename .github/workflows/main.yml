@@ -59,9 +59,21 @@ jobs:
         run: npm ci
 
       - name: Run SonarQube scan
+        id: sonar_scan
         uses: SonarSource/sonarqube-scan-action@v8.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          with:
+          args: > 
+                -Dsonar.qualitygate.wait=true
+      - name: Add SonarQube summary on failure
+        if: always() && steps.sonar_scan.outcome == 'failure'
+        run: |
+          echo "## SonarQube Quality Gate failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "SonarCloud heeft de Quality Gate niet gehaald." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[Open SonarCloud dashboard](https://sonarcloud.io/dashboard?id=GuusvanMeel_portfoliov2&branch=master)" >> $GITHUB_STEP_SUMMARY
 
 
   lighthouse:
