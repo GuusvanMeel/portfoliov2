@@ -65,6 +65,7 @@ export default function LoginPage() {
         {error && <p className="text-sm text-red-400">{error}</p>}
 
         <button
+          type="submit"
           disabled={isLoading}
           className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md text-white disabled:opacity-50"
         >
