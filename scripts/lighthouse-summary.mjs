@@ -50,15 +50,17 @@ for (const run of representativeRuns.values()) {
     (score) => typeof score === "number" && score < REPORT_THRESHOLD
   );
 
+  const routeName = run.url.replace("http://localhost:3000", "") || "/";
+  const displayName = routeName === "/" ? "home" : routeName;
+
+  const safeName = displayName
+    .replaceAll("/", "_")
+    .replace(/^_$/, "home");
+
   if (shouldUploadReport) {
     needsReport = true;
 
     if (run.htmlPath && fs.existsSync(run.htmlPath)) {
-      const safeName = run.url
-        .replace("http://localhost:3000", "")
-        .replaceAll("/", "_")
-        .replace(/^_$/, "home");
-
       fs.copyFileSync(
         run.htmlPath,
         path.join(selectedReportsDir, `${safeName}-lighthouse.html`)
@@ -66,7 +68,7 @@ for (const run of representativeRuns.values()) {
     }
   }
 
-  markdown += `| ${run.url} | ${performance} | ${accessibility} | ${bestPractices} | ${seo} |\n`;
+  markdown += `| ${displayName} | ${performance} | ${accessibility} | ${bestPractices} | ${seo} |\n`;
 }
 
 markdown += "\n";

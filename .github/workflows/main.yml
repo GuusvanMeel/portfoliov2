@@ -113,7 +113,7 @@ jobs:
 
       - name: Upload Lighthouse reports
         if: always() && steps.lighthouse_summary.outputs.needs_report == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
           path: lhci-selected-reports
