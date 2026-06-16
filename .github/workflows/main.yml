@@ -28,27 +28,14 @@ jobs:
         run: npm ci
 
       - name: Run lint
-        id: lint
         run: npm run lint
 
       - name: Run typecheck
-        id: typecheck
         run: npm run typecheck
 
       - name: Build project
-        id: build_project
         run: npm run build
 
-      - name: Add build summary
-        if: always()
-        run: |
-          echo "## Build summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ${{ steps.lint.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Typecheck | ${{ steps.typecheck.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ${{ steps.build_project.outcome }} |" >> $GITHUB_STEP_SUMMARY
 
   sonarqube:
     name: SonarQube
@@ -72,19 +59,10 @@ jobs:
         run: npm ci
 
       - name: Run SonarQube scan
-        id: sonar_scan
         uses: SonarSource/sonarqube-scan-action@v8.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Add SonarQube summary
-        if: always()
-        run: |
-          echo "## SonarQube summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
-          echo "| SonarQube scan | ${{ steps.sonar_scan.outcome }} |" >> $GITHUB_STEP_SUMMARY
 
   lighthouse:
     name: Lighthouse
