@@ -4,12 +4,18 @@ import process from "node:process";
 
 const REPORT_THRESHOLD = 95;
 let needsReport = false;
+const selectedReportsDir = path.join(process.cwd(), "lhci-selected-reports");
 
 const manifestPath = path.join(process.cwd(), "lhci-reports", "manifest.json");
 
 if (!fs.existsSync(manifestPath)) {
   throw new Error("No LHCI manifest found at lhci-reports/manifest.json");
 }
+if (fs.existsSync(selectedReportsDir)) {
+  fs.rmSync(selectedReportsDir, { recursive: true, force: true });
+}
+
+fs.mkdirSync(selectedReportsDir, { recursive: true });
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
@@ -40,8 +46,24 @@ for (const run of representativeRuns.values()) {
 
   const scores = [performance, accessibility, bestPractices, seo];
 
-  if (scores.some((score) => typeof score === "number" && score < REPORT_THRESHOLD)) {
+  const shouldUploadReport = scores.some(
+    (score) => typeof score === "number" && score < REPORT_THRESHOLD
+  );
+
+  if (shouldUploadReport) {
     needsReport = true;
+
+    if (run.htmlPath && fs.existsSync(run.htmlPath)) {
+      const safeName = run.url
+        .replace("http://localhost:3000", "")
+        .replaceAll("/", "_")
+        .replace(/^_$/, "home");
+
+      fs.copyFileSync(
+        run.htmlPath,
+        path.join(selectedReportsDir, `${safeName}-lighthouse.html`)
+      );
+    }
   }
 
   markdown += `| ${run.url} | ${performance} | ${accessibility} | ${bestPractices} | ${seo} |\n`;
@@ -55,10 +77,7 @@ console.log(markdown);
 if (process.env.GITHUB_STEP_SUMMARY) {
   fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, markdown);
 }
-
 if (process.env.GITHUB_OUTPUT) {
-  fs.appendFileSync(
-    process.env.GITHUB_OUTPUT,
-    `needs_report=${needsReport}\n`
-  );
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `needs_report=${needsReport}\n`);
 }
+
