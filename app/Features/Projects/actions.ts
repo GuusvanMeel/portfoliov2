@@ -3,7 +3,6 @@
 import { createServer } from "@/lib/supabase/server";
 import { Project, ProjectInputData } from "./types";
 import { mapProjectRowToProject, mapUpdateProjectInputToRow } from "./mapper";
-import ProjectList from "@/app/admin/admincomponents/ProjectList";
 
 export async function getAllProjects(): Promise<Project[]> {
     const supabase = await createServer();

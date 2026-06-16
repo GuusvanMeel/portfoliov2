@@ -6,7 +6,34 @@ import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
 
 type View = "list" | "grid";
+function ProjectThumb({
+  imageSrc,
+  className,
+}: {
+  imageSrc?: string | null;
+  className: string;
+}) {
+  const hasImage = Boolean(imageSrc);
 
+   if (hasImage) {
+     return (
+       // eslint-disable-next-line @next/next/no-img-element
+       <img
+         src={imageSrc!}
+         alt="Project preview"
+         className={className}
+       />
+     );
+   }
+
+   return (
+     <div
+       className={`${className} flex items-center justify-center bg-neutral-950 text-neutral-600`}
+     >
+       <ImageOff size={24} />
+     </div>
+   );
+ }
 export default function AdminProject({
   project,
   view = "list",
@@ -72,7 +99,6 @@ export default function AdminProject({
 
   if (!localProject) return null;
 
-  const hasImage = Boolean(localProject.imageSrc);
   const hasGithub = Boolean(localProject.githubLink);
 
   const VisibilityPill = (
@@ -124,19 +150,7 @@ export default function AdminProject({
     </div>
   );
 
-  const Thumb = ({ className }: { className: string }) =>
-    hasImage ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={localProject.imageSrc}
-        alt={localProject.title}
-        className={className}
-      />
-    ) : (
-      <div className={`${className} grid place-items-center bg-neutral-900 text-neutral-600`}>
-        <ImageOff size={20} />
-      </div>
-    );
+
 
   const EditModal = isopen && (
     <EditProjectForm
@@ -153,7 +167,10 @@ export default function AdminProject({
   if (view === "grid") {
     return (
       <div className="group flex flex-col bg-neutral-900/60 border border-neutral-800 rounded-lg overflow-hidden hover:border-neutral-700 transition">
-        <Thumb className="w-full aspect-video object-cover border-b border-neutral-800" />
+        <ProjectThumb
+          imageSrc={localProject.imageSrc}
+          className="w-full aspect-video object-cover border-b border-neutral-800"
+        />
 
         <div className="flex flex-col gap-2 p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -193,8 +210,10 @@ export default function AdminProject({
   // ---------- LIST VIEW ----------
   return (
     <div className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition">
-      <Thumb className="w-16 h-16 rounded-md object-cover shrink-0 border border-neutral-800" />
-
+      <ProjectThumb
+        imageSrc={localProject.imageSrc}
+        className="w-16 h-16 rounded-md object-cover shrink-0 border border-neutral-800"
+      />
       <div className="flex flex-col gap-1 min-w-0 flex-1">
         <div className="flex items-center gap-2 min-w-0">
           <h2 className="text-xl font-semibold text-white truncate">

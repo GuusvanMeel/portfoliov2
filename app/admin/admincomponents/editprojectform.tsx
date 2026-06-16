@@ -4,7 +4,7 @@ import { Project, ProjectInputData } from "@/app/Features/Projects/types";
 import { useState, useTransition } from "react";
 import { createProject, updateProject } from "@/app/Features/Projects/actions";
 import { X } from "lucide-react";
-
+import Image from "next/image";
 export default function EditProjectForm({
   project,
   Onsaved,
@@ -124,12 +124,14 @@ export default function EditProjectForm({
   {imagePreview && (
     <div className="border border-neutral-700 rounded-lg overflow-hidden bg-neutral-900 min-h-32">
       {!imageError ? (
-        <img
-          src={imagePreview}
-          alt="Project preview"
-          className="w-full h-32 object-cover"
-          onError={() => setImageError(true)}
-        />
+        <Image
+  src={imagePreview}
+  alt="Project preview"
+  width={600}
+  height={300}
+  className="w-full h-32 object-cover"
+  onError={() => setImageError(true)}
+/>
       ) : (
         <div className="h-32 flex items-center justify-center text-sm text-neutral-500">
           Image could not be loaded

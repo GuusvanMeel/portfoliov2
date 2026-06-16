@@ -2,8 +2,6 @@ import { getAllProjects } from "../Features/Projects/actions";
 import ProjectList from "./admincomponents/ProjectList";
 import Link from "next/link";
 import { FolderGit2, ArrowLeft } from "lucide-react";
-import { createServer } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { logout } from "./action";
 
 

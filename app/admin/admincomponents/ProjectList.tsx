@@ -10,12 +10,13 @@ type View = "list" | "grid";
 
 export default function ProjectList({ projects }: { projects: Project[] }) {
   const [items, setItems] = useState(projects);
-  const [view, setView] = useState<View>("list");
+  const [view, setView] = useState<View>(() => {
+    if (typeof window === "undefined") return "list";
 
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("admin:view") : null;
-    if (saved === "list" || saved === "grid") setView(saved);
-  }, []);
+    const saved = localStorage.getItem("admin:view");
+
+    return saved === "list" || saved === "grid" ? saved : "list";
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem("admin:view", view);
