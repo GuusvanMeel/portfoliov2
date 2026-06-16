@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lighthouse:local": "npx lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html --chrome-flags=\"--headless\" --view",
     "lighthouse:ci": "npm run build && lhci autorun",
-    "lighthouse:summary": "node scripts/lighthouse-summary.cjs"
+    "lighthouse:summary": "node scripts/lighthouse-summary.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

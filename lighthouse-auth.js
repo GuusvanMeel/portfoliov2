@@ -11,13 +11,12 @@ module.exports = async (browser) => {
   await page.type('input[name="password"]', process.env.LHCI_ADMIN_PASSWORD);
 
   
-    page.click('button[type="submit"]'),
-    page.click('button[type="submit"]'),
-    await page.waitForFunction(
-    () => !window.location.pathname.includes("/login"),
-    { timeout: 60000 }
-  );
- 
+ await page.click('button[type="submit"]');
+
+await page.waitForFunction(
+  () => !window.location.pathname.includes("/login"),
+  { timeout: 60000 }
+);
 
   await page.close();
 };
