@@ -45,5 +45,3 @@ console.log(markdown);
 if (process.env.GITHUB_STEP_SUMMARY) {
   fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, markdown);
 }
-
-fs.writeFileSync("lhci-summary.md", markdown);
