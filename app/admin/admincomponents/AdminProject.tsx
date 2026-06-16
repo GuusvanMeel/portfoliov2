@@ -1,9 +1,8 @@
 "use client";
 import { Project } from "@/app/Features/Projects/types";
-import React, { useState } from "react";
-import { toggleVisibility } from "../../admin/page";
+import { useState } from "react";
 import EditProjectForm from "./editprojectform";
-import { deleteProject } from "@/app/Features/Projects/actions";
+import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
 
 type View = "list" | "grid";
@@ -29,7 +28,7 @@ export default function AdminProject({
     if (!localProject) return;
     const nextIsVisible = !localProject.isVisible;
     try {
-      await toggleVisibility(localProject.id, nextIsVisible);
+      await updateProjectVisibility(localProject.id, nextIsVisible);
       setLocalProject({ ...localProject, isVisible: nextIsVisible });
     } catch (error) {
       console.error("Failed to update visibility:", error);
@@ -78,11 +77,10 @@ export default function AdminProject({
 
   const VisibilityPill = (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${
-        localProject.isVisible
+      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${localProject.isVisible
           ? "border-green-700/60 text-green-400 bg-green-900/20"
-        : "border-red-700/60 text-red-400 bg-red-900/20"
-      }`}
+          : "border-red-700/60 text-red-400 bg-red-900/20"
+        }`}
     >
       {localProject.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
       {localProject.isVisible ? "Visible" : "Hidden"}

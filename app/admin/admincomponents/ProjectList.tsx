@@ -27,6 +27,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
 
   return (
     <div className="flex flex-col gap-8">
+      
       <div className="flex items-center justify-between gap-4">
         <div className="inline-flex rounded-md border border-neutral-800 bg-neutral-900/60 p-1.5">
           <button

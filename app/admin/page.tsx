@@ -1,16 +1,26 @@
-// app/admin/page.tsx
-import { getAllProjects, updateProjectVisibility } from "../Features/Projects/actions";
+import { getAllProjects } from "../Features/Projects/actions";
 import ProjectList from "./admincomponents/ProjectList";
 import Link from "next/link";
 import { FolderGit2, ArrowLeft } from "lucide-react";
+import { createServer } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { logout } from "./action";
 
-const MAIN_GITHUB_URL = "https://github.com/MyName";
 
-export async function toggleVisibility(id: number, hidden: boolean) {
-  await updateProjectVisibility(id, hidden);
-}
+
 
 export default async function AdminPage() {
+  const supabase = await createServer();
+
+  const { data, error } = await supabase.auth.getClaims();
+
+  const email = data?.claims?.email;
+
+  if (error || !email || email !== process.env.ADMIN_EMAIL) {
+    redirect("/login");
+  }
+
+
   const projects = await getAllProjects();
 
   return (
@@ -22,8 +32,16 @@ export default async function AdminPage() {
         </div>
 
         <div className="flex items-center gap-4">
+          <form action={logout}>
+            <button
+              type="submit"
+              className="inline-flex items-center gap-3 px-5 py-3 text-base bg-fuchsia-200 border border-neutral-700 rounded-md hover:bg-neutral-800 text-black transition"
+            >
+              Logout
+            </button>
+          </form>
           <a
-            href={MAIN_GITHUB_URL}
+            href={"https://github.com/GuusvanMeel"}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-5 py-3 text-base bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 text-white transition"
