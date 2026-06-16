@@ -43,8 +43,9 @@ export default function LoginPage() {
         <h1 className="text-xl font-semibold">Admin login</h1>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm text-neutral-400">Email</label>
+          <label htmlFor="email" className="text-sm text-neutral-400">Email</label>
           <input
+            id="email"
             name="email"
             type="email"
             required
@@ -53,8 +54,9 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm text-neutral-400">Password</label>
+          <label htmlFor="password" className="text-sm text-neutral-400">Password</label>
           <input
+            id="password"
             name="password"
             type="password"
             required

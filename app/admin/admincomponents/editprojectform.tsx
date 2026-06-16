@@ -155,8 +155,8 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-neutral-400">Visibility</label>
-            <label htmlFor="project-visibility" className="inline-flex items-center gap-3 cursor-pointer">
+            <label htmlFor="project-visibility" className="text-sm text-neutral-400">Visibility</label>
+            <div  className="inline-flex items-center gap-3 cursor-pointer">
               <input
               id="project-visibility"
                 type="checkbox"
@@ -169,7 +169,7 @@ export default function EditProjectForm({
               <span className="text-sm text-neutral-400">
                 {isVisible ? "Visible on portfolio" : "Hidden on portfolio"}
               </span>
-            </label>
+            </div>
           </div>
 
           <button
