@@ -10,16 +10,6 @@ import { logout } from "./action";
 
 
 export default async function AdminPage() {
-  const supabase = await createServer();
-
-  const { data, error } = await supabase.auth.getClaims();
-
-  const email = data?.claims?.email;
-
-  if (error || !email || email !== process.env.ADMIN_EMAIL) {
-    redirect("/login");
-  }
-
 
   const projects = await getAllProjects();
 
