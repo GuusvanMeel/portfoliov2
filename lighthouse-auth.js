@@ -3,6 +3,11 @@
 module.exports = async (browser) => {
   const page = await browser.newPage();
 
+  const email = process.env.ADMIN_EMAIL;
+const password = process.env.ADMIN_PASSWORD;
+
+if (!email || !password) {
+  throw new Error("Missing LHCI_ADMIN_EMAIL or LHCI_ADMIN_PASSWORD");
   await page.goto("http://localhost:3000/login", {
     waitUntil: "networkidle0"
   });
@@ -19,4 +24,4 @@ await page.waitForFunction(
 );
 
   await page.close();
-};
+};}
