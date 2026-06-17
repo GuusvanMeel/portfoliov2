@@ -1,0 +1,1 @@
+export type ThemeName = "win98" | "classicMac";
