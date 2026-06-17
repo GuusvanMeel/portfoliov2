@@ -1,3 +1,5 @@
+
+import AdminButton from "./AdminButton";
 import ThemeSwitcher from "./window/ThemeSwitcher";
 import WindowFrame from "./window/WindowFrame";
 
@@ -21,6 +23,7 @@ Ut sit amet lobortis libero, ac rhoncus odio. Maecenas commodo mollis nunc quis 
        <WindowFrame title="Switch the theme!">
          <ThemeSwitcher></ThemeSwitcher>
        </WindowFrame>
+       <AdminButton></AdminButton>
     </main>
   );
 }
