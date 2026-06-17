@@ -8,7 +8,7 @@ module.exports = async (browser) => {
   });
 
   await page.type('input[name="email"]', process.env.ADMIN_EMAIL);
-  await page.type('input[name="password"]', process.env.LHCI_ADMIN_PASSWORD);
+  await page.type('input[name="password"]', process.env.ADMIN_PASSWORD);
 
   
  await page.click('button[type="submit"]');
