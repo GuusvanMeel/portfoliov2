@@ -14,7 +14,7 @@
     "dev:coverage": "set CYPRESS_COVERAGE=true&& next dev",
     "cypress:open": "cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=text-summary",
-    "test:components": "vitest --browser.headless --reporter=github-actions"
+    "test:components": "vitest --browser.headless --reporter=default --reporter=github-actions"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
