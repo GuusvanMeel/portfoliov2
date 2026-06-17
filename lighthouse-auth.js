@@ -1,4 +1,5 @@
 // lighthouse-auth.js
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { loadEnvConfig } = require ("@next/env");
 
 loadEnvConfig(process.cwd());
