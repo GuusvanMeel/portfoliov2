@@ -9,6 +9,7 @@ export default defineConfig({
     },
   },
     test: {
+        reporters: ["github-actions"],
     browser: {
       provider: playwright(),
       enabled: true,
