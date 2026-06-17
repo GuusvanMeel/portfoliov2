@@ -130,7 +130,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       CYPRESS_TEST_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      CYPRESS_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      CYPRESS_TEST_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
 
     steps:
       - name: Checkout repository
