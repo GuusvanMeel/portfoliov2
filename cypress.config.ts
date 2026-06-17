@@ -11,6 +11,7 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
 
     setupNodeEvents(on, config) {
+      require('@cypress/code-coverage/task')(on, config)
       on('task', {
         logMetric({ name, ms }) {
           const dir = 'cypress/results'
