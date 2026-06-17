@@ -42,4 +42,9 @@ next-env.d.ts
 
 #lighthouse
 
-.lhci-reports
+# Lighthouse
+lhci-reports/
+.lighthouseci/
+lhci-selected-reports/
+lighthouse-report.html
+lighthouse-report.json
