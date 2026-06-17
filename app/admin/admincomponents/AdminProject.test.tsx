@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { page } from "@vitest/browser/context";
+import { page } from "vitest/browser";
 import { cleanup, render } from "vitest-browser-react";
 
 import AdminProject from "./AdminProject";
