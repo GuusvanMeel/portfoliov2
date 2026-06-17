@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
 import fs from 'fs'
 import path from 'path'
+import codeCoverageTask from '@cypress/code-coverage/task'
 
 export default defineConfig({
   allowCypressEnv: true,
@@ -11,6 +12,7 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
 
     setupNodeEvents(on, config) {
+      codeCoverageTask(on, config)
       on('task', {
         logMetric({ name, ms }) {
           const dir = 'cypress/results'
