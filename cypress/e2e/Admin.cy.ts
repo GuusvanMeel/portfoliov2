@@ -18,7 +18,7 @@ describe('template spec', () => {
 })
   cy.get('button[type="submit"]').click()
 
-  cy.url().should('include', '/admin')
+  cy.get('[data-cy="admin-project"]', { timeout: 15000 }).should('exist')
 
   // open create form
   cy.get('[data-cy="create-project"]').click()
@@ -76,7 +76,7 @@ it('Edit existing project', function () {
 })
   cy.get('button[type="submit"]').click()
 
-  cy.url().should('include', '/admin')
+  cy.get('[data-cy="admin-project"]', { timeout: 15000 }).should('exist')
 
   const project = () => cy.contains('[data-cy="admin-project"]', originalTitle)
 
@@ -131,8 +131,10 @@ it('Delete project', function() {
   cy.get('[name="password"]').type(TEST_PASSWORD, { log: false })
 })
   cy.get('button[type="submit"]').click()
-     
-     cy.contains('[data-cy="admin-project"]', editedTitle).as('editedProject')
+  
+  cy.get('[data-cy="admin-project"]', { timeout: 15000 }).should('exist')
+  
+  cy.contains('[data-cy="admin-project"]', editedTitle).as('editedProject')
 
 cy.get('@editedProject').within(() => {
   cy.contains(editedTitle).should('be.visible')
