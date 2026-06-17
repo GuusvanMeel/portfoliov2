@@ -119,3 +119,69 @@ jobs:
           path: lhci-selected-reports
           retention-days: 7
           if-no-files-found: ignore
+
+  Cypress:
+    name: End-to-End
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development'
+
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      CYPRESS_TEST_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      CYPRESS_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: http://localhost:3000
+      
+      - name: Add Cypress summary
+        if: always()
+        run: |
+          echo "## Cypress End-to-End Tests" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Tested flows:" >> $GITHUB_STEP_SUMMARY
+          echo "- Login" >> $GITHUB_STEP_SUMMARY
+          echo "- Create project" >> $GITHUB_STEP_SUMMARY
+          echo "- Edit project" >> $GITHUB_STEP_SUMMARY
+          echo "- Toggle visibility" >> $GITHUB_STEP_SUMMARY
+          echo "- Delete project" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f cypress/results/metrics.md ]; then
+            cat cypress/results/metrics.md >> $GITHUB_STEP_SUMMARY
+          fi
+      - name: Upload Cypress videos
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          if-no-files-found: ignore
+
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
