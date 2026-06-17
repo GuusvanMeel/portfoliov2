@@ -9,6 +9,10 @@ export default defineConfig({
     },
   },
     test: {
+      coverage: {
+      provider: "v8",
+      reportsDirectory: "coverage/vitest",
+      reporter: ["lcov", "text-summary"],},
         reporters: ["github-actions"],
     browser: {
       provider: playwright(),
