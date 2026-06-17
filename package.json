@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "lighthouse:local": "npx lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html --chrome-flags=\"--headless\" --view",
+    "lighthouse:local": "npx lighthouse http://localhost:3000 --output=html --output-path=./lighthouse-report.html --view",
     "lighthouse:ci": "npm run build && lhci autorun",
     "lighthouse:summary": "node scripts/lighthouse-summary.mjs"
   },
@@ -26,6 +26,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^15.17.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "puppeteer": "^25.1.0",

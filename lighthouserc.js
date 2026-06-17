@@ -8,7 +8,7 @@ module.exports = {
         "http://localhost:3000/login",
         "http://localhost:3000/admin"
       ],
-      numberOfRuns: process.env.CI ? 1 : 3,
+      numberOfRuns: 3,
       settings: {
         preset: "desktop"
       }
