@@ -9,7 +9,7 @@ export default function EditProjectForm({
   project,
   Onsaved,
   Onclose,
-}:Readonly<{
+}: Readonly<{
   project: Project | null;
   Onsaved: (updated: Project) => void;
   Onclose: () => void;
@@ -58,7 +58,7 @@ export default function EditProjectForm({
           <X size={18} />
         </button>
 
-        <form action={handleSubmit} className="flex flex-col gap-4 px-6 py-6">
+        <form data-cy="edit-project-form" action={handleSubmit} className="flex flex-col gap-4 px-6 py-6">
           <h2 className="text-xl font-semibold text-white pr-8">
             {project ? "Edit Project" : "Create Project"}
           </h2>
@@ -76,9 +76,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-description"className="text-sm text-neutral-400">Description</label>
+            <label htmlFor="project-description" className="text-sm text-neutral-400">Description</label>
             <textarea
-            id="project-description"
+              id="project-description"
               name="description"
               defaultValue={project?.description ?? ""}
               className="bg-neutral-900 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-blue-500 min-h-80"
@@ -109,7 +109,7 @@ export default function EditProjectForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
-              <label htmlFor="image" className="text-sm text-neutral-400">Image URL</label>
+              <label htmlFor="project-image" className="text-sm text-neutral-400">Image URL</label>
               <input
                 id="project-image"
                 type="text"
@@ -146,7 +146,7 @@ export default function EditProjectForm({
           <div className="flex flex-col gap-1">
             <label htmlFor="project-git" className="text-sm text-neutral-400">GitHub Link</label>
             <input
-            id="project-git"
+              id="project-git"
               type="text"
               name="git"
               defaultValue={project?.githubLink ?? ""}
@@ -155,24 +155,35 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-visibility" className="text-sm text-neutral-400">Visibility</label>
-            <div  className="inline-flex items-center gap-3 cursor-pointer">
+            <label htmlFor="project-visibility" className="text-sm text-neutral-400">
+              Visibility
+            </label>
+
+            <label
+              htmlFor="project-visibility"
+              data-cy="form-visibility-toggle"
+              className="inline-flex items-center gap-3 cursor-pointer"
+            >
               <input
-              id="project-visibility"
+                id="project-visibility"
+                data-cy="form-visibility-checkbox"
                 type="checkbox"
                 name="isVisible"
                 checked={isVisible}
                 onChange={(e) => setIsVisible(e.target.checked)}
                 className="sr-only peer"
               />
+
               <div className="relative w-11 h-6 bg-neutral-900 border border-neutral-700 rounded-full transition-colors peer-checked:bg-green-600 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5 after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5" />
-              <span className="text-sm text-neutral-400">
+
+              <span data-cy="form-visibility-status" className="text-sm text-neutral-400">
                 {isVisible ? "Visible on portfolio" : "Hidden on portfolio"}
               </span>
-            </div>
+            </label>
           </div>
 
           <button
+          data-cy="save-project"
             type="submit"
             disabled={isPending}
             className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md text-white text-sm font-medium transition disabled:opacity-50 mt-2"

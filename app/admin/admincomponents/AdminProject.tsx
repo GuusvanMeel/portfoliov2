@@ -114,7 +114,7 @@ export default function AdminProject({
   const hasGithub = Boolean(localProject.githubLink);
 
   const VisibilityPill = (
-    <span
+    <span data-cy="visibility-pill"
       className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${localProject.isVisible
         ? "border-green-700/60 text-green-400 bg-green-900/20"
         : "border-red-700/60 text-red-400 bg-red-900/20"
@@ -138,14 +138,14 @@ export default function AdminProject({
           <FolderGit2 size={18} />
         </a>
       )}
-      <button
+      <button data-cy="visibility-toggle"
         onClick={handleToggle}
         title={localProject.isVisible ? "Hide" : "Show"}
         className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
       >
         {localProject.isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
       </button>
-      <button
+      <button data-cy="edit-project"
         onClick={() => setOpen(true)}
         title="Edit"
         className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
@@ -153,6 +153,7 @@ export default function AdminProject({
         <Pencil size={15} />
       </button>
       <button
+        data-cy="delete-project"
         onClick={handleDelete}
         title="Delete"
         className="p-3 text-red-500 border border-red-700/70 rounded-md hover:bg-red-900/40 hover:text-red-300 transition"
@@ -178,7 +179,8 @@ export default function AdminProject({
   // ---------- GRID VIEW ----------
   if (view === "grid") {
     return (
-      <div className="group flex flex-col bg-neutral-900/60 border border-neutral-800 rounded-lg overflow-hidden hover:border-neutral-700 transition">
+      <div data-cy="admin-project"
+  data-project-id={localProject.id} className="group flex flex-col bg-neutral-900/60 border border-neutral-800 rounded-lg overflow-hidden hover:border-neutral-700 transition">
         <ProjectThumb
           imageSrc={localProject.imageSrc}
           className="w-full aspect-video object-cover border-b border-neutral-800"
@@ -221,7 +223,8 @@ export default function AdminProject({
 
   // ---------- LIST VIEW ----------
   return (
-    <div className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition">
+    <div data-cy="admin-project"
+  data-project-id={localProject.id} className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition">
       <ProjectThumb
         imageSrc={localProject.imageSrc}
         className="w-16 h-16 rounded-md object-cover shrink-0 border border-neutral-800"

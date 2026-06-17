@@ -27,6 +27,7 @@ export default function CreateProjectButton({
   return (
     <>
       <button
+      data-cy="create-project"
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-3 px-6 py-3 text-base bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition"
       >
