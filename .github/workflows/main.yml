@@ -37,7 +37,15 @@ jobs:
         run: npx playwright install chromium
 
       - name: Run component tests
-        run: npm run test:components
+        run: npm run test:components:coverage
+
+      - name: Upload Vitest coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: vitest-coverage-report
+          path: coverage/vitest/lcov.info
+          if-no-files-found: error
       
       # - name: Cache Next.js build
       #   uses: actions/cache@v5
@@ -62,11 +70,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download coverage report
+      - name: Download Vitest coverage report
         uses: actions/download-artifact@v7
         with:
-          name: coverage-report
-          path: coverage
+          name: vitest-coverage-report
+          path: coverage/vitest
+      
+      - name: Download Cypress coverage report
+        uses: actions/download-artifact@v7
+        with:
+          name: cypress-coverage-report
+          path: coverage/cypress
 
       - name: Run SonarQube scan
         id: sonar_scan
@@ -181,16 +195,16 @@ jobs:
           start: npm start
           wait-on: http://localhost:3000
 
-      - name: Generate coverage report
+      - name: Generate Cypress coverage report
         if: always()
-        run: npx nyc report --reporter=lcov --reporter=text-summary
+        run: npx nyc report --report-dir coverage/cypress --reporter=lcov --reporter=text-summary
 
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: coverage-report
-          path: coverage/lcov.info
+          name: cypress-coverage-report
+          path: coverage/cypress/lcov.info
           if-no-files-found: error
 
       - name: Add Cypress summary
