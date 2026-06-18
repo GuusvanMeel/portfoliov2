@@ -5,27 +5,37 @@ import { windowThemes } from "../Features/Window/windowThemes";
 import { useTheme } from "../Features/Theme/ThemeProvider";
 
 
-export default function WindowFrame({ title, children, onClose, }: WindowFrameProps) {
-  
-    const { theme } = useTheme();
-    const selectedTheme = windowThemes[theme];
+export default function WindowFrame({ title, children, onClose, onMinimize, onClick }: WindowFrameProps) {
 
-    return (
-    <div className={`${styles.window} ${selectedTheme.frame}`}>
+  const { theme } = useTheme();
+  const selectedTheme = windowThemes[theme];
+
+  return (
+    <div className={`${styles.window} ${selectedTheme.frame}`} onClick={onClick}>
       <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}>
         <span className={styles.title}>{title}</span>
 
         <div className={styles.buttons}>
+          {onMinimize && (
+            <button
+              aria-label="Minimize"
+              type="button"
+              onClick={onMinimize}
+              className={`${styles.controlButton} ${selectedTheme.controlButton}`}>
+              _
+            </button>)}
           {onClose && (
             <button
               aria-label="Close"
               type="button"
               onClick={onClose}
-              className={`${styles.closeButton} ${selectedTheme.controlButton}`}
+              className={`${styles.controlButton} ${selectedTheme.controlButton}`}
             >
               X
             </button>
           )}
+
+
         </div>
       </div>
 

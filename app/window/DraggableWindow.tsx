@@ -7,9 +7,13 @@ import { windowThemes } from "../Features/Window/windowThemes";
 
 type DraggableWindowProps = {
   children: ReactNode;
+  width: number;
+  height: number;
+  zIndex: number;
+  onFocus: () => void;
 };
 
-export default function DraggableWindow({ children }: DraggableWindowProps) {
+export default function DraggableWindow({ children, width, height, zIndex, onFocus }: DraggableWindowProps) {
     const [isDragging, setIsDragging] = useState(false)
     const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
@@ -18,15 +22,18 @@ export default function DraggableWindow({ children }: DraggableWindowProps) {
       default={{
         x: 40,
         y: 40,
-        width: 300,
-        height: 150,
+        width: width,
+        height: height,
+        
       }}
+      style={{zIndex}}
+      onClick={onclick}
       minWidth={280}
       minHeight={150}
       bounds="parent"
       className={isDragging ? selectedTheme.draggingWindow : ""}
       onDragStart={() => setIsDragging(true)}
-      onDragStop={() => setIsDragging(false)}
+      onDragStop={() => {setIsDragging(false); onFocus();}}
       dragHandleClassName="window-title-bar"
     >
       {children}

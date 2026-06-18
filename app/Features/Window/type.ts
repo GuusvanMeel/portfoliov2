@@ -4,8 +4,9 @@ export type WindowFrameProps ={
     title: string;
     children: ReactNode;
     onClose?: () => void;
+    onMinimize?: () =>void;
+    onClick: () => void;
 }
-export type WindowThemeName = "win98" | "classicMac";
 
 export type WindowTheme = {
   frame: string;
