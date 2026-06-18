@@ -1,5 +1,4 @@
 
-import AdminButton from "./AdminButton";
 import WindowManager from "./window/WindowManager";
 
 export default function Home() {

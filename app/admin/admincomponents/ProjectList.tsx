@@ -2,7 +2,7 @@
 "use client";
 import { Project } from "@/app/Features/Projects/types";
 import AdminProject from "./AdminProject";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateProjectButton from "./CreateProjectButton";
 import { List, LayoutGrid } from "lucide-react";
 
