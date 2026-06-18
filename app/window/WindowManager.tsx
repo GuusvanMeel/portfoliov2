@@ -35,14 +35,14 @@ const windowDefinitions: Record<
   projects: {
     title: "Projects",
     content: <p>Projects content</p>,
-    width: 150,
-    height: 150,
+    width: 250,
+    height: 250,
   },
   about: {
     title: "About Me",
     content: <p>About me content</p>,
-    width: 150,
-    height: 150,
+    width: 250,
+    height: 250,
   },
 };
 
@@ -55,7 +55,7 @@ export default function WindowManager() {
     setWindows((currentWindows) => [
       ...currentWindows,
       {
-        id: crypto.randomUUID(),
+        id: `${type}-${Date.now()}-${Math.random()}`,
         type,
         minimized: false,
       },
@@ -117,6 +117,7 @@ export default function WindowManager() {
             return (
               <button
                 key={window.id}
+                className={`${styles.genericButton} ${selectedTheme.button}`}
                 onClick={() => restoreWindow(window.id)}
               >
                 {definition.title}
