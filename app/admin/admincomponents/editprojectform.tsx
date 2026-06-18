@@ -3,6 +3,7 @@
 import { Project, ProjectInputData } from "@/app/Features/Projects/types";
 import { useState, useTransition } from "react";
 import { createProject, updateProject } from "@/app/Features/Projects/actions";
+import { projectImage } from "@/app/Features/Images/actions";
 import { X } from "lucide-react";
 import Image from "next/image";
 export default function EditProjectForm({
@@ -131,7 +132,7 @@ export default function EditProjectForm({
                   </div>
                 ) : (
                   <Image
-                    src={imagePreview}
+                    src={projectImage.formPreview(imagePreview)}
                     alt="Project preview"
                     width={600}
                     height={300}

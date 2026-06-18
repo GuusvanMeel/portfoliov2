@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import EditProjectForm from "./editprojectform";
 import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
+import { projectImage } from "@/app/Features/Images/actions";
+
 
 type View = "list" | "grid";
 type ProjectThumbProps = Readonly<{
@@ -182,7 +184,7 @@ export default function AdminProject({
       <div data-cy="admin-project"
   data-project-id={localProject.id} className="group flex flex-col bg-neutral-900/60 border border-neutral-800 rounded-lg overflow-hidden hover:border-neutral-700 transition">
         <ProjectThumb
-          imageSrc={localProject.imageSrc}
+          imageSrc={projectImage.grid(localProject.imageSrc)}
           className="w-full aspect-video object-cover border-b border-neutral-800"
         />
 
@@ -226,7 +228,7 @@ export default function AdminProject({
     <div data-cy="admin-project"
   data-project-id={localProject.id} className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition">
       <ProjectThumb
-        imageSrc={localProject.imageSrc}
+        imageSrc={projectImage.list(localProject.imageSrc)}
         className="w-16 h-16 rounded-md object-cover shrink-0 border border-neutral-800"
       />
       <div className="flex flex-col gap-1 min-w-0 flex-1">

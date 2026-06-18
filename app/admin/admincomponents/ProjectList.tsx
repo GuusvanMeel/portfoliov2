@@ -2,7 +2,7 @@
 "use client";
 import { Project } from "@/app/Features/Projects/types";
 import AdminProject from "./AdminProject";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateProjectButton from "./CreateProjectButton";
 import { List, LayoutGrid } from "lucide-react";
 
@@ -10,17 +10,8 @@ type View = "list" | "grid";
 
 export default function ProjectList({ projects }:Readonly<{ projects: Project[] }>) {
   const [items, setItems] = useState(projects);
-  const [view, setView] = useState<View>(() => {
-    if (globalThis.window === undefined) return "list";
+  const [view, setView] = useState<View>(("list"))
 
-    const saved = localStorage.getItem("admin:view");
-
-    return saved === "list" || saved === "grid" ? saved : "list";
-  });
-
-  useEffect(() => {
-    if (globalThis.window !== undefined) localStorage.setItem("admin:view", view);
-  }, [view]);
 
   function handleCreated(newProject: Project) {
     setItems((prev) => [newProject, ...prev]);

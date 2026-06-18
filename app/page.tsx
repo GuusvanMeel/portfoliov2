@@ -1,7 +1,13 @@
 
+import WindowManager from "./window/WindowManager";
+
 export default function Home() {
-  return (
-    <div><h1>Portfolio</h1>
-      <p>Test content voor Lighthouse.</p></div>
+   return (
+    <main className="h-screen overflow-hidden bg-teal-700">
+        
+
+        <WindowManager />
+      
+    </main>
   );
 }
