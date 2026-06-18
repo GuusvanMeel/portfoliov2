@@ -13,7 +13,7 @@ type DraggableWindowProps = {
   onFocus: () => void;
 };
 
-export default function DraggableWindow({ children, width, height, zIndex, onFocus }: DraggableWindowProps) {
+export default function DraggableWindow({ children, width, height, zIndex, onFocus }:Readonly<DraggableWindowProps>) {
     const [isDragging, setIsDragging] = useState(false)
     const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
@@ -34,6 +34,7 @@ export default function DraggableWindow({ children, width, height, zIndex, onFoc
       className={isDragging ? selectedTheme.draggingWindow : ""}
       onDragStart={() => setIsDragging(true)}
       onDragStop={() => {setIsDragging(false); onFocus();}}
+      onResizeStop={() => onFocus()}
       dragHandleClassName="window-title-bar"
     >
       {children}
