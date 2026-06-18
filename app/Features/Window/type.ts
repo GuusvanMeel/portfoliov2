@@ -14,4 +14,5 @@ export type WindowTheme = {
   content: string;
   controlButton: string;
   button: string;
+  draggingWindow: string;
 };
