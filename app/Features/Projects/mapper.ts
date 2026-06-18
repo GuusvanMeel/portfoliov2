@@ -1,4 +1,4 @@
-import { Project, ProjectRow, ProjectInputData } from "./types"
+import { Project, ProjectRow, ProjectInputData, DisplayProject } from "./types"
 
 
 
@@ -27,4 +27,17 @@ export function mapUpdateProjectInputToRow(input: ProjectInputData) {
         is_visible: input.isVisible,
         updated_at: new Date().toISOString(),
     }
+}
+export function mapProjectToDisplayproject(
+  project: Project
+): DisplayProject {
+  return {
+    id: project.id,
+    title: project.title,
+    description: project.description,
+    tags: project.tags,
+    duration: project.duration,
+    imageSrc: project.imageSrc,
+    githubLink: project.githubLink,
+  };
 }

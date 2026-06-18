@@ -10,9 +10,12 @@ export default function WindowFrame({ title, children, onClose, onMinimize, onCl
   const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
 
+
+
+
   return (
     <div className={`${styles.window} ${selectedTheme.frame}`} onClick={onClick} >
-      <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}>
+      <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}> 
         <span className={styles.title}>{title}</span>
 
         <div className={styles.buttons}>
