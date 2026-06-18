@@ -15,8 +15,8 @@ function isThemeName(value: string | null): value is ThemeName {
     return value === "win98" || value === "classicMac" || value === "debug";
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setThemeState] = useState<ThemeName>(defaultTheme);
+export function ThemeProvider({ children }:Readonly< { children: React.ReactNode }>) {
+    const [currentTheme, setCurrentTheme] = useState<ThemeName>(defaultTheme);
 
   useEffect(() => {
   const savedTheme = localStorage.getItem("theme");
@@ -25,20 +25,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Theme is stored client-side for now.
     // Later this should move to cookies to avoid hydration mismatch.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setThemeState(savedTheme);
+    setCurrentTheme(savedTheme);
   }
 }, []);
 
     
 
     function setTheme(newTheme: ThemeName) { //SET THE THEME, en slaat het ook op in localstorage
-        setThemeState(newTheme);
+        setCurrentTheme(newTheme);
         localStorage.setItem("theme", newTheme);
     }
     
 
     return (
-        <ThemeContext.Provider value={{ theme, setTheme }}>
+        <ThemeContext.Provider value={{ theme: currentTheme, setTheme }}>
             {children}
         </ThemeContext.Provider>
     );

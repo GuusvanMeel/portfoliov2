@@ -5,13 +5,13 @@ import { windowThemes } from "../Features/Window/windowThemes";
 import { useTheme } from "../Features/Theme/ThemeProvider";
 
 
-export default function WindowFrame({ title, children, onClose, onMinimize, onClick }: WindowFrameProps) {
+export default function WindowFrame({ title, children, onClose, onMinimize, onClick }:Readonly <WindowFrameProps>) {
 
   const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
 
   return (
-    <div className={`${styles.window} ${selectedTheme.frame}`} onClick={onClick}>
+    <div className={`${styles.window} ${selectedTheme.frame}`} onClick={onClick} >
       <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}>
         <span className={styles.title}>{title}</span>
 
