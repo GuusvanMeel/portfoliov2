@@ -9,6 +9,15 @@ export type Project = {
     isVisible: boolean;
     updatedAt: string;
 };
+export type DisplayProject = {
+     id: number;
+    title: string;
+    imageSrc: string;
+    description: string;
+    tags: string[];
+    duration: string;
+    githubLink: string;
+}
 export type ProjectRow = {
     id: number;
     title: string;

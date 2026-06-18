@@ -16,4 +16,9 @@ export type WindowTheme = {
   controlButton: string;
   button: string;
   draggingWindow: string;
+  projectImage: string;
+projectTag: string;
+projectLink: string;
+projectDescription: string;
+projectDuration: string;
 };

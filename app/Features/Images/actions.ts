@@ -19,4 +19,6 @@ export const projectImage = {
   // Edit form preview: klein previewvlak, maar iets groter houden zodat het scherp blijft
   formPreview: (url: string) =>
     cloudinaryImage(url, "f_auto,q_auto,w_600,h_300,c_fill"),
+  window: (url: string) =>
+  cloudinaryImage(url, "f_auto,q_auto,w_1000,c_limit"),
 };
