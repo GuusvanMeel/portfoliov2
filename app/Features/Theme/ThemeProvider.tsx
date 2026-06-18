@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ThemeName } from "./type";
 
 type ThemeContextType = {
@@ -16,22 +16,26 @@ function isThemeName(value: string | null): value is ThemeName {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setThemeState] = useState<ThemeName>(() => {
-        if (globalThis.window === undefined) {
-            return defaultTheme;
-        }
-        const savedTheme = localStorage.getItem("theme");
-        if (isThemeName(savedTheme)) {
-            return savedTheme;
-        }
-        return defaultTheme;
-    });
+    const [theme, setThemeState] = useState<ThemeName>(defaultTheme);
+
+  useEffect(() => {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (isThemeName(savedTheme)) {
+    // Theme is stored client-side for now.
+    // Later this should move to cookies to avoid hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setThemeState(savedTheme);
+  }
+}, []);
+
     
 
     function setTheme(newTheme: ThemeName) { //SET THE THEME, en slaat het ook op in localstorage
         setThemeState(newTheme);
         localStorage.setItem("theme", newTheme);
     }
+    
 
     return (
         <ThemeContext.Provider value={{ theme, setTheme }}>

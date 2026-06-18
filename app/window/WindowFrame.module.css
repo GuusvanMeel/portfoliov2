@@ -1,6 +1,8 @@
 .window {
   padding: 3px;
-  min-width: 280px;
+  height: 100%;
+  display: flex;
+  flex-direction: column
 }
 
 .titleBar {
@@ -49,7 +51,8 @@
 .content {
   margin-top: 3px;
   padding: 12px;
-  min-height: 120px;
+   flex: 1;
+  overflow: auto;
 }
 .genericButton {
   min-width: 74px;

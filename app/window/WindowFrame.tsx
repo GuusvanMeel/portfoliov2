@@ -12,7 +12,7 @@ export default function WindowFrame({ title, children, onClose, }: WindowFramePr
 
     return (
     <div className={`${styles.window} ${selectedTheme.frame}`}>
-      <div className={`${styles.titleBar} ${selectedTheme.titleBar}`}>
+      <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}>
         <span className={styles.title}>{title}</span>
 
         <div className={styles.buttons}>
@@ -21,7 +21,7 @@ export default function WindowFrame({ title, children, onClose, }: WindowFramePr
               aria-label="Close"
               type="button"
               onClick={onClose}
-              className={`${styles.closebutton} ${selectedTheme.controlButton}`}
+              className={`${styles.closeButton} ${selectedTheme.controlButton}`}
             >
               X
             </button>
