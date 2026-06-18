@@ -1,1 +1,1 @@
-export type ThemeName = "win98" | "classicMac";
+export type ThemeName = "win98" | "classicMac" | "debug";
