@@ -1,16 +1,20 @@
 "use client";
 
+import { mapProjectToDisplayproject } from "@/app/Features/Projects/mapper";
+import { DisplayProject } from "@/app/Features/Projects/types";
+import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { windowThemes } from "@/app/Features/Window/windowThemes";
+import { Project } from "@/app/Features/Projects/types";
 import { useState } from "react";
-import WindowFrame from "./WindowFrame";
-import ThemeSwitcher from "./ThemeSwitcher";
+import ProjectWindow from "../ProjectWindow/ProjectWindow";
+import AdminButton from "../ui/AdminButton";
+import ThemeSwitcher from "../ui/ThemeSwitcher";
 import DraggableWindow from "./DraggableWindow";
-import AdminButton from "../AdminButton";
-import { useTheme } from "../Features/Theme/ThemeProvider";
-import { windowThemes } from "../Features/Window/windowThemes";
+import WindowFrame from "./WindowFrame";
 import styles from "./WindowFrame.module.css";
-import ProjectWindow from "./ProjectWindow";
-import { DisplayProject, Project } from "../Features/Projects/types";
-import { mapProjectToDisplayproject } from "../Features/Projects/mapper";
+
+
+
 
 type WindowType = "theme-switcher" | "projects" | "about";
 
@@ -40,8 +44,7 @@ const windowDefinitions: Record<
   title: "Projects",
   width: 818, //door padding +8
   height: 628, //door padding +8
-   render: (window) =>
-      window.project ? <ProjectWindow {...window.project} /> : null,
+   render: (window) => window.project ? <ProjectWindow {...window.project} /> : null,
 },
   about: {
     title: "About Me",

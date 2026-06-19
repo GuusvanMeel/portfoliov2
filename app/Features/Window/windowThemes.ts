@@ -21,14 +21,17 @@ export const windowThemes: Record<ThemeName, WindowTheme> = {
   "bg-[#c0c0c0] border border-black shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
 
 projectTag:
-  "bg-[#b8b8b8] text-black border border-black shadow-[inset_1px_1px_0_#707070,inset_-1px_-1px_0_#ffffff]",
+  "bg-[#e0e0e0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#707070]",
+
+projectDuration:
+  "bg-[#d4d0c8] text-black border border-[#606060] shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
+
 projectLink:
   "bg-[#c0c0c0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080] active:shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
 
 projectDescription:
   "bg-white text-black border border-[#808080] shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
-  projectDuration:
-  "bg-[#d4d0c8] text-black border border-[#606060] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080]",
+  
        
 
     },
@@ -47,14 +50,16 @@ projectDescription:
   "bg-white border border-black shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
 
 projectTag:
-  "bg-[#d0d0d0] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#777777,inset_-1px_-1px_0_#ffffff]",
+  "bg-[#f2f2f2] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#777777]",
+
+projectDuration:
+  "bg-[#dddddd] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#777777,inset_-1px_-1px_0_#ffffff]",
+
 projectLink:
   "bg-[#eeeeee] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999] active:shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
 
 projectDescription:
   "bg-white text-black border border-black shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
-  projectDuration:
-  "bg-[#eeeeee] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999]",
     },
     debug: {
   frame:
@@ -77,12 +82,13 @@ projectDescription:
 projectTag:
   "bg-[#111111] text-[#00ffff] border border-[#ff00ff] shadow-[inset_1px_1px_0_#000000,inset_-1px_-1px_0_#ff00ff]",
 
+projectDuration:
+  "bg-[#00ffff] text-black border border-[#ff00ff] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#006666]",
+
 projectLink:
-  "text-[#00ffff] underline decoration-[#ff00ff] hover:text-[#ff00ff]",
+  "bg-[#ff00ff] text-black border border-[#00ffff] shadow-[2px_2px_0_#00ffff] hover:bg-[#00ffff]",
 
 projectDescription:
   "bg-[#050505] text-[#00ff66] border border-[#ff00ff] shadow-[inset_1px_1px_0_#000000,inset_-1px_-1px_0_#ff00ff]",
-  projectDuration:
-  "bg-[#111111] text-[#00ff66] border border-[#00ffff] shadow-[0_0_4px_#ff00ff]",
 },
 };

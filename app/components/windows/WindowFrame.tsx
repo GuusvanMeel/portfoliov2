@@ -1,8 +1,9 @@
 "use client"
 import { WindowFrameProps } from "@/app/Features/Window/type";
 import styles from "./WindowFrame.module.css";
-import { windowThemes } from "../Features/Window/windowThemes";
-import { useTheme } from "../Features/Theme/ThemeProvider";
+import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { windowThemes } from "@/app/Features/Window/windowThemes";
+
 
 
 export default function WindowFrame({ title, children, onClose, onMinimize, onClick }:Readonly <WindowFrameProps>) {

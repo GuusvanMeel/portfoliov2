@@ -2,8 +2,8 @@
 
 import { Rnd } from "react-rnd";
 import { useState, type ReactNode } from "react";
-import { useTheme } from "../Features/Theme/ThemeProvider";
-import { windowThemes } from "../Features/Window/windowThemes";
+import { useTheme } from "../../Features/Theme/ThemeProvider";
+import { windowThemes } from "../../Features/Window/windowThemes";
 
 type DraggableWindowProps = {
   children: ReactNode;
