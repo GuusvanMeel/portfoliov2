@@ -8,7 +8,7 @@ import { projectImage } from "@/app/Features/Images/actions";
 import type { DisplayProject } from "@/app/Features/Projects/types";
 import styles from "./ProjectWindow.module.css";
 
-type ProjectLayout = "side" | "wide" | "compact";
+type ProjectLayout = "landscape" | "block" | "mobile";
 
 export default function ProjectWindow({
   title,
@@ -20,25 +20,48 @@ export default function ProjectWindow({
 }: Readonly<DisplayProject>) {
   const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
-  const [layout, setLayout] = useState<ProjectLayout>("side");
+  const [layout, setLayout] = useState<ProjectLayout>("landscape");
+
+  const imageClass = {
+    landscape: styles.landscapeImage,
+    block: styles.blockImage,
+    mobile: styles.mobileImage,
+  }[layout];
+
+  const image = (
+    <div
+      className={`${styles.imageWrapper} ${imageClass} ${selectedTheme.projectImage}`}
+    >
+      <Image
+        src={projectImage.window(imageSrc)}
+        alt={title}
+        fill
+        sizes="(max-width: 900px) 100vw, 700px"
+        className={styles.image}
+      />
+    </div>
+  );
 
   const meta = (
     <div className={styles.meta}>
-      <div className={styles.tags}>
-        <span className={styles.metaLabel}>Tech used:</span>
+      <div className={styles.metaGroup}>
+        <span className={styles.metaLabel}>Tech used</span>
 
-        {tags.map((tag) => (
-          <span
-            key={tag}
-            className={`${styles.tag} ${selectedTheme.projectTag}`}
-          >
-            {tag}
-          </span>
-        ))}
+        <div className={styles.chipList}>
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className={`${styles.tag} ${selectedTheme.projectTag}`}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <div className={styles.durationRow}>
-        <span className={styles.metaLabel}>Duration:</span>
+      <div className={styles.metaGroup}>
+        <span className={styles.metaLabel}>Time spent</span>
+
         <span className={`${styles.duration} ${selectedTheme.projectDuration}`}>
           {duration}
         </span>
@@ -57,18 +80,6 @@ export default function ProjectWindow({
     </div>
   );
 
-  const image = (
-    <div className={`${styles.imageWrapper} ${selectedTheme.projectImage}`}>
-      <Image
-        src={projectImage.window(imageSrc)}
-        alt={title}
-        width={1000}
-        height={700}
-        className={styles.image}
-      />
-    </div>
-  );
-
   const descriptionBlock = (
     <div
       className={`${styles.descriptionBlock} ${selectedTheme.projectDescription}`}
@@ -78,41 +89,58 @@ export default function ProjectWindow({
   );
 
   return (
-    <div className={styles.project}>
+    <article className={styles.project}>
       <div className={styles.layoutControls}>
         <button
           type="button"
           className={`${styles.layoutButton} ${selectedTheme.button}`}
-          onClick={() => setLayout("side")}
+          onClick={() => setLayout("landscape")}
         >
-          Layout 1
+          Landscape
         </button>
 
         <button
           type="button"
           className={`${styles.layoutButton} ${selectedTheme.button}`}
-          onClick={() => setLayout("wide")}
+          onClick={() => setLayout("block")}
         >
-          Layout 2
+          Block
         </button>
 
         <button
           type="button"
           className={`${styles.layoutButton} ${selectedTheme.button}`}
-          onClick={() => setLayout("compact")}
+          onClick={() => setLayout("mobile")}
         >
-          Layout 3
+          Mobile
         </button>
       </div>
 
-      {layout === "side" && (
-        <section className={styles.sideLayout}>
-          <div className={styles.leftColumn}>
+      {layout === "landscape" && (
+        <section className={styles.landscapeLayout}>
+          <h2 className={styles.title}>{title}</h2>
+
+          <div className={styles.landscapeGrid}>
+            {image}
+
+            <div className={styles.sideInfo}>
+              {meta}
+
+              <span className={styles.sectionTitle}>Description</span>
+              {descriptionBlock}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {layout === "block" && (
+        <section className={styles.blockLayout}>
+          <div className={styles.mediaColumn}>
             {image}
             {meta}
           </div>
 
-          <div className={styles.rightColumn}>
+          <div className={styles.contentColumn}>
             <h2 className={styles.title}>{title}</h2>
             <span className={styles.sectionTitle}>Description</span>
             {descriptionBlock}
@@ -120,34 +148,19 @@ export default function ProjectWindow({
         </section>
       )}
 
-      {layout === "wide" && (
-        <section className={styles.wideLayout}>
-          {image}
+      {layout === "mobile" && (
+        <section className={styles.mobileLayout}>
+          <div className={styles.mobileMediaColumn}>{image}</div>
 
-          <div className={styles.wideBottom}>
-            <div>
-              <span className={styles.sectionTitle}>Description</span>
-              {descriptionBlock}
-            </div>
-
-            {meta}
-          </div>
-        </section>
-      )}
-
-      {layout === "compact" && (
-        <section className={styles.compactLayout}>
-          <div>
+          <div className={styles.contentColumn}>
             <h2 className={styles.title}>{title}</h2>
+            {meta}
+
+            <span className={styles.sectionTitle}>Description</span>
             {descriptionBlock}
           </div>
-
-          <div>
-            {image}
-            {meta}
-          </div>
         </section>
       )}
-    </div>
+    </article>
   );
 }

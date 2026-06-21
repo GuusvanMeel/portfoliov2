@@ -17,8 +17,8 @@ export const windowThemes: Record<ThemeName, WindowTheme> = {
             "bg-[#c0c0c0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080] active:shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
         draggingWindow:
             "opacity-60",
-  projectImage:
-  "bg-[#c0c0c0] border border-black shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
+projectImage:
+  "bg-[#c0c0c0] border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#707070]",
 
 projectTag:
   "bg-[#e0e0e0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#707070]",
@@ -30,8 +30,7 @@ projectLink:
   "bg-[#c0c0c0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080] active:shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
 
 projectDescription:
-  "bg-white text-black border border-[#808080] shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
-  
+  "bg-white text-black border border-[#808080] shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",  
        
 
     },
@@ -46,8 +45,8 @@ projectDescription:
         button: "bg-[#eeeeee] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999] active:shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
         draggingWindow: "opacity-70 outline outline-2 outline-dashed outline-black",
         
- projectImage:
-  "bg-white border border-black shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
+projectImage:
+  "bg-white border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#777777]",
 
 projectTag:
   "bg-[#f2f2f2] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#777777]",
@@ -59,8 +58,7 @@ projectLink:
   "bg-[#eeeeee] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999] active:shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
 
 projectDescription:
-  "bg-white text-black border border-black shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
-    },
+  "bg-white text-black border border-black shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",    },
     debug: {
   frame:
     "bg-[#2b123c] border-2 border-[#ff00ff] shadow-[4px_4px_0_#000000]",
@@ -76,7 +74,7 @@ projectDescription:
     "bg-[#ff00ff] text-black border border-black rounded-none shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#660066] active:shadow-[inset_1px_1px_0_#660066,inset_-1px_-1px_0_#ffffff]",
   draggingWindow:
     "opacity-50 outline outline-2 outline-dotted-[#00ffff]",
-  projectImage:
+projectImage:
   "bg-[#050505] border-2 border-[#00ffff] shadow-[0_0_8px_#ff00ff]",
 
 projectTag:
@@ -89,6 +87,5 @@ projectLink:
   "bg-[#ff00ff] text-black border border-[#00ffff] shadow-[2px_2px_0_#00ffff] hover:bg-[#00ffff]",
 
 projectDescription:
-  "bg-[#050505] text-[#00ff66] border border-[#ff00ff] shadow-[inset_1px_1px_0_#000000,inset_-1px_-1px_0_#ff00ff]",
-},
+  "bg-[#050505] text-[#00ff66] border border-[#ff00ff] shadow-[inset_1px_1px_0_#000000,inset_-1px_-1px_0_#ff00ff]",},
 };

@@ -31,11 +31,14 @@ export default function DraggableWindow({ children, width, height, zIndex, onFoc
       minWidth={280}
       minHeight={150}
       bounds="parent"
+      
       className={isDragging ? selectedTheme.draggingWindow : ""}
       onDragStart={() => setIsDragging(true)}
       onDragStop={() => {setIsDragging(false); onFocus();}}
       onResizeStop={() => onFocus()}
+      enableResizing={false}
       dragHandleClassName="window-title-bar"
+      cancel="button"
     >
       {children}
     </Rnd>

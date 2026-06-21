@@ -131,11 +131,12 @@ function openProjectWindow(project: Project) {
   >
     Open {project.title}
   </button>
-))}
+))}   
         <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("about")}>
           Open About me
         </button>
         <AdminButton />
+        <ThemeSwitcher></ThemeSwitcher>
         <div>
           {minimizedWindows.map((window) => {
             const definition = windowDefinitions[window.type];
@@ -166,9 +167,11 @@ function openProjectWindow(project: Project) {
         >
           {definition.render(window)}
         </WindowFrame>
+        
       </DraggableWindow>
     );
   })}
+  
     </div>
   );
 }
