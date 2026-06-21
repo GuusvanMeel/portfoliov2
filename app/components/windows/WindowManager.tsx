@@ -72,11 +72,12 @@ export default function WindowManager({ projects, }: Readonly<{ projects: Projec
     if (type === "projects" && !project) {
       throw new Error("Project window requires a project");
     }
+const id = `${type}-${Date.now()}-${Math.random()}`;
 
     setWindows((currentWindows) => [
       ...currentWindows,
       {
-        id: `${type}-${Date.now()}-${Math.random()}`,
+        id: id,
         type,
         minimized: false,
         project:
@@ -89,7 +90,7 @@ export default function WindowManager({ projects, }: Readonly<{ projects: Projec
     ]
     );
     setHighestZIndex((z) => z + 1);
-
+   setActiveWindowId(id);
   }
 
 
@@ -179,7 +180,7 @@ export default function WindowManager({ projects, }: Readonly<{ projects: Projec
             return (
               <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} >
                 <WindowFrame
-                  title={window.project?.title ?? definition.title}
+                  title={getWindowTitle(window)} 
                   onClose={() => closeWindow(window.id)}
                   onMinimize={() => setWindowMinimized(window.id, true)}
                   onClick={() => bringToFront(window.id)}
