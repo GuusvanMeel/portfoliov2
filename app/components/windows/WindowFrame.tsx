@@ -24,7 +24,10 @@ export default function WindowFrame({ title, children, onClose, onMinimize, onCl
             <button
               aria-label="Minimize"
               type="button"
-              onClick={onMinimize}
+              onClick={(event) => {
+    event.stopPropagation();
+    onMinimize();
+  }}
               className={`${styles.controlButton} ${selectedTheme.controlButton}`}>
               _
             </button>)}

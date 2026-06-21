@@ -23,7 +23,8 @@ type WindowData = {
   id: string;
   type: WindowType;
   minimized: boolean;
-  project?: DisplayProject;  
+  project?: DisplayProject;
+  zIndex: number;
 };
 
 const windowDefinitions: Record<
@@ -64,38 +65,46 @@ export default function WindowManager({ projects, }: Readonly<{ projects: Projec
   const [windows, setWindows] = useState<WindowData[]>([]);
   const { theme } = useTheme(); //dit moet weg als de buttons uit de manager gaan
   const selectedTheme = windowThemes[theme]; //deze ook
+  const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
+  const [highestZIndex, setHighestZIndex] = useState(1);
 
-function openWindow(type: WindowType, project?: Project) {
-  if (type === "projects" && !project) {
-    throw new Error("Project window requires a project");
+  function openWindow(type: WindowType, project?: Project) {
+    if (type === "projects" && !project) {
+      throw new Error("Project window requires a project");
+    }
+
+    setWindows((currentWindows) => [
+      ...currentWindows,
+      {
+        id: `${type}-${Date.now()}-${Math.random()}`,
+        type,
+        minimized: false,
+        project:
+          type === "projects" && project
+            ? mapProjectToDisplayproject(project)
+            : undefined,
+        zIndex: highestZIndex
+      },
+
+    ]
+    );
+    setHighestZIndex((z) => z + 1);
+
   }
 
-  setWindows((currentWindows) => [
-    ...currentWindows,
-    {
-      id: `${type}-${Date.now()}-${Math.random()}`,
-      type,
-      minimized: false,
-      project:
-        type === "projects" && project
-          ? mapProjectToDisplayproject(project)
-          : undefined,
-    },
-  ]);
-}
+
   function bringToFront(id: string) {
-    setWindows((currentWindows) => {
-      const selectedWindow = currentWindows.find((window) => window.id === id);
+    setActiveWindowId(id);
 
-      if (!selectedWindow) {
-        return currentWindows;
-      }
+    setWindows((currentWindows) =>
+      currentWindows.map((window) =>
+        window.id === id
+          ? { ...window, zIndex: highestZIndex + 1, minimized: false }
+          : window
+      )
+    );
 
-      return [
-        ...currentWindows.filter((window) => window.id !== id),
-        selectedWindow,
-      ];
-    });
+    setHighestZIndex((z) => z + 1);
   }
 
   function closeWindow(instanceId: string) {
@@ -103,13 +112,13 @@ function openWindow(type: WindowType, project?: Project) {
       currentWindows.filter((window) => window.id !== instanceId)
     );
   }
-function setWindowMinimized(id: string, minimized: boolean) {
-  setWindows((currentWindows) =>
-    currentWindows.map((window) =>
-      window.id === id ? { ...window, minimized } : window
-    )
-  );
-}
+  function setWindowMinimized(id: string, minimized: boolean) {
+    setWindows((currentWindows) =>
+      currentWindows.map((window) =>
+        window.id === id ? { ...window, minimized } : window
+      )
+    );
+  }
   function getWindowTitle(window: WindowData) {
     if (window.type === "projects" && window.project) {
       return window.project.title;
@@ -126,16 +135,8 @@ function setWindowMinimized(id: string, minimized: boolean) {
       return;
     }
 
-    if (selectedWindow.minimized) {
-      setWindowMinimized(id, false);
-      return;
-    }
-
     bringToFront(id);
   }
-  const activeWindowId = [...windows]
-    .reverse()
-    .find((window) => !window.minimized)?.id;
 
   const taskbarWindows: TaskbarWindow[] = windows.map((window) => ({
     id: window.id,
@@ -147,53 +148,53 @@ function setWindowMinimized(id: string, minimized: boolean) {
 
   return (
     <div>
-    <div className="absolute inset-0 ">
-      <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("theme-switcher")}>
-        Open Theme Switcher
-      </button>
-
-      {projects.map((project) => (
-        <button
-          key={project.id}
-          className={`${styles.genericButton} ${selectedTheme.button}`}
-          onClick={() => openWindow("projects",  project )}
-        >
-          Open {project.title}
+      <div className="absolute inset-0 ">
+        <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("theme-switcher")}>
+          Open Theme Switcher
         </button>
-      ))}
-      <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("about")}>
-        Open About me
-      </button>
-      <AdminButton />
-      <ThemeSwitcher></ThemeSwitcher>
-      
 
-      
+        {projects.map((project) => (
+          <button
+            key={project.id}
+            className={`${styles.genericButton} ${selectedTheme.button}`}
+            onClick={() => openWindow("projects", project)}
+          >
+            Open {project.title}
+          </button>
+        ))}
+        <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("about")}>
+          Open About me
+        </button>
+        <AdminButton />
+        <ThemeSwitcher></ThemeSwitcher>
 
-      {windows
-        .filter((window) => !window.minimized)
-        .map((window, index) => {
-          const definition = windowDefinitions[window.type];
 
-          return (
-            <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={index + 1} onFocus={() => bringToFront(window.id)} >
-              <WindowFrame
-                title={window.project?.title ?? definition.title}
-                onClose={() => closeWindow(window.id)}
-                onMinimize={() => setWindowMinimized(window.id, true)}
-                onClick={() => bringToFront(window.id)}
-              >
-                {definition.render(window)}
-              </WindowFrame>
 
-            </DraggableWindow>
-          );
-        })}
-      <Taskbar
-        windows={taskbarWindows}
-        onWindowClick={handleTaskbarWindowClick}
-      />
-    </div>
+
+        {windows
+          .filter((window) => !window.minimized)
+          .map((window) => {
+            const definition = windowDefinitions[window.type];
+
+            return (
+              <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} >
+                <WindowFrame
+                  title={window.project?.title ?? definition.title}
+                  onClose={() => closeWindow(window.id)}
+                  onMinimize={() => setWindowMinimized(window.id, true)}
+                  onClick={() => bringToFront(window.id)}
+                >
+                  {definition.render(window)}
+                </WindowFrame>
+
+              </DraggableWindow>
+            );
+          })}
+        <Taskbar
+          windows={taskbarWindows}
+          onWindowClick={handleTaskbarWindowClick}
+        />
+      </div>
     </div>
   );
 }
