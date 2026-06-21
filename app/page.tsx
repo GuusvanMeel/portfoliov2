@@ -1,6 +1,7 @@
 
+import WindowManager from "./components/windows/WindowManager";
 import { getVisibleProjects } from "./Features/Projects/actions";
-import WindowManager from "./window/WindowManager";
+
 
 export default async function Home() {
   const projects = await getVisibleProjects(); 

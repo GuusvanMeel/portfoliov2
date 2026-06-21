@@ -1,0 +1,165 @@
+.project {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.layoutControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.layoutButton {
+  min-width: 74px;
+  min-height: 24px;
+  padding: 2px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.landscapeImage {
+  aspect-ratio: 16 / 9;
+}
+
+.blockImage {
+  aspect-ratio: 1 / 1;
+}
+
+.mobileImage {
+  aspect-ratio: 9 / 16;
+  max-height: 520px;
+}
+
+.mobileImage .image {
+  object-fit: contain;
+}
+
+.landscapeLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.landscapeGrid {
+  display: grid;
+  grid-template-columns: minmax(460px, 1.4fr) minmax(240px, 0.6fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.blockLayout {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.mobileLayout {
+  display: grid;
+  grid-template-columns: minmax(190px, 260px) 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.mediaColumn,
+.mobileMediaColumn,
+.contentColumn,
+.sideInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.descriptionBlock {
+  padding: 10px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.landscapeLayout .descriptionBlock {
+  max-height: 260px;
+}
+
+.mobileLayout .descriptionBlock {
+  max-height: 240px;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metaGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.metaLabel {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  width: fit-content;
+  padding: 3px 7px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.duration {
+  width: fit-content;
+  display: inline-flex;
+  padding: 3px 7px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 3px 8px;
+  font-size: 13px;
+  text-decoration: none;
+}
