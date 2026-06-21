@@ -21,4 +21,11 @@ projectTag: string;
 projectLink: string;
 projectDescription: string;
 projectDuration: string;
+
+taskbar: string;
+taskbarStartButton: string;
+taskbarWindowButton: string;
+taskbarWindowButtonActive: string;
+taskbarTray: string;
+
 };

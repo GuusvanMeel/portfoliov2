@@ -1,0 +1,93 @@
+.taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+
+  height: 36px;
+  padding: 3px 4px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.startButton {
+  height: 28px;
+  min-width: 92px;
+  padding: 2px 10px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.startIcon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.windowList {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  overflow: hidden;
+}
+
+.windowButton {
+  height: 28px;
+  min-width: 130px;
+  max-width: 220px;
+  padding: 2px 8px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.windowIcon {
+  width: 16px;
+  flex: 0 0 16px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.windowTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.tray {
+  height: 28px;
+  min-width: 78px;
+  padding: 2px 8px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}

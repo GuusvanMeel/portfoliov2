@@ -8,6 +8,11 @@ import { projectImage } from "@/app/Features/Images/actions";
 import type { DisplayProject } from "@/app/Features/Projects/types";
 import styles from "./ProjectWindow.module.css";
 
+const DEBUG_PROJECT_PERFORMANCE = process.env.NODE_ENV === "development";
+
+const DEBUG_HIDE_IMAGES = false;
+const DEBUG_HIDE_DESCRIPTION = false;
+const DEBUG_DISABLE_PROJECT_THEME_STYLING = false;
 type ProjectLayout = "landscape" | "block" | "mobile";
 
 export default function ProjectWindow({
@@ -27,20 +32,39 @@ export default function ProjectWindow({
     block: styles.blockImage,
     mobile: styles.mobileImage,
   }[layout];
+const projectImageTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
+  ? ""
+  : selectedTheme.projectImage;
 
+const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
+  ? ""
+  : selectedTheme.projectDescription;
   const image = (
+<section className={styles.mediaSection}>
+  {DEBUG_PROJECT_PERFORMANCE && (
+    <div className={styles.debugBadge}>
+      layout: {imageClass} | image: {DEBUG_HIDE_IMAGES ? "off" : "on"}
+    </div>
+  )}
+
+  {DEBUG_HIDE_IMAGES ? (
     <div
-      className={`${styles.imageWrapper} ${imageClass} ${selectedTheme.projectImage}`}
+      className={`${styles.imageWrapper} ${imageClass} ${styles.debugImagePlaceholder}`}
     >
+      IMAGE DISABLED
+    </div>
+  ) : (
+    <div className={`${styles.imageWrapper} ${imageClass} ${projectImageTheme}`}>
       <Image
         src={projectImage.window(imageSrc)}
         alt={title}
         fill
-        sizes="(max-width: 900px) 100vw, 700px"
+        sizes="(max-width: 1200px) 100vw, 900px"
         className={styles.image}
       />
     </div>
-  );
+  )}
+</section>  );
 
   const meta = (
     <div className={styles.meta}>
@@ -84,7 +108,15 @@ export default function ProjectWindow({
     <div
       className={`${styles.descriptionBlock} ${selectedTheme.projectDescription}`}
     >
+      {!DEBUG_HIDE_DESCRIPTION && (
+  <div className={styles.descriptionSection}>
+    <span className={styles.sectionTitle}>Description</span>
+
+    <div className={`${styles.descriptionBlock} ${projectDescriptionTheme}`}>
       <p className={styles.description}>{description}</p>
+    </div>
+  </div>
+)}
     </div>
   );
 
