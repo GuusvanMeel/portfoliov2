@@ -20,7 +20,7 @@ export default function DraggableWindow({ children, width, height, zIndex, onFoc
     return (
     <Rnd
       default={{
-        x: 40,
+            x: typeof window === "undefined" ? 80 : window.innerWidth / 4,
         y: 40,
         width: width,
         height: height,

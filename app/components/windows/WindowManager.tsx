@@ -7,7 +7,6 @@ import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { Project } from "@/app/Features/Projects/types";
 import { useEffect, useState } from "react";
 import ProjectWindow from "../ProjectWindow/ProjectWindow";
-import AdminButton from "../ui/AdminButton";
 import ThemeSwitcher from "../ui/ThemeSwitcher";
 import DraggableWindow from "./DraggableWindow";
 import WindowFrame from "./WindowFrame";
@@ -197,7 +196,6 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
         <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("about")}>
           Open About me
         </button>
-        <AdminButton />
         <ThemeSwitcher></ThemeSwitcher>
 
 
