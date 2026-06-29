@@ -1,3 +1,4 @@
+import { logFlowMetric } from "../support/logflowmetric"
 
 describe('Authorization', () => {
   

@@ -4,6 +4,7 @@ import { useTheme } from "@/app/Features/Theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import styles from "./TaskBar.module.css";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 export type TaskbarWindow = {
   id: string;
@@ -62,7 +63,15 @@ export default function Taskbar({
       <button type="button" className={styles.startMenuItem}>
         Theme switcher
       </button>
+      <Link
+  href="/admin"
+  className={styles.startMenuItem}
+  onClick={() => setStartMenuOpen(false)}
+>
+  Admin login 
+</Link>
     </div>
+  
   )}
 
   <button
