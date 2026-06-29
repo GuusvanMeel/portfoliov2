@@ -16,4 +16,16 @@ export type WindowTheme = {
   controlButton: string;
   button: string;
   draggingWindow: string;
+  projectImage: string;
+projectTag: string;
+projectLink: string;
+projectDescription: string;
+projectDuration: string;
+
+taskbar: string;
+taskbarStartButton: string;
+taskbarWindowButton: string;
+taskbarWindowButtonActive: string;
+taskbarTray: string;
+
 };

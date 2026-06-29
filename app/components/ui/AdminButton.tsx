@@ -1,9 +1,10 @@
 'use client'
  
 import { useRouter } from 'next/navigation'
-import { useTheme } from './Features/Theme/ThemeProvider';
-import { windowThemes } from './Features/Window/windowThemes';
-import styles from "./window/WindowFrame.module.css"
+
+import styles from "../windows/WindowFrame.module.css";
+import { useTheme } from '@/app/Features/Theme/ThemeProvider';
+import { windowThemes } from '@/app/Features/Window/windowThemes';
  
 export default function Page() {
   const router = useRouter()

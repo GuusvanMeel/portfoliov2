@@ -2,8 +2,8 @@
 
 import { Rnd } from "react-rnd";
 import { useState, type ReactNode } from "react";
-import { useTheme } from "../Features/Theme/ThemeProvider";
-import { windowThemes } from "../Features/Window/windowThemes";
+import { useTheme } from "../../Features/Theme/ThemeProvider";
+import { windowThemes } from "../../Features/Window/windowThemes";
 
 type DraggableWindowProps = {
   children: ReactNode;
@@ -31,11 +31,14 @@ export default function DraggableWindow({ children, width, height, zIndex, onFoc
       minWidth={280}
       minHeight={150}
       bounds="parent"
+      
       className={isDragging ? selectedTheme.draggingWindow : ""}
       onDragStart={() => setIsDragging(true)}
       onDragStop={() => {setIsDragging(false); onFocus();}}
       onResizeStop={() => onFocus()}
+      enableResizing={false}
       dragHandleClassName="window-title-bar"
+      cancel="button"
     >
       {children}
     </Rnd>
