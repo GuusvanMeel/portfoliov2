@@ -1,3 +1,13 @@
+function logFlowMetric(name: string, start: number) {
+  cy.then(() => {
+    const elapsedMs = Math.round(performance.now() - start)
+
+    cy.task('logMetric', {
+      name,
+      ms: elapsedMs,
+    })
+  })
+}
 describe('template spec', () => {
 
 
@@ -51,17 +61,13 @@ describe('template spec', () => {
     cy.contains('tag2').should('be.visible')
     cy.contains('tag 3').should('be.visible')
     cy.get('[data-cy="visibility-pill"]').should('contain.text', 'Visible')
-     cy.then(() => {
-        const duration = Math.round(performance.now() - start)
-        cy.task('logMetric', {
-          name: 'Create project flow',
-          ms: duration,
-        })
-      })
+    logFlowMetric('Create project flow', start)
+    
     })
   })
 
 it('Edit existing project', function () {
+  const start = performance.now();
   const originalTitle = 'CYPRESS TEST PROJECT'
   const editedTitle = 'CYPRESS TEST PROJECT - titel-aanpassing'
   const editedDescription = 'description-aanpassing DIT IS EEN CYPRESS TEST PROJECT'
@@ -117,10 +123,11 @@ it('Edit existing project', function () {
     cy.contains('tag 3').should('be.visible')
     cy.get('[data-cy="visibility-pill"]').should('contain.text', 'Visible')
   })
+  logFlowMetric('Edit project flow', start)
 })
 
 it('Delete project', function() {
-  
+  const start = performance.now()
   const editedTitle = 'CYPRESS TEST PROJECT - titel-aanpassing'
   
 
@@ -148,7 +155,8 @@ cy.get('@editedProject').within(() => {
 })
 
 cy.contains('[data-cy="admin-project"]', editedTitle).should('not.exist')
+logFlowMetric('delete project', start)
 });
-
+  
   })
 

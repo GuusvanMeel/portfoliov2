@@ -3,9 +3,12 @@ import fs from 'fs'
 import path from 'path'
 import codeCoverageTask from '@cypress/code-coverage/task'
 
+const metricsDir = 'cypress/results'
+const metricsFile = path.join(metricsDir, 'metrics.md')
+
 export default defineConfig({
   allowCypressEnv: true,
- video: true,
+  video: true,
   screenshotOnRunFailure: true,
 
   e2e: {
@@ -13,18 +16,15 @@ export default defineConfig({
 
     setupNodeEvents(on, config) {
       codeCoverageTask(on, config)
+
+      fs.mkdirSync(metricsDir, { recursive: true })
+
+      // Reset metrics file at the start of every Cypress run
+      fs.writeFileSync(metricsFile, '| Flow | Time |\n|---|---:|\n')
+
       on('task', {
         logMetric({ name, ms }) {
-          const dir = 'cypress/results'
-          fs.mkdirSync(dir, { recursive: true })
-
-          const file = path.join(dir, 'metrics.md')
-
-          if (!fs.existsSync(file)) {
-            fs.writeFileSync(file, '| Flow | Time |\n|---|---:|\n')
-          }
-
-          fs.appendFileSync(file, `| ${name} | ${ms} ms |\n`)
+          fs.appendFileSync(metricsFile, `| ${name} | ${ms} ms |\n`)
           return null
         },
       })
