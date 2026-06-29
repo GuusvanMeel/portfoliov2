@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import styles from "./DesktopIcon.module.css";
 
 type DesktopIconProps = {
@@ -32,7 +33,7 @@ export default function DesktopIcon({
     >
       <span className={styles.iconBox}>
         {iconSrc ? (
-          <img src={iconSrc} alt="" className={styles.iconImage} />
+          <Image src={iconSrc} alt="" className={styles.iconImage} />
         ) : (
           icon ?? "▣"
         )}
