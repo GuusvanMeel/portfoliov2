@@ -1,11 +1,9 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
-  const router = useRouter();
   const supabase = createClient();
 
   const [error, setError] = useState<string | null>(null);
@@ -29,9 +27,7 @@ export default function LoginPage() {
       setError("Invalid email or password.");
       return;
     }
-
-    router.replace("/admin");
-    router.refresh();
+    window.location.replace("/admin");
   }
 
   return (

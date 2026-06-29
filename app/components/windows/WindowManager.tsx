@@ -194,6 +194,7 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
         <Taskbar
           windows={taskbarWindows}
           onWindowClick={handleTaskbarWindowClick}
+          onCloseWindow={closeWindow}
         />
       </div>
     </div>

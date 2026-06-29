@@ -34,6 +34,29 @@
   font-size: 12px;
   line-height: 1;
 }
+.startArea {
+  position: relative;
+}
+
+.startMenu {
+  position: absolute;
+  left: -4px;
+  bottom: calc(100% + 4px);
+  min-width: 180px;
+  padding: 4px;
+  z-index: 9999;
+}
+
+.startMenuItem {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
 
 .windowList {
   flex: 1;
@@ -45,7 +68,14 @@
 
   overflow: hidden;
 }
-
+.windowCloseButton {
+  background: transparent;
+  border: 0;
+  padding: 0 6px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
 .windowButton {
   height: 28px;
   min-width: 130px;

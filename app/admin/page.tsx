@@ -8,8 +8,8 @@ import { logout } from "./action";
 
 
 export default async function AdminPage() {
-
   const projects = await getAllProjects();
+  
   
   return (
     <div className="w-full flex flex-col gap-10">
