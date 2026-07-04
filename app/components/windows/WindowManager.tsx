@@ -170,13 +170,27 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
   }));
 
   return (
-    <div>
-      <div className="absolute inset-0 ">
-        <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("theme-switcher")}>
-          Open Theme Switcher
-        </button>
+    
+      <div className={`absolute inset-0 ${selectedTheme.desktopBackground}`}>
+        <div className={styles.desktopIcons}>
+  <DesktopIcon
+    id="about"
+    label="About Me.exe"
+    icon="i"
+    selected={selectedDesktopIconId === "about"}
+    onSelect={setSelectedDesktopIconId}
+    onOpen={() => openWindow("about")}
+  />
 
-       <div className={styles.desktopIcons}>
+  <DesktopIcon
+    id="theme-switcher"
+    label="Themes.exe"
+    icon="◐"
+    selected={selectedDesktopIconId === "theme-switcher"}
+    onSelect={setSelectedDesktopIconId}
+    onOpen={() => openWindow("theme-switcher")}
+  />
+
   {projects.map((project) => {
     const iconId = `project-${project.id}`;
 
@@ -193,9 +207,6 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     );
   })}
 </div>
-        <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("about")}>
-          Open About me
-        </button>
         <ThemeSwitcher></ThemeSwitcher>
 
 
@@ -226,6 +237,6 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
           onCloseWindow={closeWindow}
         />
       </div>
-    </div>
+    
   );
 }

@@ -5,6 +5,7 @@ import { windowThemes } from "@/app/Features/Window/windowThemes";
 import styles from "./TaskBar.module.css";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export type TaskbarWindow = {
   id: string;
@@ -67,7 +68,10 @@ export default function Taskbar({
   href="/admin"
   className={styles.startMenuItem}
   onClick={() => setStartMenuOpen(false)}
->
+><Image src={`/icons/${theme}/Login.png`} alt=""  width={32} height={32}>
+
+
+</Image>
   Admin login 
 </Link>
     </div>
@@ -79,7 +83,7 @@ export default function Taskbar({
     className={`${styles.startButton} ${selectedTheme.taskbarStartButton}`}
     onClick={() => setStartMenuOpen((open) => !open)}
   >
-    <span className={styles.startIcon}>◆</span>
+    <span className={styles.startIcon}><Image src={`/icons/${theme}/TaskbarLogo.png`} width={16} height={16} alt={""}></Image></span>
     <span>GuusOS</span>
   </button>
 </div>

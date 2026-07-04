@@ -28,4 +28,6 @@ taskbarWindowButton: string;
 taskbarWindowButtonActive: string;
 taskbarTray: string;
 
+desktopBackground: string;
+
 };
