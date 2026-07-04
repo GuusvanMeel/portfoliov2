@@ -1,0 +1,56 @@
+.desktopIcon {
+  width: 76px;
+  min-height: 70px;
+  padding: 4px 2px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  background: transparent;
+  border: 1px solid transparent;
+  color: white;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.1;
+  text-align: center;
+  cursor: default;
+}
+
+.iconBox {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+}
+
+.iconImage {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.label {
+  max-width: 72px;
+  padding: 1px 3px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selected .iconBox {
+  filter: sepia(1) saturate(5) hue-rotate(170deg) brightness(0.65);
+}
+
+.selected .label {
+  background: #000080;
+  color: white;
+  outline: 1px dotted white;
+}

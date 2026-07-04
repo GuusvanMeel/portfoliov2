@@ -12,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 const defaultTheme: ThemeName = "classicMac";
 
 function isThemeName(value: string | null): value is ThemeName {
-    return value === "win98" || value === "classicMac" || value === "debug";
+    return value === "Win98" || value === "classicMac" || value ==="WinXP" || value === "debug";
 }
 
 export function ThemeProvider({ children }:Readonly< { children: React.ReactNode }>) {

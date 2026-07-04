@@ -5,14 +5,14 @@ import { DisplayProject } from "@/app/Features/Projects/types";
 import { useTheme } from "@/app/Features/Theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { Project } from "@/app/Features/Projects/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProjectWindow from "../ProjectWindow/ProjectWindow";
-import AdminButton from "../ui/AdminButton";
 import ThemeSwitcher from "../ui/ThemeSwitcher";
 import DraggableWindow from "./DraggableWindow";
 import WindowFrame from "./WindowFrame";
 import styles from "./WindowFrame.module.css";
 import Taskbar, { TaskbarWindow } from "../taskbar/TaskBar";
+import DesktopIcon from "../ui/DesktopIcon";
 
 
 
@@ -67,6 +67,28 @@ export default function WindowManager({ projects, }: Readonly<{ projects: Projec
   const selectedTheme = windowThemes[theme]; //deze ook
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [highestZIndex, setHighestZIndex] = useState(1);
+  //DIT IS ALLEMAAL DESKTOPICON DINGEN
+  const [selectedDesktopIconId, setSelectedDesktopIconId] = useState<string | null>(null);
+  useEffect(() => {
+  function clearDesktopSelection(event: PointerEvent) {
+    const target = event.target;
+
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    if (!target.closest("[data-desktop-icon]")) {
+      setSelectedDesktopIconId(null);
+    }
+    }
+
+    document.addEventListener("pointerdown", clearDesktopSelection);
+
+    return () => {
+      document.removeEventListener("pointerdown", clearDesktopSelection);
+    };
+  }, []);
+//TOT HIER
 
   function openWindow(type: WindowType, project?: Project) {
     if (type === "projects" && !project) {
@@ -148,25 +170,43 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
   }));
 
   return (
-    <div>
-      <div className="absolute inset-0 ">
-        <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("theme-switcher")}>
-          Open Theme Switcher
-        </button>
+    
+      <div className={`absolute inset-0 ${selectedTheme.desktopBackground}`}>
+        <div className={styles.desktopIcons}>
+  <DesktopIcon
+    id="about"
+    label="About Me.exe"
+    icon="i"
+    selected={selectedDesktopIconId === "about"}
+    onSelect={setSelectedDesktopIconId}
+    onOpen={() => openWindow("about")}
+  />
 
-        {projects.map((project) => (
-          <button
-            key={project.id}
-            className={`${styles.genericButton} ${selectedTheme.button}`}
-            onClick={() => openWindow("projects", project)}
-          >
-            Open {project.title}
-          </button>
-        ))}
-        <button className={`${styles.genericButton} ${selectedTheme.button}`} onClick={() => openWindow("about")}>
-          Open About me
-        </button>
-        <AdminButton />
+  <DesktopIcon
+    id="theme-switcher"
+    label="Themes.exe"
+    icon="◐"
+    selected={selectedDesktopIconId === "theme-switcher"}
+    onSelect={setSelectedDesktopIconId}
+    onOpen={() => openWindow("theme-switcher")}
+  />
+
+  {projects.map((project) => {
+    const iconId = `project-${project.id}`;
+
+    return (
+      <DesktopIcon
+        key={project.id}
+        id={iconId}
+        label={`${project.title}.exe`}
+        icon="▣"
+        selected={selectedDesktopIconId === iconId}
+        onSelect={setSelectedDesktopIconId}
+        onOpen={() => openWindow("projects", project)}
+      />
+    );
+  })}
+</div>
         <ThemeSwitcher></ThemeSwitcher>
 
 
@@ -194,8 +234,9 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
         <Taskbar
           windows={taskbarWindows}
           onWindowClick={handleTaskbarWindowClick}
+          onCloseWindow={closeWindow}
         />
       </div>
-    </div>
+    
   );
 }

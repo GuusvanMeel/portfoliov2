@@ -48,3 +48,6 @@ lhci-reports/
 lhci-selected-reports/
 lighthouse-report.html
 lighthouse-report.json
+
+# cypress
+.nyc_output/
