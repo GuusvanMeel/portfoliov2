@@ -6,15 +6,18 @@ import { useTheme } from "@/app/Features/Theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { Project } from "@/app/Features/Projects/types";
 import { useEffect, useState } from "react";
-import ProjectWindow from "../ProjectWindow/ProjectWindow";
-import ThemeSwitcher from "../ui/ThemeSwitcher";
-import DraggableWindow from "./DraggableWindow";
-import WindowFrame from "./WindowFrame";
-import styles from "./WindowFrame.module.css";
-import Taskbar, { TaskbarWindow } from "../taskbar/TaskBar";
-import DesktopIcon from "../ui/DesktopIcon";
-import ContactWindow from "../ContactWindow/ContactWindow";
+import ContactWindow from "./ContactWindow/ContactWindow";
+import ProjectWindow from "./ProjectWindow/ProjectWindow";
+import Taskbar, { TaskbarWindow } from "./taskbar/TaskBar";
+import DesktopIcon from "./ui/DesktopIcon";
+import ThemeSwitcher from "./ui/ThemeSwitcher";
 
+const DraggableWindow = dynamic(() => import("./windows/DraggableWindow"), {
+  ssr: false,
+});
+import WindowFrame from "./windows/WindowFrame";
+import styles from "./windows/WindowFrame.module.css"
+import dynamic from "next/dynamic";
 
 
 
@@ -25,7 +28,7 @@ type WindowData = {
   type: WindowType;
   minimized: boolean;
   project?: DisplayProject;
-  zIndex: number;
+  zIndex: number;  
 };
 
 const windowDefinitions: Record<
@@ -36,6 +39,7 @@ const windowDefinitions: Record<
     height: number;
     render: (window: WindowData) => React.ReactNode;
     icon: string
+    startPos: "default" | "right";
   }
 > = {
   "theme-switcher": {
@@ -44,6 +48,7 @@ const windowDefinitions: Record<
     height: 150,
     render: () => <ThemeSwitcher />,
     icon: "◐",
+    startPos: "default",
   },
   projects: {
     title: "Projects",
@@ -51,6 +56,7 @@ const windowDefinitions: Record<
     height: 628, //door padding +8
     render: (window) => <ProjectWindow {...window.project!} />,
     icon: "▣",
+    startPos: "default",
   },
   about: {
     title: "About Me",
@@ -58,6 +64,7 @@ const windowDefinitions: Record<
     height: 250,
     render: () => <p>About me content</p>,
     icon: "i",
+    startPos: "default",
   },
   contact: {
   title: "Contact",
@@ -65,16 +72,26 @@ const windowDefinitions: Record<
   height: 500,
   render: () => <ContactWindow />,
   icon: "✉",
+  startPos: "right",
 },
 
 };
 
-export default function WindowManager({ projects, }: Readonly<{ projects: Project[] }>) {
-  const [windows, setWindows] = useState<WindowData[]>([]);
-  const { theme } = useTheme(); //dit moet weg als de buttons uit de manager gaan
-  const selectedTheme = windowThemes[theme]; //deze ook
-  const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
+export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>) {
+  const [windows, setWindows] = useState<WindowData[]>([
+    {
+      id: "Contact-startup",
+      type: "contact",
+      minimized: false,
+      zIndex: 0
+    }
+  ]);
+
+  const [activeWindowId, setActiveWindowId] = useState<string | null>("Contact-startup");
   const [highestZIndex, setHighestZIndex] = useState(1);
+  const { theme } = useTheme();
+  const selectedTheme = windowThemes[theme];
+  
   //DIT IS ALLEMAAL DESKTOPICON DINGEN
   const [selectedDesktopIconId, setSelectedDesktopIconId] = useState<string | null>(null);
   useEffect(() => {
@@ -114,8 +131,7 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
           type === "projects" && project
             ? mapProjectToDisplayproject(project)
             : undefined,
-        zIndex: highestZIndex
-      },
+        zIndex: highestZIndex,      },
 
     ]
     );
@@ -241,7 +257,7 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
             const definition = windowDefinitions[window.type];
 
             return (
-              <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} >
+              <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} startPos={definition.startPos} >
                 <WindowFrame
                   title={getWindowTitle(window)} 
                   onClose={() => closeWindow(window.id)}
