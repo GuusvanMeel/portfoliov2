@@ -13,11 +13,12 @@ import WindowFrame from "./WindowFrame";
 import styles from "./WindowFrame.module.css";
 import Taskbar, { TaskbarWindow } from "../taskbar/TaskBar";
 import DesktopIcon from "../ui/DesktopIcon";
+import ContactWindow from "../ContactWindow/ContactWindow";
 
 
 
 
-type WindowType = "theme-switcher" | "projects" | "about";
+type WindowType = "theme-switcher" | "projects" | "about" | "contact";
 
 type WindowData = {
   id: string;
@@ -58,6 +59,13 @@ const windowDefinitions: Record<
     render: () => <p>About me content</p>,
     icon: "i",
   },
+  contact: {
+  title: "Contact",
+  width: 360,
+  height: 500,
+  render: () => <ContactWindow />,
+  icon: "✉",
+},
 
 };
 
@@ -134,13 +142,21 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     setWindows((currentWindows) =>
       currentWindows.filter((window) => window.id !== instanceId)
     );
+      setActiveWindowId((currentActiveId) =>
+    currentActiveId === instanceId ? null : currentActiveId
+  );
   }
-  function setWindowMinimized(id: string, minimized: boolean) {
+  function MinimizeWindow(id: string) {
     setWindows((currentWindows) =>
       currentWindows.map((window) =>
-        window.id === id ? { ...window, minimized } : window
+        window.id === id ? { ...window, minimized: true } : window
       )
     );
+    
+    setActiveWindowId((currentActiveId) =>
+      currentActiveId === id ? null : currentActiveId
+    );
+  
   }
   function getWindowTitle(window: WindowData) {
     if (window.type === "projects" && window.project) {
@@ -190,6 +206,14 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     onSelect={setSelectedDesktopIconId}
     onOpen={() => openWindow("theme-switcher")}
   />
+  <DesktopIcon
+  id="contact"
+  label="Contact.exe"
+  icon="✉"
+  selected={selectedDesktopIconId === "contact"}
+  onSelect={setSelectedDesktopIconId}
+  onOpen={() => openWindow("contact")}
+/>
 
   {projects.map((project) => {
     const iconId = `project-${project.id}`;
@@ -211,7 +235,6 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
 
 
 
-
         {windows
           .filter((window) => !window.minimized)
           .map((window) => {
@@ -222,7 +245,7 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
                 <WindowFrame
                   title={getWindowTitle(window)} 
                   onClose={() => closeWindow(window.id)}
-                  onMinimize={() => setWindowMinimized(window.id, true)}
+                  onMinimize={() => MinimizeWindow(window.id)}
                   onClick={() => bringToFront(window.id)}
                 >
                   {definition.render(window)}
