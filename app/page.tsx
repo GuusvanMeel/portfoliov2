@@ -1,5 +1,5 @@
 
-import Desktop from "./components/Desktop";
+import Desktop from "./components/Desktop/Desktop";
 import FpsCounter from "./Features/Debug/FpsCounter";
 import { getVisibleProjects } from "./Features/Projects/actions";
 
