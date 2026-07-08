@@ -3,9 +3,15 @@ import ProjectList from "./admincomponents/ProjectList";
 import Link from "next/link";
 import { FolderGit2, ArrowLeft } from "lucide-react";
 import { logout } from "./action";
+import { Metadata } from "next";
 
 
-
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function AdminPage() {
   const projects = await getAllProjects();
