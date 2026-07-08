@@ -36,6 +36,7 @@ vi.mock("./editprojectform", () => ({
             imageSrc: project?.imageSrc ?? "",
             githubLink: project?.githubLink ?? "",
             isVisible: project?.isVisible ?? true,
+            desktopIconSrc: project?.desktopIconSrc ?? "",
           } as Project)
         }
       >
@@ -59,6 +60,7 @@ const mockProject: Project = {
   githubLink: "https://github.com/test/project",
   isVisible: true,
   updatedAt: "2026-06-17T00:00:00.000Z",
+  desktopIconSrc: "NextEpisodeIcon.png"
 };
 
 afterEach(() => {
