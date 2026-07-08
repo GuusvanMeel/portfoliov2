@@ -1,7 +1,14 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { Metadata } from "next";
 import { useState } from "react";
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function LoginPage() {
   const supabase = createClient();
