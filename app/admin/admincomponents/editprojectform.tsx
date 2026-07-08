@@ -33,6 +33,7 @@ export default function EditProjectForm({
         duration: formData.get("duration") as string,
         imageSrc: formData.get("image") as string,
         githubLink: formData.get("git") as string,
+       
       };
 
       if (project) {

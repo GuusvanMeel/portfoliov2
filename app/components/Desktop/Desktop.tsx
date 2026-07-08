@@ -1,72 +1,43 @@
 "use client";
 
 import { mapProjectToDisplayproject } from "@/app/Features/Projects/mapper";
-import { DisplayProject } from "@/app/Features/Projects/types";
 import { useTheme } from "@/app/Features/Theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { Project } from "@/app/Features/Projects/types";
 import { useEffect, useState } from "react";
-import ProjectWindow from "../ProjectWindow/ProjectWindow";
-import ThemeSwitcher from "../ui/ThemeSwitcher";
-import DraggableWindow from "./DraggableWindow";
-import WindowFrame from "./WindowFrame";
-import styles from "./WindowFrame.module.css";
 import Taskbar, { TaskbarWindow } from "../taskbar/TaskBar";
 import DesktopIcon from "../ui/DesktopIcon";
+import ThemeSwitcher from "../ui/ThemeSwitcher";
+
+const DraggableWindow = dynamic(() => import("../windows/DraggableWindow"), {
+  ssr: false,
+});
+import WindowFrame from "../windows/WindowFrame";
+import styles from "../windows/WindowFrame.module.css"
+import dynamic from "next/dynamic";
+import { windowDefinitions, type WindowData, type WindowType } from "./windowDefinitions";
+import { projectImage } from "@/app/Features/Images/actions";
 
 
 
 
-type WindowType = "theme-switcher" | "projects" | "about";
 
-type WindowData = {
-  id: string;
-  type: WindowType;
-  minimized: boolean;
-  project?: DisplayProject;
-  zIndex: number;
-};
 
-const windowDefinitions: Record<
-  WindowType,
-  {
-    title: string;
-    width: number;
-    height: number;
-    render: (window: WindowData) => React.ReactNode;
-    icon: string
-  }
-> = {
-  "theme-switcher": {
-    title: "Switch the theme!",
-    width: 150,
-    height: 150,
-    render: () => <ThemeSwitcher />,
-    icon: "◐",
-  },
-  projects: {
-    title: "Projects",
-    width: 818, //door padding +8
-    height: 628, //door padding +8
-    render: (window) => <ProjectWindow {...window.project!} />,
-    icon: "▣",
-  },
-  about: {
-    title: "About Me",
-    width: 250,
-    height: 250,
-    render: () => <p>About me content</p>,
-    icon: "i",
-  },
+export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>) {
+  const [windows, setWindows] = useState<WindowData[]>([
+    {
+      id: "Contact-startup",
+      type: "contact",
+      minimized: false,
+      zIndex: 0
+    }
+  ]);
 
-};
-
-export default function WindowManager({ projects, }: Readonly<{ projects: Project[] }>) {
-  const [windows, setWindows] = useState<WindowData[]>([]);
-  const { theme } = useTheme(); //dit moet weg als de buttons uit de manager gaan
-  const selectedTheme = windowThemes[theme]; //deze ook
-  const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
+  const [activeWindowId, setActiveWindowId] = useState<string | null>("Contact-startup");
   const [highestZIndex, setHighestZIndex] = useState(1);
+  const { theme } = useTheme();
+  const selectedTheme = windowThemes[theme];
+  
   //DIT IS ALLEMAAL DESKTOPICON DINGEN
   const [selectedDesktopIconId, setSelectedDesktopIconId] = useState<string | null>(null);
   useEffect(() => {
@@ -94,7 +65,7 @@ export default function WindowManager({ projects, }: Readonly<{ projects: Projec
     if (type === "projects" && !project) {
       throw new Error("Project window requires a project");
     }
-const id = `${type}-${Date.now()}-${Math.random()}`;
+      const id = `${type}-${crypto.randomUUID()}`;
 
     setWindows((currentWindows) => [
       ...currentWindows,
@@ -106,8 +77,7 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
           type === "projects" && project
             ? mapProjectToDisplayproject(project)
             : undefined,
-        zIndex: highestZIndex
-      },
+        zIndex: highestZIndex,      },
 
     ]
     );
@@ -134,13 +104,21 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     setWindows((currentWindows) =>
       currentWindows.filter((window) => window.id !== instanceId)
     );
+      setActiveWindowId((currentActiveId) =>
+    currentActiveId === instanceId ? null : currentActiveId
+  );
   }
-  function setWindowMinimized(id: string, minimized: boolean) {
+  function MinimizeWindow(id: string) {
     setWindows((currentWindows) =>
       currentWindows.map((window) =>
-        window.id === id ? { ...window, minimized } : window
+        window.id === id ? { ...window, minimized: true } : window
       )
     );
+    
+    setActiveWindowId((currentActiveId) =>
+      currentActiveId === id ? null : currentActiveId
+    );
+  
   }
   function getWindowTitle(window: WindowData) {
     if (window.type === "projects" && window.project) {
@@ -167,29 +145,38 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     minimized: window.minimized,
     active: window.id === activeWindowId,
     icon: windowDefinitions[window.type].icon,
+    iconSrc:
+    window.type === "projects" && window.project?.desktopIconSrc
+      ? projectImage.desktopIcon(window.project.desktopIconSrc)
+      : undefined,
+  }));
+
+  const desktopWindowIcons = Object.entries(windowDefinitions)
+  .filter(([, definition]) => definition.desktopLabel)
+  .map(([windowType, definition]) => ({
+    id: windowType,
+    windowType: windowType as WindowType,
+    label: definition.desktopLabel!,
+    icon: definition.icon,
   }));
 
   return (
     
       <div className={`absolute inset-0 ${selectedTheme.desktopBackground}`}>
-        <div className={styles.desktopIcons}>
-  <DesktopIcon
-    id="about"
-    label="About Me.exe"
-    icon="i"
-    selected={selectedDesktopIconId === "about"}
-    onSelect={setSelectedDesktopIconId}
-    onOpen={() => openWindow("about")}
-  />
+                <ThemeSwitcher></ThemeSwitcher>
 
-  <DesktopIcon
-    id="theme-switcher"
-    label="Themes.exe"
-    icon="◐"
-    selected={selectedDesktopIconId === "theme-switcher"}
-    onSelect={setSelectedDesktopIconId}
-    onOpen={() => openWindow("theme-switcher")}
-  />
+        <div className={styles.desktopIcons}>
+  {desktopWindowIcons.map((desktopIcon) => (
+    <DesktopIcon
+      key={desktopIcon.id}
+      id={desktopIcon.id}
+      label={desktopIcon.label}
+      icon={desktopIcon.icon}
+      selected={selectedDesktopIconId === desktopIcon.id}
+      onSelect={setSelectedDesktopIconId}
+      onOpen={() => openWindow(desktopIcon.windowType)}
+    />
+  ))}
 
   {projects.map((project) => {
     const iconId = `project-${project.id}`;
@@ -198,8 +185,8 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
       <DesktopIcon
         key={project.id}
         id={iconId}
+        iconSrc={projectImage.desktopIcon(project.desktopIconSrc)}
         label={`${project.title}.exe`}
-        icon="▣"
         selected={selectedDesktopIconId === iconId}
         onSelect={setSelectedDesktopIconId}
         onOpen={() => openWindow("projects", project)}
@@ -207,8 +194,6 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     );
   })}
 </div>
-        <ThemeSwitcher></ThemeSwitcher>
-
 
 
 
@@ -218,11 +203,11 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
             const definition = windowDefinitions[window.type];
 
             return (
-              <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} >
+              <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} startPos={definition.startPos} >
                 <WindowFrame
                   title={getWindowTitle(window)} 
                   onClose={() => closeWindow(window.id)}
-                  onMinimize={() => setWindowMinimized(window.id, true)}
+                  onMinimize={() => MinimizeWindow(window.id)}
                   onClick={() => bringToFront(window.id)}
                 >
                   {definition.render(window)}
