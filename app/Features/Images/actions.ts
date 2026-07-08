@@ -1,5 +1,10 @@
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+function getSupabaseUrl() {
+  if (typeof process === "undefined") {
+    return "";
+  }
 
+  return process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+}
 
 function cloudinaryImage(url: string, transformation: string) {
   if (!url.includes("/image/upload/")) return url;
@@ -17,10 +22,10 @@ function supabasePublicImage(bucket: string, pathOrUrl: string) {
   if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
     return pathOrUrl;
   }
-
+  const supabaseUrl = getSupabaseUrl();
   const cleanPath = pathOrUrl.replace(/^\/+/, "");
 
-  return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
+  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${cleanPath}`;
 }
 
 export const projectImage = {
