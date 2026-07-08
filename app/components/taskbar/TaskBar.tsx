@@ -13,6 +13,7 @@ export type TaskbarWindow = {
   minimized: boolean;
   active: boolean;
   icon: string;
+  iconSrc?: string;
 };
 
 type TaskbarProps = {
@@ -103,7 +104,20 @@ export default function Taskbar({
         onClick={() => onWindowClick(window.id)}
         className={styles.windowButton}
       >
-        <span className={styles.windowIcon}>{window.icon}</span>
+        <span className={styles.windowIcon}>
+  {window.iconSrc ? (
+    <Image
+      src={window.iconSrc}
+      alt=""
+      className={styles.windowIconImage}
+      draggable={false}
+      width={32}
+      height={32}
+    />
+  ) : (
+    window.icon ?? "▣"
+  )}
+</span>
 
         <span className={styles.windowTitle}>
           {window.minimized ? `[${window.title}]` : window.title}

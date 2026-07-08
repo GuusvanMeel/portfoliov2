@@ -12,7 +12,7 @@ export default async function Home() {
   return (
     <main className="h-screen overflow-hidden bg-teal-700">
       
-        <FpsCounter></FpsCounter>
+        {/* <FpsCounter></FpsCounter> */}
 
         <Desktop projects={projects}  />
       

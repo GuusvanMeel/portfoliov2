@@ -16,6 +16,7 @@ import WindowFrame from "../windows/WindowFrame";
 import styles from "../windows/WindowFrame.module.css"
 import dynamic from "next/dynamic";
 import { windowDefinitions, type WindowData, type WindowType } from "./windowDefinitions";
+import { projectImage } from "@/app/Features/Images/actions";
 
 
 
@@ -144,6 +145,10 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
     minimized: window.minimized,
     active: window.id === activeWindowId,
     icon: windowDefinitions[window.type].icon,
+    iconSrc:
+    window.type === "projects" && window.project?.desktopIconSrc
+      ? projectImage.desktopIcon(window.project.desktopIconSrc)
+      : undefined,
   }));
 
   const desktopWindowIcons = Object.entries(windowDefinitions)
@@ -180,8 +185,8 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
       <DesktopIcon
         key={project.id}
         id={iconId}
+        iconSrc={projectImage.desktopIcon(project.desktopIconSrc)}
         label={`${project.title}.exe`}
-        icon="▣"
         selected={selectedDesktopIconId === iconId}
         onSelect={setSelectedDesktopIconId}
         onOpen={() => openWindow("projects", project)}

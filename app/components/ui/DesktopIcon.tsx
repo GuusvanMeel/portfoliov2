@@ -33,7 +33,7 @@ export default function DesktopIcon({
     >
       <span className={styles.iconBox}>
         {iconSrc ? (
-          <Image src={iconSrc} alt="" className={styles.iconImage} />
+          <Image src={iconSrc} alt="" width={64} height={64} className={styles.iconImage} />
         ) : (
           icon ?? "▣"
         )}

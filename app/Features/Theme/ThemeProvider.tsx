@@ -9,7 +9,7 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
-const defaultTheme: ThemeName = "classicMac";
+const defaultTheme: ThemeName = "WinXP";
 
 function isThemeName(value: string | null): value is ThemeName {
     return value === "Win98" || value === "classicMac" || value ==="WinXP" || value === "debug";

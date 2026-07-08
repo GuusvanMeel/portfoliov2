@@ -13,6 +13,7 @@ export function mapProjectRowToProject(row: ProjectRow): Project {
         tags: row.tags ?? [],
         isVisible: row.is_visible,
         updatedAt: row.updated_at,
+        desktopIconSrc: row.desktop_icon_src,
     };
 }
 
@@ -39,5 +40,6 @@ export function mapProjectToDisplayproject(
     duration: project.duration,
     imageSrc: project.imageSrc,
     githubLink: project.githubLink,
+    desktopIconSrc: project.desktopIconSrc,
   };
 }
