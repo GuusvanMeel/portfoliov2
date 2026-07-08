@@ -64,7 +64,7 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
     if (type === "projects" && !project) {
       throw new Error("Project window requires a project");
     }
-const id = `${type}-${Date.now()}-${Math.random()}`;
+      const id = `${type}-${crypto.randomUUID()}`;
 
     setWindows((currentWindows) => [
       ...currentWindows,
@@ -145,7 +145,7 @@ const id = `${type}-${Date.now()}-${Math.random()}`;
     active: window.id === activeWindowId,
     icon: windowDefinitions[window.type].icon,
   }));
-  
+
   const desktopWindowIcons = Object.entries(windowDefinitions)
   .filter(([, definition]) => definition.desktopLabel)
   .map(([windowType, definition]) => ({
