@@ -3,10 +3,10 @@ import { page } from "vitest/browser";
 import { cleanup, render } from "vitest-browser-react";
 
 import AdminProject from "./AdminProject";
-import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";
+import { deleteProject, updateProjectVisibility } from "@/features/projects/actions";
 import type { Project } from "@/features/projects/types";
 
-vi.mock("@/app/Features/Projects/actions", () => ({
+vi.mock("@/features/projects/actions", () => ({
   createProject: vi.fn(),
   updateProject: vi.fn(),
   deleteProject: vi.fn(),

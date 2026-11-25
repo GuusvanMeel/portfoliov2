@@ -2,7 +2,7 @@
 import { Project } from "@/features/projects/types";
 import { useEffect, useState } from "react";
 import EditProjectForm from "./editprojectform";
-import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";
+import { deleteProject, updateProjectVisibility } from "@/features/projects/actions";
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
 import { projectImage } from "@/app/Features/Images/actions";
 
