@@ -4,13 +4,18 @@ import { createServer } from "@/lib/supabase/server";
 import { Project, ProjectInputData } from "@/features/projects/types";
 import { mapProjectRowToProject, mapUpdateProjectInputToRow } from "@/features/projects/mappers";
 
-export async function getAllProjects(): Promise<Project[]> {
+type ProjectFilter = { visibleOnly: boolean };
+
+async function selectProjects(filter?: ProjectFilter): Promise<Project[]> {
   const supabase = await createServer();
 
-  const { data, error } = await supabase
-    .from("projects")
-    .select("*")
-    .order("created_at", { ascending: false });
+  let query = supabase.from("projects").select("*");
+
+  if (filter?.visibleOnly) {
+    query = query.eq("is_visible", true);
+  }
+
+  const { data, error } = await query.order("created_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching projects:", error);
@@ -19,21 +24,13 @@ export async function getAllProjects(): Promise<Project[]> {
 
   return data.map(mapProjectRowToProject);
 }
+
+export async function getAllProjects(): Promise<Project[]> {
+  return selectProjects();
+}
+
 export async function getVisibleProjects(): Promise<Project[]> {
-  const supabase = await createServer();
-
-  const { data, error } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("is_visible", true)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching projects:", error);
-    return [];
-  }
-
-  return data.map(mapProjectRowToProject);
+  return selectProjects({ visibleOnly: true });
 }
 
 export async function updateProjectVisibility(id: number, isVisible: boolean) {

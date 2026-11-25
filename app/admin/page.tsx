@@ -1,4 +1,4 @@
-import { getAllProjects } from "../Features/Projects/actions";
+import { getAllProjects } from "@/features/projects/actions";
 import ProjectList from "./admincomponents/ProjectList";
 import Link from "next/link";
 import { FolderGit2, ArrowLeft } from "lucide-react";
