@@ -104,3 +104,13 @@ Deviations from tasks.md:
 - The create-form test from `AdminProject.test.tsx` moved to `CreateProjectButton.test.tsx`, because
   creating a project is now handled by `CreateProjectButton`. Mock paths use the `@/` alias.
 - `vitest-browser-react` stays on 2.2.0 when moved to devDependencies.
+
+## T086 — Pipeline validation (2026-11-25)
+
+A temporary commit changed one assertion in `cypress/e2e/desktop.cy.ts` ("opens with the contact
+window active in the taskbar") so that it must fail. PR #59 run 45707957190: Lint/typecheck/build
+and Lighthouse passed, **End-to-End failed** on exactly that test (1 of 8 failing), so a failing
+E2E assertion fails the pipeline. The commit was reverted right after.
+
+PR 4 was opened from `001-foundation-refactor-us4`: after `Development` was rebased on GitHub, the
+original branch could only be updated with a force-push.

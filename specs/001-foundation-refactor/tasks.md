@@ -225,7 +225,7 @@ after another.
 - [X] T083 [US4] In `.github/workflows/main.yml`: remove all commented-out cache steps (or replace with a working `actions/cache` on `.next/cache` if it measurably shortens runs) and translate the SonarQube failure summary to English (the SonarQube job stays non-blocking for the rest of this spec; making it blocking again is backlog item from T076)
 - [X] T084 [US4] Make the Cypress summary in `.github/workflows/main.yml` list the actual tested flows (desktop + admin) and keep links to videos/screenshots artifacts (FR-021)
 - [X] T085 [P] [US4] Update `README.md`: project description, tech stack, folder structure (from plan.md), scripts, test setup including the admin test account and guaranteed cleanup, the CI pipeline stages, and credit for the Win98 icons that is in the README today
-- [ ] T086 [US4] Validate the pipeline: push a temporary commit with a failing assertion in `cypress/e2e/desktop.cy.ts` to the PR branch, confirm the run fails at the E2E stage, revert; then open PR 4 from `001-foundation-refactor` into `Development`
+- [X] T086 [US4] Validate the pipeline: push a temporary commit with a failing assertion in `cypress/e2e/desktop.cy.ts` to the PR branch, confirm the run fails at the E2E stage, revert; then open PR 4 from `001-foundation-refactor` into `Development`
 
 **Checkpoint**: Tooling and pipeline match constitution IX
 
