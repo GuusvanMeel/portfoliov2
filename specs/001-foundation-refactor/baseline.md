@@ -114,3 +114,47 @@ E2E assertion fails the pipeline. The commit was reverted right after.
 
 PR 4 was opened from `001-foundation-refactor-us4`: after `Development` was rebased on GitHub, the
 original branch could only be updated with a force-push.
+
+## T087–T089 — Final validation after all four PRs (2026-11-25)
+
+Run on `Development` at `e108d5b` (PR #59 merged), plus the CI changes of the final PR.
+
+| Check | Before (baseline) | After |
+|---|---|---|
+| Lint / typecheck | pass | pass |
+| Prettier (`format:check`) | no formatter | pass |
+| Vitest | 2 files, 13 tests (US1: 3 files, 22 tests) | 19 files, 70 tests |
+| Vitest statement coverage | 43.41% (56/129) | 77.04% |
+| Combined Vitest + Cypress line coverage | – | 76.6% (70.8% on PR #40) |
+| Cypress (full suite, against `npm start`) | all specs pass | 15/15 (admin 3, authorization 4, desktop 8) |
+| Visual comparison with `baseline/` | reference | 12/12 screenshots pixel-identical |
+| `__coverage__` in a production build | present (`.babelrc` instrumented every build) | none |
+| Failing E2E assertion fails the pipeline (SC-010) | – | yes (T086) |
+| Dutch text, theme-name comparisons, cross-component CSS imports | present | none |
+| Workflow: commented-out steps, Dutch summaries | present | none |
+| Open issues listed once in `docs/backlog.md` (SC-008) | – | 25/25 |
+
+### T088 — Lighthouse (SC-009)
+
+Latest `Development` push run (45710360891). The pipeline uploads full reports only for pages that
+score below 95 in a category, so the home page scored at least 95 in every category.
+
+| Page | Performance | Accessibility | Best practices | SEO |
+|---|---:|---:|---:|---:|
+| `/` | ≥ 95 | ≥ 95 | ≥ 95 | ≥ 95 |
+| `/login` | 100 | 100 | 100 | 66 |
+| `/admin` | 100 | 96 | 100 | 69 |
+
+Accessibility is at least 0.90 everywhere (hard gate). The low SEO scores on `/login` and `/admin`
+are expected: both are disallowed in `robots.txt` (and `/admin` is `noindex`), which Lighthouse
+counts as "page is blocked from indexing". The exact baseline scores could not be retrieved (the CI
+logs of the July run had expired), so this run is the new reference.
+
+### T089 — Baseline screenshots
+
+`baseline/` is kept: it is the reference for the visual comparison above and for future refactors.
+
+### SonarQube
+
+The SonarQube job is non-blocking (backlog F-14, #52) and is ignored for the rest of this spec at the
+maintainer's request.

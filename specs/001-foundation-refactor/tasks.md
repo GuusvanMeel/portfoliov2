@@ -233,10 +233,10 @@ after another.
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T087 Run every validation in [quickstart.md](./quickstart.md) on `Development` after all four PRs are merged and record results in `specs/001-foundation-refactor/baseline.md` (before/after table)
-- [ ] T088 [P] Compare Lighthouse scores of the last `Development` run with the baseline (accessibility ≥ 0.90; others not lower) (SC-009)
-- [ ] T089 [P] Delete `specs/001-foundation-refactor/baseline/` screenshots if they are not needed anymore, or keep them referenced from `baseline.md`
-- [ ] T090 Mark the spec status as "Implemented" in `specs/001-foundation-refactor/spec.md`
+- [X] T087 Run every validation in [quickstart.md](./quickstart.md) on `Development` after all four PRs are merged and record results in `specs/001-foundation-refactor/baseline.md` (before/after table)
+- [X] T088 [P] Compare Lighthouse scores of the last `Development` run with the baseline (accessibility ≥ 0.90; others not lower) (SC-009)
+- [X] T089 [P] Delete `specs/001-foundation-refactor/baseline/` screenshots if they are not needed anymore, or keep them referenced from `baseline.md`
+- [X] T090 Mark the spec status as "Implemented" in `specs/001-foundation-refactor/spec.md`
 - [ ] T091 Delete branch `001-foundation-refactor` locally and on GitHub after the last pull request of this spec is merged
 
 ---
