@@ -223,7 +223,9 @@ duplicates or dead steps; a pull request with a deliberately failing end-to-end 
   against the site before restructuring starts.
 - **FR-002**: Component-level tests MUST cover window behaviour (open, close, minimize, restore, focus
   order, active window), desktop icon selection, theme name validation and the conversion of stored
-  project data to displayed project data.
+  project data to displayed project data. Tests for window behaviour and icon selection are added
+  together with the extracted logic (US2); until then, the end-to-end tests from FR-001 cover that
+  behaviour.
 - **FR-003**: Every refactoring step MUST keep all existing and new tests passing.
 - **FR-003a**: Tests that create data in the live database MUST use clearly recognisable test data and
   MUST remove all such test data before and after every run, including after a failed or aborted
@@ -303,7 +305,8 @@ duplicates or dead steps; a pull request with a deliberately failing end-to-end 
   they are and are translated in the data conversion layer only; renaming them is a backlog item.
 - **FR-026**: Each user story MUST be delivered as its own pull request into the development branch,
   in the order US1 → US2 → US3 → US4; within a pull request, each logical step is a small, separately
-  revertible commit. A pull request is merged only when the full pipeline passes.
+  revertible commit. A pull request is merged only when the full pipeline passes. All pull requests
+  come from the single spec branch `001-foundation-refactor`, which is deleted once the spec is done.
 
 ### Key Entities
 

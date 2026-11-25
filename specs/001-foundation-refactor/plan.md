@@ -10,12 +10,13 @@ Prepare GuusOS for future work without changing anything visitors or the maintai
 in today's behaviour with Cypress desktop tests and component tests (US1). Then restructure the code
 along the constitution: routes-only `app/`, shared components and feature modules at the root,
 window management and icon selection in hooks, themes as a registry of one file per theme with
-grouped settings, central English content and site config, consistent naming, dead code removed
-(US2). Next, write `docs/backlog.md` from all GitHub issues checked against the code, and, after the
-maintainer approves a change list, bring the GitHub issues in line (US3). Finally, add Prettier and
-`.gitattributes`, replace the Babel setup with SWC-based coverage instrumentation, fix dependency
-categories and run the full pipeline on pull requests (US4). Each user story is one pull request
-into `Development`. Database, authentication and all bugs stay untouched.
+grouped settings, central English content and site config, consistent naming, dead code removed,
+starting with `.gitattributes` and a Prettier formatting commit (US2). Next, write `docs/backlog.md`
+from all GitHub issues checked against the code, and, after the maintainer approves a change list,
+bring the GitHub issues in line (US3). Finally, replace the Babel setup with SWC-based coverage
+instrumentation and run the full pipeline, including a blocking quality gate, on pull requests
+(US4). Each user story is one pull request into `Development`, all from the single spec branch.
+Database, authentication and all bugs stay untouched.
 
 ## Technical Context
 
@@ -165,10 +166,14 @@ SonarCloud source changes beyond adding the new root folders to `sonar.sources` 
 
 | PR | User story | Contents | Merge condition |
 |---|---|---|---|
-| 1 | US1 Safety net | `data-cy` selectors (invisible), desktop Cypress suite, guaranteed admin test cleanup, component tests for mapper + theme names, pipeline runs E2E on PRs (minimal change so PR 1 itself is verified) | Full pipeline green; suite green 10× locally |
-| 2 | US2 Refactor | Prettier format commit first, then moves/renames, theme registry, hooks, content/config, dead code, dependency fixes | All PR 1 tests green unchanged; coverage ≥ before |
+| 1 | US1 Safety net | `data-cy` selectors (invisible), desktop Cypress suite, logout test, guaranteed admin test cleanup, component tests for mapper + theme names, pipeline runs E2E, Lighthouse and a blocking SonarCloud gate on PRs (so PR 1 itself is verified) | Full pipeline green incl. Sonar gate; suite green 10× locally |
+| 2 | US2 Refactor | `.gitattributes` + renormalize, then Prettier format commit, then moves/renames, theme registry, hooks, content/config, login page texts, dead code, dependency fixes | All PR 1 tests green unchanged; coverage ≥ before |
 | 3 | US3 Backlog | `docs/backlog.md`, proposed GitHub change list, approval, applied changes log | Maintainer approval of change list |
-| 4 | US4 Tooling | `.gitattributes`, SWC coverage instrumentation, Babel removal, Sonar gate blocking, pipeline cleanup, README | Full pipeline green incl. blocking Sonar gate |
+| 4 | US4 Tooling | SWC coverage instrumentation, Babel removal, pipeline cleanup, README | Full pipeline green |
+
+All four pull requests come from the single branch `001-foundation-refactor` (updated from
+`Development` after each merge), so the user stories run strictly in order. The branch is deleted
+when the spec is finished.
 
 ## Complexity Tracking
 
