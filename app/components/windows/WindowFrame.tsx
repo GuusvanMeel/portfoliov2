@@ -36,7 +36,7 @@ export default function WindowFrame({ title, children, onClose, onMinimize, onCl
               aria-label="Close"
               type="button"
               onClick={onClose}
-              className={`${styles.controlButton} ${selectedTheme.controlButton}`}
+              className={`${styles.controlButton} ${selectedTheme.closeButton}`}
             >
               X
             </button>

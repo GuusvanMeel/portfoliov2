@@ -14,6 +14,7 @@ export type WindowTheme = {
   titleBarInactive: string;
   content: string;
   controlButton: string;
+  closeButton: string;
   button: string;
   draggingWindow: string;
   projectImage: string;
