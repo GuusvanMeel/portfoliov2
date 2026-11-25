@@ -162,7 +162,11 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
 
   return (
     
-      <div className={`absolute inset-0 ${selectedTheme.desktopBackground}`}>
+      <div
+        data-cy="desktop"
+        data-theme={theme}
+        className={`absolute inset-0 ${selectedTheme.desktopBackground}`}
+      >
                 <ThemeSwitcher></ThemeSwitcher>
 
         <div className={styles.desktopIcons}>
@@ -205,7 +209,9 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
             return (
               <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} startPos={definition.startPos} >
                 <WindowFrame
-                  title={getWindowTitle(window)} 
+                  windowId={window.id}
+                  windowType={window.type}
+                  title={getWindowTitle(window)}
                   onClose={() => closeWindow(window.id)}
                   onMinimize={() => MinimizeWindow(window.id)}
                   onClick={() => bringToFront(window.id)}
