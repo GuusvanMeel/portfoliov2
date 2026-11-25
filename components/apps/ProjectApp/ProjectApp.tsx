@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { projectImage } from "@/app/Features/Images/actions";
-import type { DisplayProject } from "@/app/Features/Projects/types";
+import type { DisplayProject } from "@/features/projects/types";
 import { messages } from "@/content/en";
 import { useThemeDefinition } from "@/features/theme/useThemeDefinition";
 import styles from "./ProjectApp.module.css";

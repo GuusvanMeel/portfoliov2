@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from "vitest";
 import { cleanup, renderHook } from "vitest-browser-react";
-import type { Project } from "@/app/Features/Projects/types";
+import type { Project } from "@/features/projects/types";
 import { useWindowManager } from "@/features/windows/useWindowManager";
 
 const project: Project = {

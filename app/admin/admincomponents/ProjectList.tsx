@@ -1,6 +1,6 @@
 // app/admin/admincomponents/ProjectList.tsx
 "use client";
-import { Project } from "@/app/Features/Projects/types";
+import { Project } from "@/features/projects/types";
 import AdminProject from "./AdminProject";
 import { useState } from "react";
 import CreateProjectButton from "./CreateProjectButton";

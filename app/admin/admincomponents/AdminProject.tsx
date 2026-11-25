@@ -1,5 +1,5 @@
 "use client";
-import { Project } from "@/app/Features/Projects/types";
+import { Project } from "@/features/projects/types";
 import { useEffect, useState } from "react";
 import EditProjectForm from "./editprojectform";
 import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";

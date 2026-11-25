@@ -1,8 +1,8 @@
 "use server";
 
 import { createServer } from "@/lib/supabase/server";
-import { Project, ProjectInputData } from "./types";
-import { mapProjectRowToProject, mapUpdateProjectInputToRow } from "./mapper";
+import { Project, ProjectInputData } from "@/features/projects/types";
+import { mapProjectRowToProject, mapUpdateProjectInputToRow } from "@/features/projects/mappers";
 
 export async function getAllProjects(): Promise<Project[]> {
   const supabase = await createServer();

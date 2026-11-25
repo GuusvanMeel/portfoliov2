@@ -1,4 +1,4 @@
-import { Project, ProjectRow, ProjectInputData, DisplayProject } from "./types";
+import { Project, ProjectRow, ProjectInputData, DisplayProject } from "@/features/projects/types";
 
 export function mapProjectRowToProject(row: ProjectRow): Project {
   return {
@@ -27,7 +27,7 @@ export function mapUpdateProjectInputToRow(input: ProjectInputData) {
     updated_at: new Date().toISOString(),
   };
 }
-export function mapProjectToDisplayproject(project: Project): DisplayProject {
+export function mapProjectToDisplayProject(project: Project): DisplayProject {
   return {
     id: project.id,
     title: project.title,

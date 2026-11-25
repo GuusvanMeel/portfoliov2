@@ -4,7 +4,7 @@ import { cleanup, render } from "vitest-browser-react";
 
 import AdminProject from "./AdminProject";
 import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/actions";
-import type { Project } from "@/app/Features/Projects/types";
+import type { Project } from "@/features/projects/types";
 
 vi.mock("@/app/Features/Projects/actions", () => ({
   createProject: vi.fn(),

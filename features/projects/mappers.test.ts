@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 import {
   mapProjectRowToProject,
-  mapProjectToDisplayproject,
+  mapProjectToDisplayProject,
   mapUpdateProjectInputToRow,
-} from "./mapper";
-import type { Project, ProjectInputData, ProjectRow } from "./types";
+} from "@/features/projects/mappers";
+import type { Project, ProjectInputData, ProjectRow } from "@/features/projects/types";
 
 const row: ProjectRow = {
   id: 7,
@@ -72,10 +72,10 @@ describe("mapUpdateProjectInputToRow", () => {
   });
 });
 
-describe("mapProjectToDisplayproject", () => {
+describe("mapProjectToDisplayProject", () => {
   test("keeps only the public fields", () => {
     const project: Project = mapProjectRowToProject(row);
-    const display = mapProjectToDisplayproject(project);
+    const display = mapProjectToDisplayProject(project);
 
     expect(display).not.toHaveProperty("isVisible");
     expect(display).not.toHaveProperty("updatedAt");

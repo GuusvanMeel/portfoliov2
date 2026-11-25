@@ -1,5 +1,5 @@
 export type Project = {
-  // Complete project zoals je app het gebruikt na mapping vanuit de database
+  // Complete project as the app uses it after mapping from the database
   id: number;
   title: string;
   imageSrc: string;
@@ -13,7 +13,7 @@ export type Project = {
 };
 
 export type DisplayProject = {
-  // Alleen de projectdata die nodig is om een project publiek te tonen
+  // Only the project data needed to show a project publicly
   id: number;
   title: string;
   imageSrc: string;
@@ -25,7 +25,7 @@ export type DisplayProject = {
 };
 
 export type ProjectRow = {
-  // Ruwe project row zoals die uit Supabase komt
+  // Raw project row as it comes from Supabase
   id: number;
   title: string;
   description: string;
@@ -40,7 +40,7 @@ export type ProjectRow = {
 };
 
 export type ProjectInputData = {
-  // Data die nodig is om een project aan te maken of te updaten vanuit je form
+  // Data needed to create or update a project from the admin form
   title: string;
   description: string;
   tags: string[];

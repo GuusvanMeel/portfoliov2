@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useReducer } from "react";
-import { mapProjectToDisplayproject } from "@/app/Features/Projects/mapper";
-import type { Project } from "@/app/Features/Projects/types";
+import { mapProjectToDisplayProject } from "@/features/projects/mappers";
+import type { Project } from "@/features/projects/types";
 import type { AppType } from "@/features/windows/types";
 import { initialWindowManagerState, windowReducer } from "@/features/windows/windowReducer";
 
@@ -19,7 +19,7 @@ export function useWindowManager() {
       type: "open",
       id: `${appType}-${crypto.randomUUID()}`,
       appType,
-      project: project ? mapProjectToDisplayproject(project) : undefined,
+      project: project ? mapProjectToDisplayProject(project) : undefined,
     });
   }, []);
 
