@@ -26,7 +26,7 @@ describe("Desktop", () => {
   it("opens with the contact window active in the taskbar", () => {
     const start = performance.now();
     windowOfType("contact").should("be.visible");
-    taskbarEntryFor("Contact-startup").should("have.attr", "data-active", "false");
+    taskbarEntryFor("Contact-startup").should("have.attr", "data-active", "true");
     logFlowMetric("Desktop: startup", start);
   });
 
