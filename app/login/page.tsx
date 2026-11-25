@@ -2,6 +2,9 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useState } from "react";
+import { messages } from "@/content/en";
+
+const text = messages.login;
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -24,7 +27,7 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (error) {
-      setError("Invalid email or password.");
+      setError(text.invalidCredentials);
       return;
     }
     window.location.replace("/admin");
@@ -36,11 +39,11 @@ export default function LoginPage() {
         action={handleLogin}
         className="w-full max-w-sm bg-[#141414] border border-neutral-800 rounded-xl p-6 flex flex-col gap-4"
       >
-        <h1 className="text-xl font-semibold">Admin login</h1>
+        <h1 className="text-xl font-semibold">{text.title}</h1>
 
         <div className="flex flex-col gap-1">
           <label htmlFor="email" className="text-sm text-neutral-400">
-            Email
+            {text.email}
           </label>
           <input
             id="email"
@@ -53,7 +56,7 @@ export default function LoginPage() {
 
         <div className="flex flex-col gap-1">
           <label htmlFor="password" className="text-sm text-neutral-400">
-            Password
+            {text.password}
           </label>
           <input
             id="password"
@@ -71,7 +74,7 @@ export default function LoginPage() {
           disabled={isLoading}
           className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md text-white disabled:opacity-50"
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? text.submitting : text.submit}
         </button>
       </form>
     </main>
