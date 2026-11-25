@@ -13,7 +13,9 @@ export const windowThemes: Record<ThemeName, WindowTheme> = {
             "bg-[#d4d0c8] text-black border border-[#808080] shadow-[inset_1px_1px_#808080,inset_-1px_-1px_#ffffff]",
         controlButton:
             "bg-[#c0c0c0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080] active:shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
-        button:
+        closeButton:            "bg-[#c0c0c0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080] active:shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
+
+            button:
             "bg-[#c0c0c0] text-black border border-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#808080] active:shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_#ffffff]",
         draggingWindow:
             "opacity-60",
@@ -60,7 +62,8 @@ taskbarTray:
 
   controlButton:
     "bg-linear-to-b from-[#7bbcff] via-[#1f6fe5] to-[#0645ad] text-white border border-[#003c74] rounded-[3px] shadow-[inset_1px_1px_0_#b9ddff,inset_-1px_-1px_0_#002f88] active:shadow-[inset_1px_1px_0_#002f88,inset_-1px_-1px_0_#b9ddff]",
-
+      closeButton:
+  "bg-linear-to-b from-[#ff8a7a] via-[#e84a35] to-[#b51f12] text-white border border-[#8b1a10] rounded-[3px] shadow-[inset_1px_1px_0_#ffc0b8,inset_-1px_-1px_0_#7a120b] hover:from-[#ff9d8f] hover:via-[#f05a43] hover:to-[#c52a1b] active:shadow-[inset_1px_1px_0_#7a120b,inset_-1px_-1px_0_#ffc0b8]",
   button:
     "bg-linear-to-b from-[#ffffff] via-[#ece9d8] to-[#d6d1bd] text-black border border-[#003c74] rounded-[3px] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#aca899] hover:bg-[#f5f3e8] active:shadow-[inset_1px_1px_0_#aca899,inset_-1px_-1px_0_#ffffff]",
 
@@ -105,7 +108,8 @@ taskbarTray:
         titleBarInactive: "bg-[#cfcfcf] text-neutral-600 border-b border-black",
         content: "bg-white text-black border border-black",
         controlButton: "bg-[#eeeeee] text-black border border-black rounded-full shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999] active:shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
-
+        closeButton:
+  "bg-[#eeeeee] text-black border border-black rounded-full shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999] active:shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
         button: "bg-[#eeeeee] text-black border border-black rounded-sm shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#999999] active:shadow-[inset_1px_1px_0_#999999,inset_-1px_-1px_0_#ffffff]",
         draggingWindow: "opacity-70 outline outline-2 outline-dashed outline-black",
         
@@ -147,7 +151,9 @@ taskbarTray:
     "bg-[#111111] text-[#00ff66] border border-[#ff00ff]",
   controlButton:
     "bg-[#00ffff] text-black border border-black rounded-none shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#006666] active:shadow-[inset_1px_1px_0_#006666,inset_-1px_-1px_0_#ffffff]",
-  button:
+  closeButton:
+  "bg-[#ff0044] text-white border border-[#00ffff] rounded-none shadow-[2px_2px_0_#00ffff] hover:bg-[#ff3366] active:shadow-[inset_1px_1px_0_#660018,inset_-1px_-1px_0_#ff99aa]",
+    button:
     "bg-[#ff00ff] text-black border border-black rounded-none shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#660066] active:shadow-[inset_1px_1px_0_#660066,inset_-1px_-1px_0_#ffffff]",
   draggingWindow:
     "opacity-50 outline outline-2 outline-dotted-[#00ffff]",
