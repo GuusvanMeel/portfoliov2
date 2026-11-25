@@ -5,7 +5,6 @@ import { FolderGit2, ArrowLeft } from "lucide-react";
 import { logout } from "./action";
 import { Metadata } from "next";
 
-
 export const metadata: Metadata = {
   robots: {
     index: false,
@@ -15,8 +14,7 @@ export const metadata: Metadata = {
 
 export default async function AdminPage() {
   const projects = await getAllProjects();
-  
-  
+
   return (
     <div className="w-full flex flex-col gap-10">
       <header className="flex flex-wrap items-center justify-between gap-6 border-b border-neutral-800 pb-8">

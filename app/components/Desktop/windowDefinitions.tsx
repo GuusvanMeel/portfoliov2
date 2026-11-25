@@ -10,7 +10,7 @@ export type WindowData = {
   type: WindowType;
   minimized: boolean;
   project?: DisplayProject;
-  zIndex: number;  
+  zIndex: number;
 };
 
 export const windowDefinitions: Record<
@@ -20,9 +20,9 @@ export const windowDefinitions: Record<
     width: number;
     height: number;
     render: (window: WindowData) => React.ReactNode;
-    icon: string
+    icon: string;
     startPos: "default" | "right";
-    desktopLabel?: string
+    desktopLabel?: string;
   }
 > = {
   "theme-switcher": {
@@ -52,13 +52,12 @@ export const windowDefinitions: Record<
     desktopLabel: "about.exe",
   },
   contact: {
-  title: "Contact",
-  width: 360,
-  height: 500,
-  render: () => <ContactWindow />,
-  icon: "✉",
-  startPos: "right",
-  desktopLabel: "contact.exe",
-},
-
+    title: "Contact",
+    width: 360,
+    height: 500,
+    render: () => <ContactWindow />,
+    icon: "✉",
+    startPos: "right",
+    desktopLabel: "contact.exe",
+  },
 };

@@ -33,7 +33,6 @@ export default function EditProjectForm({
         duration: formData.get("duration") as string,
         imageSrc: formData.get("image") as string,
         githubLink: formData.get("git") as string,
-       
       };
 
       if (project) {
@@ -47,11 +46,8 @@ export default function EditProjectForm({
   }
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-9999 p-4"
-    >
-      <div
-        className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-9999 p-4">
+      <div className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
         <button
           onClick={Onclose}
           className="absolute top-3 right-3 p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-md transition"
@@ -60,13 +56,19 @@ export default function EditProjectForm({
           <X size={18} />
         </button>
 
-        <form data-cy="edit-project-form" action={handleSubmit} className="flex flex-col gap-4 px-6 py-6">
+        <form
+          data-cy="edit-project-form"
+          action={handleSubmit}
+          className="flex flex-col gap-4 px-6 py-6"
+        >
           <h2 className="text-xl font-semibold text-white pr-8">
             {project ? "Edit Project" : "Create Project"}
           </h2>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-title" className="text-sm text-neutral-400">Title</label>
+            <label htmlFor="project-title" className="text-sm text-neutral-400">
+              Title
+            </label>
             <input
               id="project-title"
               type="text"
@@ -78,7 +80,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-description" className="text-sm text-neutral-400">Description</label>
+            <label htmlFor="project-description" className="text-sm text-neutral-400">
+              Description
+            </label>
             <textarea
               id="project-description"
               name="description"
@@ -88,7 +92,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-tags" className="text-sm text-neutral-400">Tags (comma-separated)</label>
+            <label htmlFor="project-tags" className="text-sm text-neutral-400">
+              Tags (comma-separated)
+            </label>
             <input
               id="project-tags"
               type="text"
@@ -99,7 +105,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-duration" className="text-sm text-neutral-400">Duration</label>
+            <label htmlFor="project-duration" className="text-sm text-neutral-400">
+              Duration
+            </label>
             <input
               id="project-duration"
               type="text"
@@ -111,7 +119,9 @@ export default function EditProjectForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
-              <label htmlFor="project-image" className="text-sm text-neutral-400">Image URL</label>
+              <label htmlFor="project-image" className="text-sm text-neutral-400">
+                Image URL
+              </label>
               <input
                 id="project-image"
                 type="text"
@@ -146,7 +156,9 @@ export default function EditProjectForm({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="project-git" className="text-sm text-neutral-400">GitHub Link</label>
+            <label htmlFor="project-git" className="text-sm text-neutral-400">
+              GitHub Link
+            </label>
             <input
               id="project-git"
               type="text"
@@ -185,7 +197,7 @@ export default function EditProjectForm({
           </div>
 
           <button
-          data-cy="save-project"
+            data-cy="save-project"
             type="submit"
             disabled={isPending}
             className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md text-white text-sm font-medium transition disabled:opacity-50 mt-2"

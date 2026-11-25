@@ -37,7 +37,7 @@ export default function DesktopIcon({
         {iconSrc ? (
           <Image src={iconSrc} alt="" width={64} height={64} className={styles.iconImage} />
         ) : (
-          icon ?? "▣"
+          (icon ?? "▣")
         )}
       </span>
 

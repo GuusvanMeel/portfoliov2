@@ -7,7 +7,7 @@ import { Project } from "@/app/Features/Projects/types";
 
 export default function CreateProjectButton({
   onCreated,
-}:Readonly<{
+}: Readonly<{
   onCreated?: (project: Project) => void;
 }>) {
   const [isOpen, setOpen] = useState(false);
@@ -20,14 +20,14 @@ export default function CreateProjectButton({
 
     globalThis.window.addEventListener("keydown", handleKeyDown);
 
-     return () => {
-       globalThis.window.removeEventListener("keydown", handleKeyDown);
-     };
-   }, []);
+    return () => {
+      globalThis.window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   return (
     <>
       <button
-      data-cy="create-project"
+        data-cy="create-project"
         onClick={() => setOpen(true)}
         className="inline-flex items-center gap-3 px-6 py-3 text-base bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition"
       >
@@ -36,11 +36,7 @@ export default function CreateProjectButton({
       </button>
 
       {isOpen && (
-        <AdminProject
-          project={null}
-          OnCreated={onCreated}
-          OnCloseCreate={() => setOpen(false)}
-        />
+        <AdminProject project={null} OnCreated={onCreated} OnCloseCreate={() => setOpen(false)} />
       )}
     </>
   );

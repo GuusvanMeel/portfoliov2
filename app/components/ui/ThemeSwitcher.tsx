@@ -2,28 +2,27 @@
 
 import { useTheme } from "@/app/Features/Theme/ThemeProvider";
 import { windowThemes } from "../../Features/Window/windowThemes";
-import styles from "../windows/WindowFrame.module.css"
+import styles from "../windows/WindowFrame.module.css";
 import { ThemeName } from "../../Features/Theme/type";
-
 
 export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
-    const selectedTheme = windowThemes[theme];
+  const selectedTheme = windowThemes[theme];
   return (
     <div>
       <p>Current theme: {theme}</p>
 
       {Object.keys(windowThemes).map((themeName) => (
-  <button
-    key={themeName}
-    data-cy="theme-option"
-    data-theme-option={themeName}
-    className={`${styles.genericButton} ${selectedTheme.button}`}
-    onClick={() => setTheme(themeName as ThemeName)}
-  >
-    {themeName}
-  </button>
-))}
+        <button
+          key={themeName}
+          data-cy="theme-option"
+          data-theme-option={themeName}
+          className={`${styles.genericButton} ${selectedTheme.button}`}
+          onClick={() => setTheme(themeName as ThemeName)}
+        >
+          {themeName}
+        </button>
+      ))}
     </div>
   );
 }
