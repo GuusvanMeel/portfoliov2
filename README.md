@@ -95,14 +95,18 @@ chromium` once before the first run.
 
 ## CI pipeline
 
-`.github/workflows/main.yml` runs on every push and on pull requests into `Development` and
-`master`:
+`.github/workflows/main.yml` runs on pull requests into `Development` and `master` and on pushes to
+those two branches. A newer push cancels a run that is still going for the same pull request or
+branch.
 
 1. **Lint, typecheck and build**: ESLint, TypeScript, Vitest with coverage, `next build`
 2. **End-to-End**: coverage build, the full Cypress suite, coverage report, videos and screenshots
 3. **Lighthouse**: Lighthouse CI; accessibility must be at least 0.90
 4. **SonarQube**: SonarCloud analysis with the Vitest and Cypress coverage (currently non-blocking,
    see `docs/backlog.md`)
+
+Changes that only touch documentation (`docs/`, `specs/`, `.specify/`, `.claude/`, `*.md`) skip
+everything except the change detection. Lighthouse measures the production build of the first job.
 
 ## Credits
 
