@@ -1,18 +1,20 @@
-"use client"
+"use client";
 import { WindowFrameProps } from "@/app/Features/Window/type";
 import styles from "./WindowFrame.module.css";
 import { useTheme } from "@/app/Features/Theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 
-
-
-export default function WindowFrame({ title, children, onClose, onMinimize, onClick, windowId, windowType }:Readonly <WindowFrameProps>) {
-
+export default function WindowFrame({
+  title,
+  children,
+  onClose,
+  onMinimize,
+  onClick,
+  windowId,
+  windowType,
+}: Readonly<WindowFrameProps>) {
   const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
-
-
-
 
   return (
     <div
@@ -22,7 +24,7 @@ export default function WindowFrame({ title, children, onClose, onMinimize, onCl
       className={`${styles.window} ${selectedTheme.frame}`}
       onClick={onClick}
     >
-      <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar` }> 
+      <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}>
         <span className={styles.title}>{title}</span>
 
         <div className={styles.buttons}>
@@ -32,12 +34,14 @@ export default function WindowFrame({ title, children, onClose, onMinimize, onCl
               data-cy="window-minimize"
               type="button"
               onClick={(event) => {
-    event.stopPropagation();
-    onMinimize();
-  }}
-              className={`${styles.controlButton} ${selectedTheme.controlButton}`}>
+                event.stopPropagation();
+                onMinimize();
+              }}
+              className={`${styles.controlButton} ${selectedTheme.controlButton}`}
+            >
               _
-            </button>)}
+            </button>
+          )}
           {onClose && (
             <button
               aria-label="Close"
@@ -49,14 +53,10 @@ export default function WindowFrame({ title, children, onClose, onMinimize, onCl
               X
             </button>
           )}
-
-
         </div>
       </div>
 
-      <div className={`${styles.content} ${selectedTheme.content}`}>
-        {children}
-      </div>
+      <div className={`${styles.content} ${selectedTheme.content}`}>{children}</div>
     </div>
   );
 }

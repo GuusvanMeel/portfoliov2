@@ -11,9 +11,9 @@ type DraggableWindowProps = {
   height: number;
   zIndex: number;
   onFocus: () => void;
-  startPos: "default" | "right"
+  startPos: "default" | "right";
 };
- function getStartX(startPos: "default" | "right", width: number) {
+function getStartX(startPos: "default" | "right", width: number) {
   if (typeof window === "undefined") {
     return 80;
   }
@@ -24,27 +24,36 @@ type DraggableWindowProps = {
 
   return window.innerWidth / 4;
 }
-export default function DraggableWindow({ children, width, height, zIndex, onFocus, startPos }:Readonly<DraggableWindowProps>) {
-    const [isDragging, setIsDragging] = useState(false)
-    const { theme } = useTheme();
+export default function DraggableWindow({
+  children,
+  width,
+  height,
+  zIndex,
+  onFocus,
+  startPos,
+}: Readonly<DraggableWindowProps>) {
+  const [isDragging, setIsDragging] = useState(false);
+  const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
-    return (
+  return (
     <Rnd
       default={{
-            x: getStartX(startPos, width),
+        x: getStartX(startPos, width),
         y: 40,
         width: width,
         height: height,
-        
       }}
-      style={{zIndex}}
+      style={{ zIndex }}
       minWidth={280}
       minHeight={150}
       bounds="parent"
       onMouseDown={onFocus}
       className={isDragging ? selectedTheme.draggingWindow : ""}
       onDragStart={() => setIsDragging(true)}
-      onDragStop={() => {setIsDragging(false); onFocus();}}
+      onDragStop={() => {
+        setIsDragging(false);
+        onFocus();
+      }}
       onResizeStop={() => onFocus()}
       enableResizing={false}
       dragHandleClassName="window-title-bar"

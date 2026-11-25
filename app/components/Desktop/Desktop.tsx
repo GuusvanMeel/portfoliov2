@@ -13,44 +13,39 @@ const DraggableWindow = dynamic(() => import("../windows/DraggableWindow"), {
   ssr: false,
 });
 import WindowFrame from "../windows/WindowFrame";
-import styles from "../windows/WindowFrame.module.css"
+import styles from "../windows/WindowFrame.module.css";
 import dynamic from "next/dynamic";
 import { windowDefinitions, type WindowData, type WindowType } from "./windowDefinitions";
 import { projectImage } from "@/app/Features/Images/actions";
 
-
-
-
-
-
-export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>) {
+export default function Desktop({ projects }: Readonly<{ projects: Project[] }>) {
   const [windows, setWindows] = useState<WindowData[]>([
     {
       id: "Contact-startup",
       type: "contact",
       minimized: false,
-      zIndex: 0
-    }
+      zIndex: 0,
+    },
   ]);
 
   const [activeWindowId, setActiveWindowId] = useState<string | null>("Contact-startup");
   const [highestZIndex, setHighestZIndex] = useState(1);
   const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
-  
+
   //DIT IS ALLEMAAL DESKTOPICON DINGEN
   const [selectedDesktopIconId, setSelectedDesktopIconId] = useState<string | null>(null);
   useEffect(() => {
-  function clearDesktopSelection(event: PointerEvent) {
-    const target = event.target;
+    function clearDesktopSelection(event: PointerEvent) {
+      const target = event.target;
 
-    if (!(target instanceof Element)) {
-      return;
-    }
+      if (!(target instanceof Element)) {
+        return;
+      }
 
-    if (!target.closest("[data-desktop-icon]")) {
-      setSelectedDesktopIconId(null);
-    }
+      if (!target.closest("[data-desktop-icon]")) {
+        setSelectedDesktopIconId(null);
+      }
     }
 
     document.addEventListener("pointerdown", clearDesktopSelection);
@@ -59,13 +54,13 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
       document.removeEventListener("pointerdown", clearDesktopSelection);
     };
   }, []);
-//TOT HIER
+  //TOT HIER
 
   function openWindow(type: WindowType, project?: Project) {
     if (type === "projects" && !project) {
       throw new Error("Project window requires a project");
     }
-      const id = `${type}-${crypto.randomUUID()}`;
+    const id = `${type}-${crypto.randomUUID()}`;
 
     setWindows((currentWindows) => [
       ...currentWindows,
@@ -73,52 +68,38 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
         id: id,
         type,
         minimized: false,
-        project:
-          type === "projects" && project
-            ? mapProjectToDisplayproject(project)
-            : undefined,
-        zIndex: highestZIndex,      },
-
-    ]
-    );
+        project: type === "projects" && project ? mapProjectToDisplayproject(project) : undefined,
+        zIndex: highestZIndex,
+      },
+    ]);
     setHighestZIndex((z) => z + 1);
-   setActiveWindowId(id);
+    setActiveWindowId(id);
   }
-
 
   function bringToFront(id: string) {
     setActiveWindowId(id);
 
     setWindows((currentWindows) =>
       currentWindows.map((window) =>
-        window.id === id
-          ? { ...window, zIndex: highestZIndex + 1, minimized: false }
-          : window
-      )
+        window.id === id ? { ...window, zIndex: highestZIndex + 1, minimized: false } : window,
+      ),
     );
 
     setHighestZIndex((z) => z + 1);
   }
 
   function closeWindow(instanceId: string) {
-    setWindows((currentWindows) =>
-      currentWindows.filter((window) => window.id !== instanceId)
+    setWindows((currentWindows) => currentWindows.filter((window) => window.id !== instanceId));
+    setActiveWindowId((currentActiveId) =>
+      currentActiveId === instanceId ? null : currentActiveId,
     );
-      setActiveWindowId((currentActiveId) =>
-    currentActiveId === instanceId ? null : currentActiveId
-  );
   }
   function MinimizeWindow(id: string) {
     setWindows((currentWindows) =>
-      currentWindows.map((window) =>
-        window.id === id ? { ...window, minimized: true } : window
-      )
+      currentWindows.map((window) => (window.id === id ? { ...window, minimized: true } : window)),
     );
-    
-    setActiveWindowId((currentActiveId) =>
-      currentActiveId === id ? null : currentActiveId
-    );
-  
+
+    setActiveWindowId((currentActiveId) => (currentActiveId === id ? null : currentActiveId));
   }
   function getWindowTitle(window: WindowData) {
     if (window.type === "projects" && window.project) {
@@ -127,7 +108,6 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
 
     return windowDefinitions[window.type].title;
   }
-
 
   function handleTaskbarWindowClick(id: string) {
     const selectedWindow = windows.find((window) => window.id === id);
@@ -146,88 +126,90 @@ export default function Desktop({ projects, }: Readonly<{ projects: Project[] }>
     active: window.id === activeWindowId,
     icon: windowDefinitions[window.type].icon,
     iconSrc:
-    window.type === "projects" && window.project?.desktopIconSrc
-      ? projectImage.desktopIcon(window.project.desktopIconSrc)
-      : undefined,
+      window.type === "projects" && window.project?.desktopIconSrc
+        ? projectImage.desktopIcon(window.project.desktopIconSrc)
+        : undefined,
   }));
 
   const desktopWindowIcons = Object.entries(windowDefinitions)
-  .filter(([, definition]) => definition.desktopLabel)
-  .map(([windowType, definition]) => ({
-    id: windowType,
-    windowType: windowType as WindowType,
-    label: definition.desktopLabel!,
-    icon: definition.icon,
-  }));
+    .filter(([, definition]) => definition.desktopLabel)
+    .map(([windowType, definition]) => ({
+      id: windowType,
+      windowType: windowType as WindowType,
+      label: definition.desktopLabel!,
+      icon: definition.icon,
+    }));
 
   return (
-    
-      <div
-        data-cy="desktop"
-        data-theme={theme}
-        className={`absolute inset-0 ${selectedTheme.desktopBackground}`}
-      >
-                <ThemeSwitcher></ThemeSwitcher>
+    <div
+      data-cy="desktop"
+      data-theme={theme}
+      className={`absolute inset-0 ${selectedTheme.desktopBackground}`}
+    >
+      <ThemeSwitcher></ThemeSwitcher>
 
-        <div className={styles.desktopIcons}>
-  {desktopWindowIcons.map((desktopIcon) => (
-    <DesktopIcon
-      key={desktopIcon.id}
-      id={desktopIcon.id}
-      label={desktopIcon.label}
-      icon={desktopIcon.icon}
-      selected={selectedDesktopIconId === desktopIcon.id}
-      onSelect={setSelectedDesktopIconId}
-      onOpen={() => openWindow(desktopIcon.windowType)}
-    />
-  ))}
+      <div className={styles.desktopIcons}>
+        {desktopWindowIcons.map((desktopIcon) => (
+          <DesktopIcon
+            key={desktopIcon.id}
+            id={desktopIcon.id}
+            label={desktopIcon.label}
+            icon={desktopIcon.icon}
+            selected={selectedDesktopIconId === desktopIcon.id}
+            onSelect={setSelectedDesktopIconId}
+            onOpen={() => openWindow(desktopIcon.windowType)}
+          />
+        ))}
 
-  {projects.map((project) => {
-    const iconId = `project-${project.id}`;
+        {projects.map((project) => {
+          const iconId = `project-${project.id}`;
 
-    return (
-      <DesktopIcon
-        key={project.id}
-        id={iconId}
-        iconSrc={projectImage.desktopIcon(project.desktopIconSrc)}
-        label={`${project.title}.exe`}
-        selected={selectedDesktopIconId === iconId}
-        onSelect={setSelectedDesktopIconId}
-        onOpen={() => openWindow("projects", project)}
-      />
-    );
-  })}
-</div>
-
-
-
-        {windows
-          .filter((window) => !window.minimized)
-          .map((window) => {
-            const definition = windowDefinitions[window.type];
-
-            return (
-              <DraggableWindow key={window.id} width={definition.width} height={definition.height} zIndex={window.zIndex} onFocus={() => bringToFront(window.id)} startPos={definition.startPos} >
-                <WindowFrame
-                  windowId={window.id}
-                  windowType={window.type}
-                  title={getWindowTitle(window)}
-                  onClose={() => closeWindow(window.id)}
-                  onMinimize={() => MinimizeWindow(window.id)}
-                  onClick={() => bringToFront(window.id)}
-                >
-                  {definition.render(window)}
-                </WindowFrame>
-
-              </DraggableWindow>
-            );
-          })}
-        <Taskbar
-          windows={taskbarWindows}
-          onWindowClick={handleTaskbarWindowClick}
-          onCloseWindow={closeWindow}
-        />
+          return (
+            <DesktopIcon
+              key={project.id}
+              id={iconId}
+              iconSrc={projectImage.desktopIcon(project.desktopIconSrc)}
+              label={`${project.title}.exe`}
+              selected={selectedDesktopIconId === iconId}
+              onSelect={setSelectedDesktopIconId}
+              onOpen={() => openWindow("projects", project)}
+            />
+          );
+        })}
       </div>
-    
+
+      {windows
+        .filter((window) => !window.minimized)
+        .map((window) => {
+          const definition = windowDefinitions[window.type];
+
+          return (
+            <DraggableWindow
+              key={window.id}
+              width={definition.width}
+              height={definition.height}
+              zIndex={window.zIndex}
+              onFocus={() => bringToFront(window.id)}
+              startPos={definition.startPos}
+            >
+              <WindowFrame
+                windowId={window.id}
+                windowType={window.type}
+                title={getWindowTitle(window)}
+                onClose={() => closeWindow(window.id)}
+                onMinimize={() => MinimizeWindow(window.id)}
+                onClick={() => bringToFront(window.id)}
+              >
+                {definition.render(window)}
+              </WindowFrame>
+            </DraggableWindow>
+          );
+        })}
+      <Taskbar
+        windows={taskbarWindows}
+        onWindowClick={handleTaskbarWindowClick}
+        onCloseWindow={closeWindow}
+      />
+    </div>
   );
 }

@@ -22,11 +22,7 @@ type TaskbarProps = {
   onCloseWindow: (id: string) => void;
 };
 
-export default function Taskbar({
-  windows,
-  onWindowClick,
-  onCloseWindow,
-}: Readonly<TaskbarProps>) {
+export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Readonly<TaskbarProps>) {
   const { theme } = useTheme();
   const selectedTheme = windowThemes[theme];
 
@@ -34,114 +30,110 @@ export default function Taskbar({
 
   const startMenuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-  function handleClickOutside(event: MouseEvent) {
-    if (
-      startMenuRef.current &&
-      !startMenuRef.current.contains(event.target as Node)
-    ) {
-      setStartMenuOpen(false);
+    function handleClickOutside(event: MouseEvent) {
+      if (startMenuRef.current && !startMenuRef.current.contains(event.target as Node)) {
+        setStartMenuOpen(false);
+      }
     }
-  }
 
-  document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <footer data-cy="taskbar" className={`${styles.taskbar} ${selectedTheme.taskbar}`}>
-     <div className={styles.startArea} ref={startMenuRef}>
-  {startMenuOpen && (
-    <div className={`${styles.startMenu} ${selectedTheme.taskbarWindowButton}`}>
-      <button type="button" className={styles.startMenuItem}>
-        About me
-      </button>
+      <div className={styles.startArea} ref={startMenuRef}>
+        {startMenuOpen && (
+          <div className={`${styles.startMenu} ${selectedTheme.taskbarWindowButton}`}>
+            <button type="button" className={styles.startMenuItem}>
+              About me
+            </button>
 
-      <button type="button" className={styles.startMenuItem}>
-        Projects
-      </button>
+            <button type="button" className={styles.startMenuItem}>
+              Projects
+            </button>
 
-      <button type="button" className={styles.startMenuItem}>
-        Theme switcher
-      </button>
-      <Link
-  href="/admin"
-  className={styles.startMenuItem}
-  onClick={() => setStartMenuOpen(false)}
-><Image src={`/icons/${theme}/Login.png`} alt=""  width={32} height={32}>
+            <button type="button" className={styles.startMenuItem}>
+              Theme switcher
+            </button>
+            <Link
+              href="/admin"
+              className={styles.startMenuItem}
+              onClick={() => setStartMenuOpen(false)}
+            >
+              <Image src={`/icons/${theme}/Login.png`} alt="" width={32} height={32}></Image>
+              Admin login
+            </Link>
+          </div>
+        )}
 
-
-</Image>
-  Admin login 
-</Link>
-    </div>
-  
-  )}
-
-  <button
-    type="button"
-    className={`${styles.startButton} ${selectedTheme.taskbarStartButton}`}
-    onClick={() => setStartMenuOpen((open) => !open)}
-  >
-    <span className={styles.startIcon}><Image src={`/icons/${theme}/TaskbarLogo.png`} width={16} height={16} alt={""}></Image></span>
-    <span>GuusOS</span>
-  </button>
-</div>
+        <button
+          type="button"
+          className={`${styles.startButton} ${selectedTheme.taskbarStartButton}`}
+          onClick={() => setStartMenuOpen((open) => !open)}
+        >
+          <span className={styles.startIcon}>
+            <Image src={`/icons/${theme}/TaskbarLogo.png`} width={16} height={16} alt={""}></Image>
+          </span>
+          <span>GuusOS</span>
+        </button>
+      </div>
 
       <div className={styles.windowList}>
-  {windows.map((window) => (
-    <div
-      key={window.id}
-      data-cy="taskbar-entry"
-      data-window-id={window.id}
-      data-active={window.active ? "true" : "false"}
-      className={`${styles.windowItem} ${
-        window.active
-          ? selectedTheme.taskbarWindowButtonActive
-          : selectedTheme.taskbarWindowButton
-      }`}
-    >
-      <button
-        type="button"
-        onClick={() => onWindowClick(window.id)}
-        className={styles.windowButton}
-      >
-        <span className={styles.windowIcon}>
-  {window.iconSrc ? (
-    <Image
-      src={window.iconSrc}
-      alt=""
-      className={styles.windowIconImage}
-      draggable={false}
-      width={32}
-      height={32}
-    />
-  ) : (
-    window.icon ?? "▣"
-  )}
-</span>
+        {windows.map((window) => (
+          <div
+            key={window.id}
+            data-cy="taskbar-entry"
+            data-window-id={window.id}
+            data-active={window.active ? "true" : "false"}
+            className={`${styles.windowItem} ${
+              window.active
+                ? selectedTheme.taskbarWindowButtonActive
+                : selectedTheme.taskbarWindowButton
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => onWindowClick(window.id)}
+              className={styles.windowButton}
+            >
+              <span className={styles.windowIcon}>
+                {window.iconSrc ? (
+                  <Image
+                    src={window.iconSrc}
+                    alt=""
+                    className={styles.windowIconImage}
+                    draggable={false}
+                    width={32}
+                    height={32}
+                  />
+                ) : (
+                  (window.icon ?? "▣")
+                )}
+              </span>
 
-        <span className={styles.windowTitle}>
-          {window.minimized ? `[${window.title}]` : window.title}
-        </span>
-      </button>
+              <span className={styles.windowTitle}>
+                {window.minimized ? `[${window.title}]` : window.title}
+              </span>
+            </button>
 
-      <button
-        type="button"
-        aria-label={`Close ${window.title}`}
-        data-cy="taskbar-entry-close"
-        className={styles.windowCloseButton}
-        onClick={(event) => {
-          event.stopPropagation();
-          onCloseWindow(window.id);
-        }}
-      >
-        ×
-      </button>
-    </div>
-  ))}
-</div>
+            <button
+              type="button"
+              aria-label={`Close ${window.title}`}
+              data-cy="taskbar-entry-close"
+              className={styles.windowCloseButton}
+              onClick={(event) => {
+                event.stopPropagation();
+                onCloseWindow(window.id);
+              }}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
 
       <div className={`${styles.tray} ${selectedTheme.taskbarTray}`}>
         <span>{theme}</span>

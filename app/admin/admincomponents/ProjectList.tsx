@@ -8,10 +8,9 @@ import { List, LayoutGrid } from "lucide-react";
 
 type View = "list" | "grid";
 
-export default function ProjectList({ projects }:Readonly<{ projects: Project[] }>) {
+export default function ProjectList({ projects }: Readonly<{ projects: Project[] }>) {
   const [items, setItems] = useState(projects);
-  const [view, setView] = useState<View>(("list"))
-
+  const [view, setView] = useState<View>("list");
 
   function handleCreated(newProject: Project) {
     setItems((prev) => [newProject, ...prev]);
@@ -19,7 +18,6 @@ export default function ProjectList({ projects }:Readonly<{ projects: Project[] 
 
   return (
     <div className="flex flex-col gap-8">
-      
       <div className="flex items-center justify-between gap-4">
         <div className="inline-flex rounded-md border border-neutral-800 bg-neutral-900/60 p-1.5">
           <button

@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./Features/Theme/ThemeProvider";
 
-
-
-
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfoliov2-brown-theta.vercel.app/"),
 
@@ -54,7 +50,6 @@ export const metadata: Metadata = {
     ],
   },
 
-
   robots: {
     index: true,
     follow: true,
@@ -67,12 +62,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={` h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col"><ThemeProvider>{children}</ThemeProvider></body>
+    <html lang="en" suppressHydrationWarning className={` h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }
