@@ -3,7 +3,7 @@
 import { Project, ProjectInputData } from "@/features/projects/types";
 import { useState, useTransition } from "react";
 import { createProject, updateProject } from "@/features/projects/actions";
-import { projectImage } from "@/app/Features/Images/actions";
+import { projectImage } from "@/features/images/imageUrls";
 import { X } from "lucide-react";
 import Image from "next/image";
 export default function EditProjectForm({
