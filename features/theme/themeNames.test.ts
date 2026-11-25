@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { isThemeName } from "./ThemeProvider";
+import { defaultTheme, isThemeName, themeNames } from "@/features/theme/themeNames";
 
 describe("isThemeName", () => {
   test.each(["Win98", "classicMac", "WinXP", "debug"])("accepts %s", (name) => {
@@ -8,5 +8,11 @@ describe("isThemeName", () => {
 
   test.each([null, "", "winxp", "Vista"])("rejects %s", (value) => {
     expect(isThemeName(value)).toBe(false);
+  });
+});
+
+describe("themeNames", () => {
+  test("contains the default theme", () => {
+    expect(themeNames).toContain(defaultTheme);
   });
 });
