@@ -1,7 +1,7 @@
 import { DisplayProject } from "@/app/Features/Projects/types";
 import ContactWindow from "../ContactWindow/ContactWindow";
 import ProjectWindow from "../ProjectWindow/ProjectWindow";
-import ThemeSwitcher from "../ui/ThemeSwitcher";
+import ThemeSwitcher from "@/components/ThemeSwitcher/ThemeSwitcher";
 
 export type WindowType = "theme-switcher" | "projects" | "about" | "contact";
 

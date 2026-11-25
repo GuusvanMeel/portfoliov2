@@ -7,13 +7,12 @@ import { Project } from "@/app/Features/Projects/types";
 import { useEffect, useState } from "react";
 import Taskbar, { TaskbarWindow } from "../taskbar/TaskBar";
 import DesktopIcon from "../ui/DesktopIcon";
-import ThemeSwitcher from "../ui/ThemeSwitcher";
+import ThemeSwitcher from "@/components/ThemeSwitcher/ThemeSwitcher";
 
-const DraggableWindow = dynamic(() => import("../windows/DraggableWindow"), {
+const DraggableWindow = dynamic(() => import("@/components/DraggableWindow/DraggableWindow"), {
   ssr: false,
 });
-import WindowFrame from "../windows/WindowFrame";
-import styles from "../windows/WindowFrame.module.css";
+import WindowFrame from "@/components/WindowFrame/WindowFrame";
 import dynamic from "next/dynamic";
 import { windowDefinitions, type WindowData, type WindowType } from "./windowDefinitions";
 import { projectImage } from "@/app/Features/Images/actions";
@@ -148,7 +147,7 @@ export default function Desktop({ projects }: Readonly<{ projects: Project[] }>)
     >
       <ThemeSwitcher></ThemeSwitcher>
 
-      <div className={styles.desktopIcons}>
+      <div>
         {desktopWindowIcons.map((desktopIcon) => (
           <DesktopIcon
             key={desktopIcon.id}
