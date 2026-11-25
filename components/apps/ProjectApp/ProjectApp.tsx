@@ -2,20 +2,23 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useTheme } from "@/features/theme/ThemeProvider";
-import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { projectImage } from "@/app/Features/Images/actions";
 import type { DisplayProject } from "@/app/Features/Projects/types";
-import styles from "./ProjectWindow.module.css";
+import { messages } from "@/content/en";
+import { useThemeDefinition } from "@/features/theme/useThemeDefinition";
+import styles from "./ProjectApp.module.css";
 
-const DEBUG_PROJECT_PERFORMANCE = process.env.NODE_ENV === "development";
-
-const DEBUG_HIDE_IMAGES = false;
-const DEBUG_HIDE_DESCRIPTION = false;
-const DEBUG_DISABLE_PROJECT_THEME_STYLING = false;
 type ProjectLayout = "landscape" | "block" | "mobile";
 
-export default function ProjectWindow({
+const text = messages.apps.project;
+
+const layoutButtons: { layout: ProjectLayout; label: string }[] = [
+  { layout: "landscape", label: text.layoutLandscape },
+  { layout: "block", label: text.layoutBlock },
+  { layout: "mobile", label: text.layoutMobile },
+];
+
+export default function ProjectApp({
   title,
   description,
   tags,
@@ -23,8 +26,7 @@ export default function ProjectWindow({
   duration,
   githubLink,
 }: Readonly<DisplayProject>) {
-  const { theme } = useTheme();
-  const selectedTheme = windowThemes[theme];
+  const { definition } = useThemeDefinition();
   const [layout, setLayout] = useState<ProjectLayout>("landscape");
 
   const imageClass = {
@@ -32,45 +34,29 @@ export default function ProjectWindow({
     block: styles.blockImage,
     mobile: styles.mobileImage,
   }[layout];
-  const projectImageTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING ? "" : selectedTheme.projectImage;
 
-  const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
-    ? ""
-    : selectedTheme.projectDescription;
   const image = (
-    <section className={styles.mediaSection}>
-      {DEBUG_PROJECT_PERFORMANCE && (
-        <div className={styles.debugBadge}>
-          layout: {imageClass} | image: {DEBUG_HIDE_IMAGES ? "off" : "on"}
-        </div>
-      )}
-
-      {DEBUG_HIDE_IMAGES ? (
-        <div className={`${styles.imageWrapper} ${imageClass} ${styles.debugImagePlaceholder}`}>
-          IMAGE DISABLED
-        </div>
-      ) : (
-        <div className={`${styles.imageWrapper} ${imageClass} ${projectImageTheme}`}>
-          <Image
-            src={projectImage.window(imageSrc)}
-            alt={title}
-            fill
-            sizes="(max-width: 1200px) 100vw, 900px"
-            className={styles.image}
-          />
-        </div>
-      )}
+    <section>
+      <div className={`${styles.imageWrapper} ${imageClass} ${definition.project.image}`}>
+        <Image
+          src={projectImage.window(imageSrc)}
+          alt={title}
+          fill
+          sizes="(max-width: 1200px) 100vw, 900px"
+          className={styles.image}
+        />
+      </div>
     </section>
   );
 
   const meta = (
     <div className={styles.meta}>
       <div className={styles.metaGroup}>
-        <span className={styles.metaLabel}>Tech used</span>
+        <span className={styles.metaLabel}>{text.techUsed}</span>
 
         <div className={styles.chipList}>
           {tags.map((tag) => (
-            <span key={tag} className={`${styles.tag} ${selectedTheme.projectTag}`}>
+            <span key={tag} className={`${styles.tag} ${definition.project.tag}`}>
               {tag}
             </span>
           ))}
@@ -78,9 +64,9 @@ export default function ProjectWindow({
       </div>
 
       <div className={styles.metaGroup}>
-        <span className={styles.metaLabel}>Time spent</span>
+        <span className={styles.metaLabel}>{text.timeSpent}</span>
 
-        <span className={`${styles.duration} ${selectedTheme.projectDuration}`}>{duration}</span>
+        <span className={`${styles.duration} ${definition.project.duration}`}>{duration}</span>
       </div>
 
       {githubLink && (
@@ -88,54 +74,39 @@ export default function ProjectWindow({
           href={githubLink}
           target="_blank"
           rel="noreferrer"
-          className={`${styles.link} ${selectedTheme.projectLink}`}
+          className={`${styles.link} ${definition.project.link}`}
         >
-          ◈ View source on GitHub
+          {text.viewSource}
         </a>
       )}
     </div>
   );
 
   const descriptionBlock = (
-    <div className={`${styles.descriptionBlock} ${selectedTheme.projectDescription}`}>
-      {!DEBUG_HIDE_DESCRIPTION && (
-        <div className={styles.descriptionSection}>
-          <span className={styles.sectionTitle}>Description</span>
+    <div className={`${styles.descriptionBlock} ${definition.project.description}`}>
+      <div>
+        <span className={styles.sectionTitle}>{text.description}</span>
 
-          <div className={`${styles.descriptionBlock} ${projectDescriptionTheme}`}>
-            <p className={styles.description}>{description}</p>
-          </div>
+        <div className={`${styles.descriptionBlock} ${definition.project.description}`}>
+          <p className={styles.description}>{description}</p>
         </div>
-      )}
+      </div>
     </div>
   );
 
   return (
     <article className={styles.project}>
       <div className={styles.layoutControls}>
-        <button
-          type="button"
-          className={`${styles.layoutButton} ${selectedTheme.button}`}
-          onClick={() => setLayout("landscape")}
-        >
-          Landscape
-        </button>
-
-        <button
-          type="button"
-          className={`${styles.layoutButton} ${selectedTheme.button}`}
-          onClick={() => setLayout("block")}
-        >
-          Block
-        </button>
-
-        <button
-          type="button"
-          className={`${styles.layoutButton} ${selectedTheme.button}`}
-          onClick={() => setLayout("mobile")}
-        >
-          Mobile
-        </button>
+        {layoutButtons.map((button) => (
+          <button
+            key={button.layout}
+            type="button"
+            className={`${styles.layoutButton} ${definition.controls.button}`}
+            onClick={() => setLayout(button.layout)}
+          >
+            {button.label}
+          </button>
+        ))}
       </div>
 
       {layout === "landscape" && (
@@ -148,7 +119,7 @@ export default function ProjectWindow({
             <div className={styles.sideInfo}>
               {meta}
 
-              <span className={styles.sectionTitle}>Description</span>
+              <span className={styles.sectionTitle}>{text.description}</span>
               {descriptionBlock}
             </div>
           </div>
@@ -164,7 +135,7 @@ export default function ProjectWindow({
 
           <div className={styles.contentColumn}>
             <h2 className={styles.title}>{title}</h2>
-            <span className={styles.sectionTitle}>Description</span>
+            <span className={styles.sectionTitle}>{text.description}</span>
             {descriptionBlock}
           </div>
         </section>
@@ -178,7 +149,7 @@ export default function ProjectWindow({
             <h2 className={styles.title}>{title}</h2>
             {meta}
 
-            <span className={styles.sectionTitle}>Description</span>
+            <span className={styles.sectionTitle}>{text.description}</span>
             {descriptionBlock}
           </div>
         </section>
