@@ -5,27 +5,29 @@
 - Date: 2026-11-25 (after spec 001 PR 2, the foundation refactor)
 - Source: [GitHub issues of GuusvanMeel/portfoliov2](https://github.com/GuusvanMeel/portfoliov2/issues),
   checked against the code on `Development`
-- Open GitHub issues: 13 — high 3 · medium 6 · low 4 (of which #17 is done in code and proposed
-  for closing)
-- Follow-ups from spec 001: 15 (`F-1` … `F-15`), not yet on GitHub
+- Open GitHub issues after the sync: 25 — high 5 · medium 10 · low 10 (12 existing issues plus
+  13 new follow-up issues; #17 was closed as done in code)
+- Follow-ups from spec 001: 15 (`F-1` … `F-15`); 13 are on GitHub as #41–#53, F-11 is
+  informational and F-12 is covered by #16
+- Still open for the maintainer: #22 — remove the `wontfix` label or close the issue
 
 ## Recommended spec order
 
 1. **002 Theme and preferences in cookies** — #20, #22. Fixes the hydration risk at the root
    (constitution VI); later specs that add preferences build on it.
-2. **003 Admin security hardening** — F-4, F-5, F-3. Auth checks in every mutation, server-side
+2. **003 Admin security hardening** — F-4 (#44), F-5 (#45), F-3 (#43). Auth checks in every mutation, server-side
    sign-in, a separate test database. Depends on nothing; high risk while open.
-3. **004 About Me and contact content** — #16, F-12, F-9. Replaces the visible placeholder and gives
+3. **004 About Me and contact content** — #16, F-12, F-9 (#49). Replaces the visible placeholder and gives
    the start menu items real actions.
 4. **005 Mobile OS** — #30. Reuses the chrome-free apps from spec 001.
 5. **006 Window chrome** — #11 (active/inactive title bars, maximize), #32, #23. Depends on 002.
 6. **007 Drag library experiment** — #21 (its own spec, constitution XI). Before or with 006.
-7. **008 More themes** — #11 (Vista, 7, Netscape), F-1, F-7. Depends on 006 for button variants.
+7. **008 More themes** — #11 (Vista, 7, Netscape), F-1 (#41), F-7 (#47). Depends on 006 for button variants.
 8. **009 Boot screen** — #19.
 9. **010 Project versions** — #15 (v1/v2 windows).
 10. **011 Space marine pinball** — #12.
-11. **Tech debt, any time** — F-2, F-6, F-8, F-10, F-11, F-13, F-14, F-15.
-12. **Needs a decision first** — #24, F-10.
+11. **Tech debt, any time** — F-2 (#42), F-6 (#46), F-8 (#48), F-10 (#50), F-11, F-13 (#51), F-14 (#52), F-15 (#53).
+12. **Needs a decision first** — #24, F-10 (#50).
 
 ## Items
 
@@ -114,10 +116,10 @@
 
 ### #17 Add Taskbar
 
-- Type: feature · Priority: low · Status: done in code
+- Type: feature · Priority: low · Status: done in code (closed 2026-11-25)
 - Done: taskbar with start menu, open windows, active state, close buttons and tray; follows the
   theme; minimized windows stay in the taskbar
-- Remaining: – (start menu items without actions are tracked as F-9)
+- Remaining: – (start menu items without actions are tracked as F-9 (#49))
 - Depends on: –
 - Source: GitHub #17 · Suggested spec: – (close)
 
@@ -151,26 +153,26 @@
 
 Left out of spec 001 because it allowed no visible, database, authentication or behaviour changes.
 
-### F-1 Missing taskbar and login icons for classicMac and debug
+### F-1 (#41) Missing taskbar and login icons for classicMac and debug
 
 - Type: bug · Priority: medium
 - `/icons/classicMac/*` and `/icons/debug/*` do not exist, so those themes show broken images in
   the taskbar and start menu. There is also an empty, misspelled `public/icons/ClassisMac/` folder.
 - Left out because: adding icons is a visible change.
 
-### F-2 Rename database fields `imagesrc` and `Github_Link`
+### F-2 (#42) Rename database fields `imagesrc` and `Github_Link`
 
 - Type: tech-debt · Priority: low
 - Inconsistent column names; mapped in `features/projects/mappers.ts`.
 - Left out because: no database changes in spec 001 (needs a migration).
 
-### F-3 Separate test database for end-to-end tests
+### F-3 (#43) Separate test database for end-to-end tests
 
 - Type: tech-debt · Priority: high
 - Admin tests write `CYPRESS TEST` projects to the live database (cleaned up afterwards).
 - Left out because: no database changes in spec 001.
 
-### F-4 Admin check in every data-changing server action
+### F-4 (#44) Admin check in every data-changing server action
 
 - Type: bug (security) · Priority: high
 - `createProject`, `updateProject`, `updateProjectVisibility` and `deleteProject` in
@@ -178,36 +180,36 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
   and row-level security only (constitution V asks for a check in every mutation).
 - Left out because: no authentication changes in spec 001.
 
-### F-5 Server-side sign-in
+### F-5 (#45) Server-side sign-in
 
 - Type: tech-debt (security) · Priority: medium
 - `app/login/page.tsx` signs in with the browser Supabase client.
 - Left out because: no authentication changes in spec 001.
 
-### F-6 Typo `supebase_url` in `lib/supabase/server.ts`
+### F-6 (#46) Typo `supebase_url` in `lib/supabase/server.ts`
 
 - Type: tech-debt · Priority: low
 - Left out because: `lib/supabase/*` was frozen in spec 001.
 
-### F-7 Invalid debug theme class `outline-dotted-[#00ffff]`
+### F-7 (#47) Invalid debug theme class `outline-dotted-[#00ffff]`
 
 - Type: bug · Priority: low
 - Not a valid Tailwind class, so the debug theme's dragging outline has no colour.
 - Left out because: fixing it is a visible change.
 
-### F-8 Tailwind class sorting
+### F-8 (#48) Tailwind class sorting
 
 - Type: tech-debt · Priority: low
 - Add `prettier-plugin-tailwindcss` and sort classes in one formatting commit.
 - Left out because: reorders every class string, too noisy next to the refactor.
 
-### F-9 Start menu items without actions
+### F-9 (#49) Start menu items without actions
 
 - Type: bug · Priority: medium
 - "About me", "Projects" and "Theme switcher" in the start menu do nothing.
 - Left out because: behaviour change.
 
-### F-10 Always-visible theme switcher vs theme switcher window
+### F-10 (#50) Always-visible theme switcher vs theme switcher window
 
 - Type: enhancement · Priority: low · Needs decision
 - The desktop always shows theme buttons at the top-left, and there is also a theme switcher window.
@@ -227,14 +229,14 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
 - The About window shows "About me content". Covered by #16.
 - Left out because: content change.
 
-### F-13 Project window layout buttons
+### F-13 (#51) Project window layout buttons
 
 - Type: enhancement · Priority: low · Needs decision
 - Visitors see Landscape/Block/Mobile buttons that look like a development tool; decide whether the
   layout should follow the image instead.
 - Left out because: visible change.
 
-### F-14 Make the SonarQube quality gate blocking again
+### F-14 (#52) Make the SonarQube quality gate blocking again
 
 - Type: tech-debt · Priority: medium
 - Made non-blocking (`continue-on-error: true`) during PR 2 at the maintainer's request after the
@@ -242,7 +244,7 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
   also check that the Vitest and Cypress coverage reports reach Sonar (PR #39 reported 0.0%).
 - Left out because: maintainer decision.
 
-### F-15 Desktop flows barely show up in Cypress coverage
+### F-15 (#53) Desktop flows barely show up in Cypress coverage
 
 - Type: tech-debt · Priority: low
 - The Cypress coverage report covers few desktop lines although the desktop suite exercises them;
@@ -253,40 +255,68 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
 
 Nothing is applied until each row is approved (FR-023b).
 
-| #   | Issue | Change                                                                                                                                                                                                                                                                                                       | Reason                                  | Approved |
-| --- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | -------- |
-| 1   | –     | Create labels `priority: high`, `priority: medium`, `priority: low`                                                                                                                                                                                                                                          | needed for rows below                   | ☐        |
-| 2   | #20   | add `priority: high`                                                                                                                                                                                                                                                                                         | hydration bug                           | ☐        |
-| 3   | #16   | tick "Create Contact window", "Style content inside WindowFrame"; add `priority: high`                                                                                                                                                                                                                       | done in code                            | ☐        |
-| 4   | #30   | add `priority: high`                                                                                                                                                                                                                                                                                         | mobile visitors see the desktop         | ☐        |
-| 5   | #11   | tick "Windows 98", "Windows XP", "Classic Mac", "Add a theme switcher", "Save selected theme in localStorage or database"; add `priority: medium`                                                                                                                                                            | done in code                            | ☐        |
-| 6   | #15   | tick the first five checkboxes; add `priority: medium`                                                                                                                                                                                                                                                       | done in code; only v1/v2 windows remain | ☐        |
-| 7   | #19   | translate body to English ("Also hide any loading times."), keep the original in `<details>`; add `priority: medium`                                                                                                                                                                                         | constitution VII                        | ☐        |
-| 8   | #22   | add `priority: medium`; remove `wontfix` **or** close — maintainer chooses                                                                                                                                                                                                                                   | label contradicts open state            | ☐        |
-| 9   | #23   | add `priority: medium`                                                                                                                                                                                                                                                                                       | –                                       | ☐        |
-| 10  | #32   | add `priority: medium`                                                                                                                                                                                                                                                                                       | –                                       | ☐        |
-| 11  | #17   | tick all three checkboxes and close with comment: "Done in code: the taskbar (`components/Taskbar/Taskbar.tsx`) has a start menu, open-window entries with active state and close buttons, follows the selected theme and keeps minimized windows. Start menu items without actions are tracked separately." | done in code                            | ☐        |
-| 12  | #21   | add `priority: low`                                                                                                                                                                                                                                                                                          | –                                       | ☐        |
-| 13  | #24   | add `priority: low`                                                                                                                                                                                                                                                                                          | needs decision                          | ☐        |
-| 14  | #12   | add `priority: low`                                                                                                                                                                                                                                                                                          | –                                       | ☐        |
-| 15  | F-1   | create issue (label `bug`, `priority: medium`)                                                                                                                                                                                                                                                               | follow-up                               | ☐        |
-| 16  | F-2   | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ☐        |
-| 17  | F-3   | create issue (`enhancement`, `priority: high`)                                                                                                                                                                                                                                                               | follow-up                               | ☐        |
-| 18  | F-4   | create issue (`bug`, `priority: high`)                                                                                                                                                                                                                                                                       | follow-up                               | ☐        |
-| 19  | F-5   | create issue (`enhancement`, `priority: medium`)                                                                                                                                                                                                                                                             | follow-up                               | ☐        |
-| 20  | F-6   | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ☐        |
-| 21  | F-7   | create issue (`bug`, `priority: low`)                                                                                                                                                                                                                                                                        | follow-up                               | ☐        |
-| 22  | F-8   | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ☐        |
-| 23  | F-9   | create issue (`bug`, `priority: medium`)                                                                                                                                                                                                                                                                     | follow-up                               | ☐        |
-| 24  | F-10  | create issue (`enhancement`, `question`, `priority: low`)                                                                                                                                                                                                                                                    | follow-up                               | ☐        |
-| 25  | F-12  | no new issue: covered by #16                                                                                                                                                                                                                                                                                 | duplicate                               | –        |
-| 26  | F-11  | no new issue: informational                                                                                                                                                                                                                                                                                  | –                                       | –        |
-| 27  | F-13  | create issue (`enhancement`, `question`, `priority: low`)                                                                                                                                                                                                                                                    | follow-up                               | ☐        |
-| 28  | F-14  | create issue (`enhancement`, `priority: medium`)                                                                                                                                                                                                                                                             | follow-up                               | ☐        |
-| 29  | F-15  | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ☐        |
+| #   | Issue      | Change                                                                                                                                                                                                                                                                                                       | Reason                                  | Approved                                |
+| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | --------------------------------------- |
+| 1   | –          | Create labels `priority: high`, `priority: medium`, `priority: low`                                                                                                                                                                                                                                          | needed for rows below                   | ✅                                      |
+| 2   | #20        | add `priority: high`                                                                                                                                                                                                                                                                                         | hydration bug                           | ✅                                      |
+| 3   | #16        | tick "Create Contact window", "Style content inside WindowFrame"; add `priority: high`                                                                                                                                                                                                                       | done in code                            | ✅                                      |
+| 4   | #30        | add `priority: high`                                                                                                                                                                                                                                                                                         | mobile visitors see the desktop         | ✅                                      |
+| 5   | #11        | tick "Windows 98", "Windows XP", "Classic Mac", "Add a theme switcher", "Save selected theme in localStorage or database"; add `priority: medium`                                                                                                                                                            | done in code                            | ✅                                      |
+| 6   | #15        | tick the first five checkboxes; add `priority: medium`                                                                                                                                                                                                                                                       | done in code; only v1/v2 windows remain | ✅                                      |
+| 7   | #19        | translate body to English ("Also hide any loading times."), keep the original in `<details>`; add `priority: medium`                                                                                                                                                                                         | constitution VII                        | ✅                                      |
+| 8   | #22        | add `priority: medium`; remove `wontfix` **or** close — maintainer chooses                                                                                                                                                                                                                                   | label contradicts open state            | ✅ priority only; wontfix/close pending |
+| 9   | #23        | add `priority: medium`                                                                                                                                                                                                                                                                                       | –                                       | ✅                                      |
+| 10  | #32        | add `priority: medium`                                                                                                                                                                                                                                                                                       | –                                       | ✅                                      |
+| 11  | #17        | tick all three checkboxes and close with comment: "Done in code: the taskbar (`components/Taskbar/Taskbar.tsx`) has a start menu, open-window entries with active state and close buttons, follows the selected theme and keeps minimized windows. Start menu items without actions are tracked separately." | done in code                            | ✅                                      |
+| 12  | #21        | add `priority: low`                                                                                                                                                                                                                                                                                          | –                                       | ✅                                      |
+| 13  | #24        | add `priority: low`                                                                                                                                                                                                                                                                                          | needs decision                          | ✅                                      |
+| 14  | #12        | add `priority: low`                                                                                                                                                                                                                                                                                          | –                                       | ✅                                      |
+| 15  | F-1 → #41  | create issue (label `bug`, `priority: medium`)                                                                                                                                                                                                                                                               | follow-up                               | ✅                                      |
+| 16  | F-2 → #42  | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ✅                                      |
+| 17  | F-3 → #43  | create issue (`enhancement`, `priority: high`)                                                                                                                                                                                                                                                               | follow-up                               | ✅                                      |
+| 18  | F-4 → #44  | create issue (`bug`, `priority: high`)                                                                                                                                                                                                                                                                       | follow-up                               | ✅                                      |
+| 19  | F-5 → #45  | create issue (`enhancement`, `priority: medium`)                                                                                                                                                                                                                                                             | follow-up                               | ✅                                      |
+| 20  | F-6 → #46  | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ✅                                      |
+| 21  | F-7 → #47  | create issue (`bug`, `priority: low`)                                                                                                                                                                                                                                                                        | follow-up                               | ✅                                      |
+| 22  | F-8 → #48  | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ✅                                      |
+| 23  | F-9 → #49  | create issue (`bug`, `priority: medium`)                                                                                                                                                                                                                                                                     | follow-up                               | ✅                                      |
+| 24  | F-10 → #50 | create issue (`enhancement`, `question`, `priority: low`)                                                                                                                                                                                                                                                    | follow-up                               | ✅                                      |
+| 25  | F-12       | no new issue: covered by #16                                                                                                                                                                                                                                                                                 | duplicate                               | –                                       |
+| 26  | F-11       | no new issue: informational                                                                                                                                                                                                                                                                                  | –                                       | –                                       |
+| 27  | F-13 → #51 | create issue (`enhancement`, `question`, `priority: low`)                                                                                                                                                                                                                                                    | follow-up                               | ✅                                      |
+| 28  | F-14 → #52 | create issue (`enhancement`, `priority: medium`)                                                                                                                                                                                                                                                             | follow-up                               | ✅                                      |
+| 29  | F-15 → #53 | create issue (`enhancement`, `priority: low`)                                                                                                                                                                                                                                                                | follow-up                               | ✅                                      |
 
 New issues get a link back to this file.
 
 ## Applied changes log
 
-_Empty until changes are approved and applied._
+- 2026-11-25T21:08:26Z — row 1: created label `priority: high`
+- 2026-11-25T21:08:27Z — row 1: created label `priority: medium`
+- 2026-11-25T21:08:28Z — row 1: created label `priority: low`
+- 2026-11-25T21:08:30Z — row 2: #20 added `priority: high`
+- 2026-11-25T21:08:32Z — row 4: #30 added `priority: high`
+- 2026-11-25T21:08:34Z — row 9: #23 added `priority: medium`
+- 2026-11-25T21:08:37Z — row 10: #32 added `priority: medium`
+- 2026-11-25T21:08:40Z — row 8: #22 added `priority: medium`
+- 2026-11-25T21:08:41Z — row 12: #21 added `priority: low`
+- 2026-11-25T21:08:44Z — row 13: #24 added `priority: low`
+- 2026-11-25T21:08:47Z — row 14: #12 added `priority: low`
+- 2026-11-25T21:09:02Z — row 3: #16 ticked "Create Contact window", "Style content inside WindowFrame"; added `priority: high`
+- 2026-11-25T21:09:04Z — row 5: #11 ticked 5 checkboxes (Win98, XP, Classic Mac, theme switcher, saved theme); added `priority: medium`
+- 2026-11-25T21:09:07Z — row 6: #15 ticked the first five checkboxes; added `priority: medium`
+- 2026-11-25T21:09:17Z — row 7: #19 body translated to English (original kept in `<details>`); added `priority: medium`
+- 2026-11-25T21:09:23Z — row 11: #17 ticked all three checkboxes, added `priority: low`, closed with comment
+- 2026-11-25T21:10:17Z — row 15: created #41 for F-1
+- 2026-11-25T21:10:17Z — row 16: created #42 for F-2
+- 2026-11-25T21:10:17Z — row 17: created #43 for F-3
+- 2026-11-25T21:10:17Z — row 18: created #44 for F-4
+- 2026-11-25T21:10:17Z — row 19: created #45 for F-5
+- 2026-11-25T21:10:17Z — row 20: created #46 for F-6
+- 2026-11-25T21:10:17Z — row 21: created #47 for F-7
+- 2026-11-25T21:10:17Z — row 22: created #48 for F-8
+- 2026-11-25T21:10:17Z — row 23: created #49 for F-9
+- 2026-11-25T21:10:17Z — row 24: created #50 for F-10
+- 2026-11-25T21:10:17Z — row 27: created #51 for F-13
+- 2026-11-25T21:10:17Z — row 28: created #52 for F-14
+- 2026-11-25T21:10:17Z — row 29: created #53 for F-15
