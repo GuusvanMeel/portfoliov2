@@ -1,7 +1,5 @@
-// app/robots.ts
 import type { MetadataRoute } from "next";
-
-const baseUrl = "https://portfoliov2-brown-theta.vercel.app";
+import { siteUrl } from "@/config/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -10,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/login"],
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }
