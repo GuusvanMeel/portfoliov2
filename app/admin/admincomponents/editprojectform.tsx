@@ -2,7 +2,7 @@
 
 import { Project, ProjectInputData } from "@/features/projects/types";
 import { useState, useTransition } from "react";
-import { createProject, updateProject } from "@/app/Features/Projects/actions";
+import { createProject, updateProject } from "@/features/projects/actions";
 import { projectImage } from "@/app/Features/Images/actions";
 import { X } from "lucide-react";
 import Image from "next/image";

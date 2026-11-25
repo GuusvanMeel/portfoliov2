@@ -1,5 +1,5 @@
 import Desktop from "@/components/Desktop/Desktop";
-import { getVisibleProjects } from "@/app/Features/Projects/actions";
+import { getVisibleProjects } from "@/features/projects/actions";
 import { messages } from "@/content/en";
 
 const intro = messages.site.intro;
