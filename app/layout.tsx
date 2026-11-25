@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider } from "./Features/Theme/ThemeProvider";
+import { ThemeProvider } from "@/features/theme/ThemeProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfoliov2-brown-theta.vercel.app/"),

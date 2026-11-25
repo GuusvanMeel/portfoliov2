@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { projectImage } from "@/app/Features/Images/actions";
 import type { DisplayProject } from "@/app/Features/Projects/types";
