@@ -56,3 +56,7 @@ lighthouse-report.json
 .claude/settings.local.json
 cypress/videos/
 cypress/screenshots/
+
+# Vitest browser-mode failure artifacts
+__screenshots__/
+.vitest-attachments/
