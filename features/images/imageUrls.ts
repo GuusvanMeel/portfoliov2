@@ -15,7 +15,7 @@ function cloudinaryImage(url: string, transformation: string) {
 function supabasePublicImage(bucket: string, pathOrUrl: string) {
   if (!pathOrUrl) return "";
 
-  // Als het al een volledige URL is, gewoon gebruiken
+  // A full URL is used as it is.
   if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
     return pathOrUrl;
   }

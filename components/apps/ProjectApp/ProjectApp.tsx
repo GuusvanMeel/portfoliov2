@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { projectImage } from "@/app/Features/Images/actions";
+import { projectImage } from "@/features/images/imageUrls";
 import type { DisplayProject } from "@/features/projects/types";
 import { messages } from "@/content/en";
 import { useThemeDefinition } from "@/features/theme/useThemeDefinition";

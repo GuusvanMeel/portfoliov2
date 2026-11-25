@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { projectImage } from "@/app/Features/Images/actions";
+import { projectImage } from "@/features/images/imageUrls";
 import type { Project } from "@/features/projects/types";
 import DesktopIcon from "@/components/DesktopIcon/DesktopIcon";
 import Taskbar, { type TaskbarWindow } from "@/components/Taskbar/Taskbar";

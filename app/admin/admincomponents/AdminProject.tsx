@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import EditProjectForm from "./editprojectform";
 import { deleteProject, updateProjectVisibility } from "@/features/projects/actions";
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
-import { projectImage } from "@/app/Features/Images/actions";
+import { projectImage } from "@/features/images/imageUrls";
 
 type View = "list" | "grid";
 type ProjectThumbProps = Readonly<{
