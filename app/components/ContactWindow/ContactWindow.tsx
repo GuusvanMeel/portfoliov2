@@ -84,15 +84,11 @@ export default function ContactWindow() {
       </button>
 
       {status === "sent" && (
-        <p className={`${styles.status} ${selectedTheme.projectTag}`}>
-          Message sent.
-        </p>
+        <p className={`${styles.status} ${selectedTheme.projectTag}`}>Message sent.</p>
       )}
 
       {status === "error" && (
-        <p className={`${styles.status} ${selectedTheme.projectTag}`}>
-          {errorMessage}
-        </p>
+        <p className={`${styles.status} ${selectedTheme.projectTag}`}>{errorMessage}</p>
       )}
     </form>
   );

@@ -1,1 +1,1 @@
-export type ThemeName = "Win98" | "classicMac"| "WinXP" | "debug";
+export type ThemeName = "Win98" | "classicMac" | "WinXP" | "debug";

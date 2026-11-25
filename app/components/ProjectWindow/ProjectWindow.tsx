@@ -32,39 +32,36 @@ export default function ProjectWindow({
     block: styles.blockImage,
     mobile: styles.mobileImage,
   }[layout];
-const projectImageTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
-  ? ""
-  : selectedTheme.projectImage;
+  const projectImageTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING ? "" : selectedTheme.projectImage;
 
-const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
-  ? ""
-  : selectedTheme.projectDescription;
+  const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
+    ? ""
+    : selectedTheme.projectDescription;
   const image = (
-<section className={styles.mediaSection}>
-  {DEBUG_PROJECT_PERFORMANCE && (
-    <div className={styles.debugBadge}>
-      layout: {imageClass} | image: {DEBUG_HIDE_IMAGES ? "off" : "on"}
-    </div>
-  )}
+    <section className={styles.mediaSection}>
+      {DEBUG_PROJECT_PERFORMANCE && (
+        <div className={styles.debugBadge}>
+          layout: {imageClass} | image: {DEBUG_HIDE_IMAGES ? "off" : "on"}
+        </div>
+      )}
 
-  {DEBUG_HIDE_IMAGES ? (
-    <div
-      className={`${styles.imageWrapper} ${imageClass} ${styles.debugImagePlaceholder}`}
-    >
-      IMAGE DISABLED
-    </div>
-  ) : (
-    <div className={`${styles.imageWrapper} ${imageClass} ${projectImageTheme}`}>
-      <Image
-        src={projectImage.window(imageSrc)}
-        alt={title}
-        fill
-        sizes="(max-width: 1200px) 100vw, 900px"
-        className={styles.image}
-      />
-    </div>
-  )}
-</section>  );
+      {DEBUG_HIDE_IMAGES ? (
+        <div className={`${styles.imageWrapper} ${imageClass} ${styles.debugImagePlaceholder}`}>
+          IMAGE DISABLED
+        </div>
+      ) : (
+        <div className={`${styles.imageWrapper} ${imageClass} ${projectImageTheme}`}>
+          <Image
+            src={projectImage.window(imageSrc)}
+            alt={title}
+            fill
+            sizes="(max-width: 1200px) 100vw, 900px"
+            className={styles.image}
+          />
+        </div>
+      )}
+    </section>
+  );
 
   const meta = (
     <div className={styles.meta}>
@@ -73,10 +70,7 @@ const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
 
         <div className={styles.chipList}>
           {tags.map((tag) => (
-            <span
-              key={tag}
-              className={`${styles.tag} ${selectedTheme.projectTag}`}
-            >
+            <span key={tag} className={`${styles.tag} ${selectedTheme.projectTag}`}>
               {tag}
             </span>
           ))}
@@ -86,9 +80,7 @@ const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
       <div className={styles.metaGroup}>
         <span className={styles.metaLabel}>Time spent</span>
 
-        <span className={`${styles.duration} ${selectedTheme.projectDuration}`}>
-          {duration}
-        </span>
+        <span className={`${styles.duration} ${selectedTheme.projectDuration}`}>{duration}</span>
       </div>
 
       {githubLink && (
@@ -105,18 +97,16 @@ const projectDescriptionTheme = DEBUG_DISABLE_PROJECT_THEME_STYLING
   );
 
   const descriptionBlock = (
-    <div
-      className={`${styles.descriptionBlock} ${selectedTheme.projectDescription}`}
-    >
+    <div className={`${styles.descriptionBlock} ${selectedTheme.projectDescription}`}>
       {!DEBUG_HIDE_DESCRIPTION && (
-  <div className={styles.descriptionSection}>
-    <span className={styles.sectionTitle}>Description</span>
+        <div className={styles.descriptionSection}>
+          <span className={styles.sectionTitle}>Description</span>
 
-    <div className={`${styles.descriptionBlock} ${projectDescriptionTheme}`}>
-      <p className={styles.description}>{description}</p>
-    </div>
-  </div>
-)}
+          <div className={`${styles.descriptionBlock} ${projectDescriptionTheme}`}>
+            <p className={styles.description}>{description}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 

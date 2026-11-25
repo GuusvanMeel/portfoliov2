@@ -9,10 +9,7 @@ function getSupabaseUrl() {
 function cloudinaryImage(url: string, transformation: string) {
   if (!url.includes("/image/upload/")) return url;
 
-  return url.replace(
-    "/image/upload/",
-    `/image/upload/${transformation}/`
-  );
+  return url.replace("/image/upload/", `/image/upload/${transformation}/`);
 }
 
 function supabasePublicImage(bucket: string, pathOrUrl: string) {
@@ -29,18 +26,13 @@ function supabasePublicImage(bucket: string, pathOrUrl: string) {
 }
 
 export const projectImage = {
-  list: (url: string) =>
-    cloudinaryImage(url, "f_auto,q_auto,w_128,h_128,c_fill"),
+  list: (url: string) => cloudinaryImage(url, "f_auto,q_auto,w_128,h_128,c_fill"),
 
-  grid: (url: string) =>
-    cloudinaryImage(url, "f_auto,q_auto,w_800,h_450,c_fill"),
+  grid: (url: string) => cloudinaryImage(url, "f_auto,q_auto,w_800,h_450,c_fill"),
 
-  formPreview: (url: string) =>
-    cloudinaryImage(url, "f_auto,q_auto,w_600,h_300,c_fill"),
+  formPreview: (url: string) => cloudinaryImage(url, "f_auto,q_auto,w_600,h_300,c_fill"),
 
-  window: (url: string) =>
-    cloudinaryImage(url, "f_auto,q_auto,w_1000,c_limit"),
+  window: (url: string) => cloudinaryImage(url, "f_auto,q_auto,w_1000,c_limit"),
 
-  desktopIcon: (pathOrUrl: string) =>
-    supabasePublicImage("DesktopIcons", pathOrUrl),
+  desktopIcon: (pathOrUrl: string) => supabasePublicImage("DesktopIcons", pathOrUrl),
 };

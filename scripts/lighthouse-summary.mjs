@@ -47,24 +47,19 @@ for (const run of representativeRuns.values()) {
   const scores = [performance, accessibility, bestPractices, seo];
 
   const shouldUploadReport = scores.some(
-    (score) => typeof score === "number" && score < REPORT_THRESHOLD
+    (score) => typeof score === "number" && score < REPORT_THRESHOLD,
   );
 
   const routeName = run.url.replace("http://localhost:3000", "") || "/";
   const displayName = routeName === "/" ? "home" : routeName;
 
-  const safeName = displayName
-    .replaceAll("/", "_")
-    .replace(/^_$/, "home");
+  const safeName = displayName.replaceAll("/", "_").replace(/^_$/, "home");
 
   if (shouldUploadReport) {
     needsReport = true;
 
     if (run.htmlPath && fs.existsSync(run.htmlPath)) {
-      fs.copyFileSync(
-        run.htmlPath,
-        path.join(selectedReportsDir, `${safeName}-lighthouse.html`)
-      );
+      fs.copyFileSync(run.htmlPath, path.join(selectedReportsDir, `${safeName}-lighthouse.html`));
     }
   }
 
@@ -82,4 +77,3 @@ if (process.env.GITHUB_STEP_SUMMARY) {
 if (process.env.GITHUB_OUTPUT) {
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `needs_report=${needsReport}\n`);
 }
-

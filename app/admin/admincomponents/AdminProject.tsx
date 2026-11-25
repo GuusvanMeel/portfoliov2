@@ -6,7 +6,6 @@ import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/
 import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
 import { projectImage } from "@/app/Features/Images/actions";
 
-
 type View = "list" | "grid";
 type ProjectThumbProps = Readonly<{
   imageSrc?: string | null;
@@ -18,11 +17,7 @@ function ProjectThumb({ imageSrc, className }: ProjectThumbProps) {
   if (hasImage) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={imageSrc!}
-        alt="Project preview"
-        className={className}
-      />
+      <img src={imageSrc!} alt="Project preview" className={className} />
     );
   }
 
@@ -39,7 +34,7 @@ export default function AdminProject({
   view = "list",
   OnCloseCreate,
   OnCreated,
-}:Readonly<{
+}: Readonly<{
   project: Project | null;
   view?: View;
   OnCloseCreate?: () => void;
@@ -116,11 +111,13 @@ export default function AdminProject({
   const hasGithub = Boolean(localProject.githubLink);
 
   const VisibilityPill = (
-    <span data-cy="visibility-pill"
-      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${localProject.isVisible
-        ? "border-green-700/60 text-green-400 bg-green-900/20"
-        : "border-red-700/60 text-red-400 bg-red-900/20"
-        }`}
+    <span
+      data-cy="visibility-pill"
+      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border ${
+        localProject.isVisible
+          ? "border-green-700/60 text-green-400 bg-green-900/20"
+          : "border-red-700/60 text-red-400 bg-red-900/20"
+      }`}
     >
       {localProject.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
       {localProject.isVisible ? "Visible" : "Hidden"}
@@ -140,14 +137,16 @@ export default function AdminProject({
           <FolderGit2 size={18} />
         </a>
       )}
-      <button data-cy="visibility-toggle"
+      <button
+        data-cy="visibility-toggle"
         onClick={handleToggle}
         title={localProject.isVisible ? "Hide" : "Show"}
         className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
       >
         {localProject.isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
       </button>
-      <button data-cy="edit-project"
+      <button
+        data-cy="edit-project"
         onClick={() => setOpen(true)}
         title="Edit"
         className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
@@ -165,8 +164,6 @@ export default function AdminProject({
     </div>
   );
 
-
-
   const EditModal = open && (
     <EditProjectForm
       project={localProject}
@@ -181,8 +178,11 @@ export default function AdminProject({
   // ---------- GRID VIEW ----------
   if (view === "grid") {
     return (
-      <div data-cy="admin-project"
-  data-project-id={localProject.id} className="group flex flex-col bg-neutral-900/60 border border-neutral-800 rounded-lg overflow-hidden hover:border-neutral-700 transition">
+      <div
+        data-cy="admin-project"
+        data-project-id={localProject.id}
+        className="group flex flex-col bg-neutral-900/60 border border-neutral-800 rounded-lg overflow-hidden hover:border-neutral-700 transition"
+      >
         <ProjectThumb
           imageSrc={projectImage.grid(localProject.imageSrc)}
           className="w-full aspect-video object-cover border-b border-neutral-800"
@@ -190,9 +190,7 @@ export default function AdminProject({
 
         <div className="flex flex-col gap-2 p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-xl font-semibold text-white truncate">
-              {localProject.title}
-            </h2>
+            <h2 className="text-xl font-semibold text-white truncate">{localProject.title}</h2>
             {VisibilityPill}
           </div>
 
@@ -225,17 +223,18 @@ export default function AdminProject({
 
   // ---------- LIST VIEW ----------
   return (
-    <div data-cy="admin-project"
-  data-project-id={localProject.id} className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition">
+    <div
+      data-cy="admin-project"
+      data-project-id={localProject.id}
+      className="w-full bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700 rounded-lg px-7 py-5 flex items-center gap-4 transition"
+    >
       <ProjectThumb
         imageSrc={projectImage.list(localProject.imageSrc)}
         className="w-16 h-16 rounded-md object-cover shrink-0 border border-neutral-800"
       />
       <div className="flex flex-col gap-1 min-w-0 flex-1">
         <div className="flex items-center gap-2 min-w-0">
-          <h2 className="text-xl font-semibold text-white truncate">
-            {localProject.title}
-          </h2>
+          <h2 className="text-xl font-semibold text-white truncate">{localProject.title}</h2>
           {VisibilityPill}
         </div>
         <p className="text-neutral-400 text-base truncate">{localProject.description}</p>

@@ -62,7 +62,7 @@ const mockProject: Project = {
   githubLink: "https://github.com/test/project",
   isVisible: true,
   updatedAt: "2026-06-17T00:00:00.000Z",
-  desktopIconSrc: "NextEpisodeIcon.png"
+  desktopIconSrc: "NextEpisodeIcon.png",
 };
 
 afterEach(() => {
@@ -100,10 +100,10 @@ describe("AdminProject", () => {
           ...mockProject,
           githubLink: "",
         }}
-      />
+      />,
     );
 
-    await expect.element(page.getByRole("heading", {name:"Test project"})).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Test project" })).toBeVisible();
     await expect.element(page.getByTitle("Open GitHub repo")).not.toBeInTheDocument();
   });
 
@@ -129,7 +129,7 @@ describe("AdminProject", () => {
     await page.getByTitle("Delete").click();
 
     expect(deleteProject).not.toHaveBeenCalled();
-    await expect.element(page.getByRole("heading",{name:  "Test project"})).toBeVisible();
+    await expect.element(page.getByRole("heading", { name: "Test project" })).toBeVisible();
   });
 
   test("deletes project when confirm is accepted", async () => {
@@ -141,7 +141,9 @@ describe("AdminProject", () => {
     await page.getByTitle("Delete").click();
 
     expect(deleteProject).toHaveBeenCalledWith(1);
-    await expect.element(page.getByRole("header",{name:"Test project"})).not.toBeInTheDocument();
+    await expect
+      .element(page.getByRole("header", { name: "Test project" }))
+      .not.toBeInTheDocument();
   });
 
   test("opens and closes the edit form", async () => {
@@ -161,13 +163,7 @@ describe("AdminProject", () => {
     const onCreated = vi.fn();
     const onCloseCreate = vi.fn();
 
-    render(
-      <AdminProject
-        project={null}
-        OnCreated={onCreated}
-        OnCloseCreate={onCloseCreate}
-      />
-    );
+    render(<AdminProject project={null} OnCreated={onCreated} OnCloseCreate={onCloseCreate} />);
 
     await expect.element(page.getByText("Create project form")).toBeVisible();
 
@@ -177,15 +173,15 @@ describe("AdminProject", () => {
     expect(onCloseCreate).toHaveBeenCalledOnce();
   });
   test("shows fallback image when imageSrc is empty", async () => {
-  render(
-    <AdminProject
-      project={{
-        ...mockProject,
-        imageSrc: "",
-      }}
-    />
-  );
+    render(
+      <AdminProject
+        project={{
+          ...mockProject,
+          imageSrc: "",
+        }}
+      />,
+    );
 
-  await expect.element(page.getByAltText("Project preview")).not.toBeInTheDocument();
-});
+    await expect.element(page.getByAltText("Project preview")).not.toBeInTheDocument();
+  });
 });

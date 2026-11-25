@@ -22,7 +22,7 @@ export default function FpsCounter() {
 
         setFps(currentFps);
         setMinFps((currentMin) =>
-          currentMin === 0 ? currentFps : Math.min(currentMin, currentFps)
+          currentMin === 0 ? currentFps : Math.min(currentMin, currentFps),
         );
 
         frameCount.current = 0;
