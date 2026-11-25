@@ -1,4 +1,4 @@
-import { logFlowMetric } from "../support/logflowmetric";
+import { logFlowMetric } from "../support/logFlowMetric";
 
 describe("Authorization", () => {
   it("Gets redirected to login", () => {

@@ -1,4 +1,4 @@
-import { logFlowMetric } from "../support/logflowmetric";
+import { logFlowMetric } from "../support/logFlowMetric";
 import { editedTestProject, testProject } from "../support/testData";
 
 const logIn = () => {
