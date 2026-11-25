@@ -1,6 +1,6 @@
 "use client";
 
-import { Project, ProjectInputData } from "@/app/Features/Projects/types";
+import { Project, ProjectInputData } from "@/features/projects/types";
 import { useState, useTransition } from "react";
 import { createProject, updateProject } from "@/app/Features/Projects/actions";
 import { projectImage } from "@/app/Features/Images/actions";

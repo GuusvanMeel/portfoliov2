@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminProject from "./AdminProject";
 import { Plus } from "lucide-react";
-import { Project } from "@/app/Features/Projects/types";
+import { Project } from "@/features/projects/types";
 
 export default function CreateProjectButton({
   onCreated,

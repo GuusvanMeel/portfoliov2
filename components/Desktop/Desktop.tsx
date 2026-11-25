@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { projectImage } from "@/app/Features/Images/actions";
-import type { Project } from "@/app/Features/Projects/types";
+import type { Project } from "@/features/projects/types";
 import DesktopIcon from "@/components/DesktopIcon/DesktopIcon";
 import Taskbar, { type TaskbarWindow } from "@/components/Taskbar/Taskbar";
 import ThemeSwitcher from "@/components/ThemeSwitcher/ThemeSwitcher";
