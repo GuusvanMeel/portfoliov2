@@ -1,4 +1,4 @@
-import type { DisplayProject } from "@/app/Features/Projects/types";
+import type { DisplayProject } from "@/features/projects/types";
 
 export type AppType = "theme-switcher" | "projects" | "about" | "contact";
 

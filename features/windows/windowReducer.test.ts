@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import type { DisplayProject } from "@/app/Features/Projects/types";
+import type { DisplayProject } from "@/features/projects/types";
 import type { WindowManagerState } from "@/features/windows/types";
 import {
   initialWindowManagerState,
