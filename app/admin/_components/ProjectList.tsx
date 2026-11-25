@@ -1,10 +1,12 @@
-// app/admin/admincomponents/ProjectList.tsx
 "use client";
-import { Project } from "@/features/projects/types";
-import AdminProject from "./AdminProject";
+import { LayoutGrid, List } from "lucide-react";
 import { useState } from "react";
-import CreateProjectButton from "./CreateProjectButton";
-import { List, LayoutGrid } from "lucide-react";
+import CreateProjectButton from "@/app/admin/_components/CreateProjectButton";
+import ProjectListItem from "@/app/admin/_components/ProjectListItem";
+import { messages } from "@/content/en";
+import type { Project } from "@/features/projects/types";
+
+const text = messages.admin.list;
 
 type View = "list" | "grid";
 
@@ -28,7 +30,7 @@ export default function ProjectList({ projects }: Readonly<{ projects: Project[]
             }`}
           >
             <List size={20} />
-            List
+            {text.listView}
           </button>
           <button
             onClick={() => setView("grid")}
@@ -38,7 +40,7 @@ export default function ProjectList({ projects }: Readonly<{ projects: Project[]
             }`}
           >
             <LayoutGrid size={20} />
-            Grid
+            {text.gridView}
           </button>
         </div>
 
@@ -47,14 +49,14 @@ export default function ProjectList({ projects }: Readonly<{ projects: Project[]
 
       {items.length === 0 && (
         <div className="border border-dashed border-neutral-800 rounded-lg py-24 text-center text-lg text-neutral-500">
-          No projects yet. Create your first one.
+          {text.empty}
         </div>
       )}
 
       {view === "list" && items.length > 0 && (
         <div className="flex flex-col gap-5">
           {items.map((project) => (
-            <AdminProject key={project.id} project={project} view="list" />
+            <ProjectListItem key={project.id} project={project} view="list" />
           ))}
         </div>
       )}
@@ -62,7 +64,7 @@ export default function ProjectList({ projects }: Readonly<{ projects: Project[]
       {view === "grid" && items.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {items.map((project) => (
-            <AdminProject key={project.id} project={project} view="grid" />
+            <ProjectListItem key={project.id} project={project} view="grid" />
           ))}
         </div>
       )}

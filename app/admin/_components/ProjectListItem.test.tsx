@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { cleanup, render } from "vitest-browser-react";
 
-import AdminProject from "./AdminProject";
+import ProjectListItem from "@/app/admin/_components/ProjectListItem";
 import { deleteProject, updateProjectVisibility } from "@/features/projects/actions";
 import type { Project } from "@/features/projects/types";
 
@@ -13,15 +13,15 @@ vi.mock("@/features/projects/actions", () => ({
   updateProjectVisibility: vi.fn(),
 }));
 
-vi.mock("@/app/admin/admincomponents/editprojectform", () => ({
+vi.mock("@/app/admin/_components/ProjectFormDialog", () => ({
   default: ({
     project,
-    Onsaved,
-    Onclose,
+    onSaved,
+    onClose,
   }: {
     project: Project | null;
-    Onsaved: (project: Project) => void;
-    Onclose: () => void;
+    onSaved: (project: Project) => void;
+    onClose: () => void;
   }) => (
     <div data-testid="edit-project-form">
       <p>{project ? "Edit project form" : "Create project form"}</p>
@@ -29,7 +29,7 @@ vi.mock("@/app/admin/admincomponents/editprojectform", () => ({
       <button
         type="button"
         onClick={() =>
-          Onsaved({
+          onSaved({
             id: project?.id ?? 2,
             title: project?.title ?? "Created project",
             description: project?.description ?? "Created description",
@@ -45,7 +45,7 @@ vi.mock("@/app/admin/admincomponents/editprojectform", () => ({
         Mock save
       </button>
 
-      <button type="button" onClick={Onclose}>
+      <button type="button" onClick={onClose}>
         Mock close
       </button>
     </div>
@@ -71,9 +71,9 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("AdminProject", () => {
+describe("ProjectListItem", () => {
   test("renders project information in list view", async () => {
-    render(<AdminProject project={mockProject} />);
+    render(<ProjectListItem project={mockProject} />);
 
     await expect.element(page.getByRole("heading", { name: "Test project" })).toBeVisible();
     await expect.element(page.getByText("This is a test project")).toBeVisible();
@@ -84,7 +84,7 @@ describe("AdminProject", () => {
   });
 
   test("renders project information in grid view", async () => {
-    render(<AdminProject project={mockProject} view="grid" />);
+    render(<ProjectListItem project={mockProject} view="grid" />);
 
     await expect.element(page.getByRole("heading", { name: "Test project" })).toBeVisible();
     await expect.element(page.getByText("This is a test project")).toBeVisible();
@@ -95,7 +95,7 @@ describe("AdminProject", () => {
 
   test("does not show GitHub button when githubLink is missing", async () => {
     render(
-      <AdminProject
+      <ProjectListItem
         project={{
           ...mockProject,
           githubLink: "",
@@ -110,7 +110,7 @@ describe("AdminProject", () => {
   test("toggles project visibility", async () => {
     vi.mocked(updateProjectVisibility).mockResolvedValue(undefined);
 
-    render(<AdminProject project={mockProject} />);
+    render(<ProjectListItem project={mockProject} />);
 
     await expect.element(page.getByText("Visible")).toBeVisible();
 
@@ -124,7 +124,7 @@ describe("AdminProject", () => {
   test("does not delete project when confirm is cancelled", async () => {
     vi.spyOn(globalThis, "confirm").mockReturnValue(false);
 
-    render(<AdminProject project={mockProject} />);
+    render(<ProjectListItem project={mockProject} />);
 
     await page.getByTitle("Delete").click();
 
@@ -136,7 +136,7 @@ describe("AdminProject", () => {
     vi.spyOn(globalThis, "confirm").mockReturnValue(true);
     vi.mocked(deleteProject).mockResolvedValue(undefined);
 
-    render(<AdminProject project={mockProject} />);
+    render(<ProjectListItem project={mockProject} />);
 
     await page.getByTitle("Delete").click();
 
@@ -147,7 +147,7 @@ describe("AdminProject", () => {
   });
 
   test("opens and closes the edit form", async () => {
-    render(<AdminProject project={mockProject} />);
+    render(<ProjectListItem project={mockProject} />);
 
     await page.getByTitle("Edit").click();
 
@@ -159,22 +159,9 @@ describe("AdminProject", () => {
     await expect.element(page.getByTestId("edit-project-form")).not.toBeInTheDocument();
   });
 
-  test("renders create form when project is null", async () => {
-    const onCreated = vi.fn();
-    const onCloseCreate = vi.fn();
-
-    render(<AdminProject project={null} OnCreated={onCreated} OnCloseCreate={onCloseCreate} />);
-
-    await expect.element(page.getByText("Create project form")).toBeVisible();
-
-    await page.getByText("Mock save").click();
-
-    expect(onCreated).toHaveBeenCalledOnce();
-    expect(onCloseCreate).toHaveBeenCalledOnce();
-  });
   test("shows fallback image when imageSrc is empty", async () => {
     render(
-      <AdminProject
+      <ProjectListItem
         project={{
           ...mockProject,
           imageSrc: "",
