@@ -7,11 +7,13 @@ import { deleteProject, updateProjectVisibility } from "@/app/Features/Projects/
 import type { Project } from "@/app/Features/Projects/types";
 
 vi.mock("@/app/Features/Projects/actions", () => ({
+  createProject: vi.fn(),
+  updateProject: vi.fn(),
   deleteProject: vi.fn(),
   updateProjectVisibility: vi.fn(),
 }));
 
-vi.mock("./editprojectform", () => ({
+vi.mock("@/app/admin/admincomponents/editprojectform", () => ({
   default: ({
     project,
     Onsaved,

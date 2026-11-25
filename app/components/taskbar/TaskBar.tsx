@@ -50,7 +50,7 @@ export default function Taskbar({
   };
 }, []);
   return (
-    <footer className={`${styles.taskbar} ${selectedTheme.taskbar}`}>
+    <footer data-cy="taskbar" className={`${styles.taskbar} ${selectedTheme.taskbar}`}>
      <div className={styles.startArea} ref={startMenuRef}>
   {startMenuOpen && (
     <div className={`${styles.startMenu} ${selectedTheme.taskbarWindowButton}`}>
@@ -93,6 +93,9 @@ export default function Taskbar({
   {windows.map((window) => (
     <div
       key={window.id}
+      data-cy="taskbar-entry"
+      data-window-id={window.id}
+      data-active={window.active ? "true" : "false"}
       className={`${styles.windowItem} ${
         window.active
           ? selectedTheme.taskbarWindowButtonActive
@@ -127,6 +130,7 @@ export default function Taskbar({
       <button
         type="button"
         aria-label={`Close ${window.title}`}
+        data-cy="taskbar-entry-close"
         className={styles.windowCloseButton}
         onClick={(event) => {
           event.stopPropagation();
