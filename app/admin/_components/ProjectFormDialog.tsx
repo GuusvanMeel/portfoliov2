@@ -1,19 +1,23 @@
 "use client";
 
-import { Project, ProjectInputData } from "@/features/projects/types";
-import { useState, useTransition } from "react";
-import { createProject, updateProject } from "@/features/projects/actions";
-import { projectImage } from "@/features/images/imageUrls";
 import { X } from "lucide-react";
 import Image from "next/image";
-export default function EditProjectForm({
+import { useState, useTransition } from "react";
+import { messages } from "@/content/en";
+import { projectImage } from "@/features/images/imageUrls";
+import { createProject, updateProject } from "@/features/projects/actions";
+import type { Project, ProjectInputData } from "@/features/projects/types";
+
+const text = messages.admin.form;
+
+export default function ProjectFormDialog({
   project,
-  Onsaved,
-  Onclose,
+  onSaved,
+  onClose,
 }: Readonly<{
   project: Project | null;
-  Onsaved: (updated: Project) => void;
-  Onclose: () => void;
+  onSaved: (updated: Project) => void;
+  onClose: () => void;
 }>) {
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(project?.isVisible ?? true);
@@ -37,10 +41,10 @@ export default function EditProjectForm({
 
       if (project) {
         const updatedProject = await updateProject(project.id, payload);
-        Onsaved(updatedProject);
+        onSaved(updatedProject);
       } else {
         const newProject = await createProject(payload);
-        Onsaved(newProject);
+        onSaved(newProject);
       }
     });
   }
@@ -49,9 +53,9 @@ export default function EditProjectForm({
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-9999 p-4">
       <div className="relative w-full max-w-2xl bg-[#141414] border border-neutral-800 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
         <button
-          onClick={Onclose}
+          onClick={onClose}
           className="absolute top-3 right-3 p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-md transition"
-          aria-label="Close"
+          aria-label={text.close}
         >
           <X size={18} />
         </button>
@@ -62,12 +66,12 @@ export default function EditProjectForm({
           className="flex flex-col gap-4 px-6 py-6"
         >
           <h2 className="text-xl font-semibold text-white pr-8">
-            {project ? "Edit Project" : "Create Project"}
+            {project ? text.editTitle : text.createTitle}
           </h2>
 
           <div className="flex flex-col gap-1">
             <label htmlFor="project-title" className="text-sm text-neutral-400">
-              Title
+              {text.title}
             </label>
             <input
               id="project-title"
@@ -81,7 +85,7 @@ export default function EditProjectForm({
 
           <div className="flex flex-col gap-1">
             <label htmlFor="project-description" className="text-sm text-neutral-400">
-              Description
+              {text.description}
             </label>
             <textarea
               id="project-description"
@@ -93,7 +97,7 @@ export default function EditProjectForm({
 
           <div className="flex flex-col gap-1">
             <label htmlFor="project-tags" className="text-sm text-neutral-400">
-              Tags (comma-separated)
+              {text.tags}
             </label>
             <input
               id="project-tags"
@@ -106,7 +110,7 @@ export default function EditProjectForm({
 
           <div className="flex flex-col gap-1">
             <label htmlFor="project-duration" className="text-sm text-neutral-400">
-              Duration
+              {text.duration}
             </label>
             <input
               id="project-duration"
@@ -120,7 +124,7 @@ export default function EditProjectForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
               <label htmlFor="project-image" className="text-sm text-neutral-400">
-                Image URL
+                {text.imageUrl}
               </label>
               <input
                 id="project-image"
@@ -139,12 +143,12 @@ export default function EditProjectForm({
               <div className="border border-neutral-700 rounded-lg overflow-hidden bg-neutral-900 min-h-32">
                 {imageError ? (
                   <div className="h-32 flex items-center justify-center text-sm text-neutral-500">
-                    Image could not be loaded
+                    {text.imageFailed}
                   </div>
                 ) : (
                   <Image
                     src={projectImage.formPreview(imagePreview)}
-                    alt="Project preview"
+                    alt={text.imageAlt}
                     width={600}
                     height={300}
                     className="w-full h-32 object-cover"
@@ -157,7 +161,7 @@ export default function EditProjectForm({
 
           <div className="flex flex-col gap-1">
             <label htmlFor="project-git" className="text-sm text-neutral-400">
-              GitHub Link
+              {text.githubLink}
             </label>
             <input
               id="project-git"
@@ -170,7 +174,7 @@ export default function EditProjectForm({
 
           <div className="flex flex-col gap-1">
             <label htmlFor="project-visibility" className="text-sm text-neutral-400">
-              Visibility
+              {text.visibility}
             </label>
 
             <label
@@ -191,7 +195,7 @@ export default function EditProjectForm({
               <div className="relative w-11 h-6 bg-neutral-900 border border-neutral-700 rounded-full transition-colors peer-checked:bg-green-600 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5 after:bg-white after:rounded-full after:transition-transform peer-checked:after:translate-x-5" />
 
               <span data-cy="form-visibility-status" className="text-sm text-neutral-400">
-                {isVisible ? "Visible on portfolio" : "Hidden on portfolio"}
+                {isVisible ? text.visibleOnPortfolio : text.hiddenOnPortfolio}
               </span>
             </label>
           </div>
@@ -202,7 +206,7 @@ export default function EditProjectForm({
             disabled={isPending}
             className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md text-white text-sm font-medium transition disabled:opacity-50 mt-2"
           >
-            {isPending ? "Saving..." : "Save Changes"}
+            {isPending ? text.saving : text.save}
           </button>
         </form>
       </div>

@@ -1,112 +1,57 @@
 "use client";
-import { Project } from "@/features/projects/types";
-import { useEffect, useState } from "react";
-import EditProjectForm from "./editprojectform";
-import { deleteProject, updateProjectVisibility } from "@/features/projects/actions";
-import { FolderGit2, Pencil, Trash2, Eye, EyeOff, ImageOff } from "lucide-react";
+
+import { Eye, EyeOff, FolderGit2, Pencil, Trash2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import ProjectFormDialog from "@/app/admin/_components/ProjectFormDialog";
+import ProjectThumb from "@/app/admin/_components/ProjectThumb";
+import { messages } from "@/content/en";
 import { projectImage } from "@/features/images/imageUrls";
+import { deleteProject, updateProjectVisibility } from "@/features/projects/actions";
+import type { Project } from "@/features/projects/types";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 
 type View = "list" | "grid";
-type ProjectThumbProps = Readonly<{
-  imageSrc?: string | null;
-  className: string;
-}>;
-function ProjectThumb({ imageSrc, className }: ProjectThumbProps) {
-  const hasImage = Boolean(imageSrc);
 
-  if (hasImage) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={imageSrc!} alt="Project preview" className={className} />
-    );
-  }
+const text = messages.admin.item;
 
-  return (
-    <div
-      className={`${className} flex items-center justify-center bg-neutral-950 text-neutral-600`}
-    >
-      <ImageOff size={24} />
-    </div>
-  );
-}
-export default function AdminProject({
+export default function ProjectListItem({
   project,
   view = "list",
-  OnCloseCreate,
-  OnCreated,
 }: Readonly<{
-  project: Project | null;
+  project: Project;
   view?: View;
-  OnCloseCreate?: () => void;
-  OnCreated?: (project: Project) => void;
 }>) {
-  const isCreating = project === null;
-
-  const [localProject, setLocalProject] = useState<Project | null>(project);
-  const [open, setOpen] = useState<boolean>(isCreating);
+  const [localProject, setLocalProject] = useState<Project>(project);
+  const [open, setOpen] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    };
-
-    globalThis.window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      globalThis.window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  const closeForm = useCallback(() => setOpen(false), []);
+  useEscapeKey(closeForm);
 
   async function handleToggle() {
-    if (!localProject) return;
     const nextIsVisible = !localProject.isVisible;
     try {
       await updateProjectVisibility(localProject.id, nextIsVisible);
       setLocalProject({ ...localProject, isVisible: nextIsVisible });
     } catch (error) {
       console.error("Failed to update visibility:", error);
-      alert("Could not update project visibility.");
+      alert(text.visibilityFailed);
     }
   }
 
   async function handleDelete() {
-    if (!localProject) return;
-    const sure = globalThis.confirm("Are you sure you want to delete this project?");
+    const sure = globalThis.confirm(text.confirmDelete);
     if (!sure) return;
     try {
       await deleteProject(localProject.id);
       setIsDeleted(true);
     } catch (error) {
       console.error("Failed to delete project:", error);
-      alert("Could not delete project. Please try again.");
+      alert(text.deleteFailed);
     }
   }
 
   if (isDeleted) return null;
-
-  if (isCreating && !localProject) {
-    return (
-      <div className="w-full">
-        <EditProjectForm
-          project={null}
-          Onsaved={(created) => {
-            setOpen(false);
-            OnCreated?.(created);
-            OnCloseCreate?.();
-          }}
-          Onclose={() => {
-            setOpen(false);
-            OnCloseCreate?.();
-          }}
-        />
-      </div>
-    );
-  }
-
-  if (!localProject) return null;
 
   const hasGithub = Boolean(localProject.githubLink);
 
@@ -120,7 +65,7 @@ export default function AdminProject({
       }`}
     >
       {localProject.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
-      {localProject.isVisible ? "Visible" : "Hidden"}
+      {localProject.isVisible ? text.visible : text.hidden}
     </span>
   );
 
@@ -131,7 +76,7 @@ export default function AdminProject({
           href={localProject.githubLink}
           target="_blank"
           rel="noopener noreferrer"
-          title="Open GitHub repo"
+          title={text.openGithub}
           className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
         >
           <FolderGit2 size={18} />
@@ -140,7 +85,7 @@ export default function AdminProject({
       <button
         data-cy="visibility-toggle"
         onClick={handleToggle}
-        title={localProject.isVisible ? "Hide" : "Show"}
+        title={localProject.isVisible ? text.hide : text.show}
         className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
       >
         {localProject.isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -148,7 +93,7 @@ export default function AdminProject({
       <button
         data-cy="edit-project"
         onClick={() => setOpen(true)}
-        title="Edit"
+        title={text.edit}
         className="p-3 text-neutral-300 bg-neutral-900 border border-neutral-700 rounded-md hover:bg-neutral-800 hover:text-white transition"
       >
         <Pencil size={15} />
@@ -156,7 +101,7 @@ export default function AdminProject({
       <button
         data-cy="delete-project"
         onClick={handleDelete}
-        title="Delete"
+        title={text.delete}
         className="p-3 text-red-500 border border-red-700/70 rounded-md hover:bg-red-900/40 hover:text-red-300 transition"
       >
         <Trash2 size={18} />
@@ -165,17 +110,16 @@ export default function AdminProject({
   );
 
   const EditModal = open && (
-    <EditProjectForm
+    <ProjectFormDialog
       project={localProject}
-      Onsaved={(updated) => {
+      onSaved={(updated) => {
         setLocalProject(updated);
         setOpen(false);
       }}
-      Onclose={() => setOpen(false)}
+      onClose={closeForm}
     />
   );
 
-  // ---------- GRID VIEW ----------
   if (view === "grid") {
     return (
       <div
@@ -221,7 +165,6 @@ export default function AdminProject({
     );
   }
 
-  // ---------- LIST VIEW ----------
   return (
     <div
       data-cy="admin-project"
