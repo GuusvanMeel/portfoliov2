@@ -1,6 +1,6 @@
 import { DisplayProject } from "@/app/Features/Projects/types";
-import ContactWindow from "../ContactWindow/ContactWindow";
-import ProjectWindow from "../ProjectWindow/ProjectWindow";
+import ContactApp from "@/components/apps/ContactApp/ContactApp";
+import ProjectApp from "@/components/apps/ProjectApp/ProjectApp";
 import ThemeSwitcher from "@/components/ThemeSwitcher/ThemeSwitcher";
 
 export type WindowType = "theme-switcher" | "projects" | "about" | "contact";
@@ -38,7 +38,7 @@ export const windowDefinitions: Record<
     title: "Projects",
     width: 818, //door padding +8
     height: 628, //door padding +8
-    render: (window) => <ProjectWindow {...window.project!} />,
+    render: (window) => <ProjectApp {...window.project!} />,
     icon: "▣",
     startPos: "default",
   },
@@ -55,7 +55,7 @@ export const windowDefinitions: Record<
     title: "Contact",
     width: 360,
     height: 500,
-    render: () => <ContactWindow />,
+    render: () => <ContactApp />,
     icon: "✉",
     startPos: "right",
     desktopLabel: "contact.exe",

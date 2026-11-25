@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTheme } from "@/features/theme/ThemeProvider";
-import { windowThemes } from "@/app/Features/Window/windowThemes";
-import styles from "./ContactWindow.module.css";
+import { contactFormEndpoint } from "@/config/site";
+import { messages } from "@/content/en";
+import { useThemeDefinition } from "@/features/theme/useThemeDefinition";
+import styles from "./ContactApp.module.css";
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
-export default function ContactWindow() {
-  const { theme } = useTheme();
-  const selectedTheme = windowThemes[theme];
+const text = messages.apps.contact;
+
+export default function ContactApp() {
+  const { definition } = useThemeDefinition();
 
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,7 +26,7 @@ export default function ContactWindow() {
     setErrorMessage("");
 
     try {
-      const response = await fetch("https://formspree.io/f/mnjkredb", {
+      const response = await fetch(contactFormEndpoint, {
         method: "POST",
         body: formData,
         headers: {
@@ -33,23 +35,23 @@ export default function ContactWindow() {
       });
 
       if (!response.ok) {
-        throw new Error("Message could not be sent.");
+        throw new Error(text.sendFailed);
       }
 
       form.reset();
       setStatus("sent");
     } catch {
       setStatus("error");
-      setErrorMessage("Something went wrong. Please try again.");
+      setErrorMessage(text.error);
     }
   }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <label className={styles.field}>
-        <span>Your name:</span>
+        <span>{text.nameLabel}</span>
         <input
-          className={`${styles.input} ${selectedTheme.projectDescription}`}
+          className={`${styles.input} ${definition.project.description}`}
           type="text"
           name="name"
           required
@@ -57,9 +59,9 @@ export default function ContactWindow() {
       </label>
 
       <label className={styles.field}>
-        <span>Your email:</span>
+        <span>{text.emailLabel}</span>
         <input
-          className={`${styles.input} ${selectedTheme.projectDescription}`}
+          className={`${styles.input} ${definition.project.description}`}
           type="email"
           name="email"
           required
@@ -67,9 +69,9 @@ export default function ContactWindow() {
       </label>
 
       <label className={styles.field}>
-        <span>Your message:</span>
+        <span>{text.messageLabel}</span>
         <textarea
-          className={`${styles.textarea} ${selectedTheme.projectDescription}`}
+          className={`${styles.textarea} ${definition.project.description}`}
           name="message"
           required
         />
@@ -77,18 +79,18 @@ export default function ContactWindow() {
 
       <button
         type="submit"
-        className={`${styles.submitButton} ${selectedTheme.button}`}
+        className={`${styles.submitButton} ${definition.controls.button}`}
         disabled={status === "sending"}
       >
-        {status === "sending" ? "Sending..." : "Send"}
+        {status === "sending" ? text.sending : text.send}
       </button>
 
       {status === "sent" && (
-        <p className={`${styles.status} ${selectedTheme.projectTag}`}>Message sent.</p>
+        <p className={`${styles.status} ${definition.project.tag}`}>{text.sent}</p>
       )}
 
       {status === "error" && (
-        <p className={`${styles.status} ${selectedTheme.projectTag}`}>{errorMessage}</p>
+        <p className={`${styles.status} ${definition.project.tag}`}>{errorMessage}</p>
       )}
     </form>
   );
