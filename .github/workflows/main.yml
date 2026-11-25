@@ -49,14 +49,6 @@ jobs:
           path: coverage/vitest/lcov.info
           if-no-files-found: error
 
-      # - name: Cache Next.js build
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: .next/cache
-      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
-
       - name: Build project
         run: npm run build
 
@@ -100,7 +92,7 @@ jobs:
         run: |
           echo "## SonarQube Quality Gate failed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "SonarCloud heeft de Quality Gate niet gehaald." >> $GITHUB_STEP_SUMMARY
+          echo "SonarCloud did not pass the quality gate." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[Open SonarCloud dashboard](https://sonarcloud.io/dashboard?id=GuusvanMeel_portfoliov2&branch=master)" >> $GITHUB_STEP_SUMMARY
 
@@ -128,14 +120,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      # - name: Cache Next.js build
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: .next/cache
-      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
 
       - name: Run Lighthouse CI
         id: lighthouse_ci
@@ -181,14 +165,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: Cache Next.js coverage build
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: .next/cache
-      #     key: ${{ runner.os }}-nextjs-coverage-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-coverage-${{ hashFiles('package-lock.json') }}-
-
       - name: Build Next.js app with coverage
         run: npm run build
 
@@ -222,6 +198,8 @@ jobs:
           echo "- Edit project" >> $GITHUB_STEP_SUMMARY
           echo "- Toggle visibility" >> $GITHUB_STEP_SUMMARY
           echo "- Delete project" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Videos (and screenshots on failure) are in the cypress-videos and cypress-screenshots artifacts of [this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ -f cypress/results/metrics.md ]; then
