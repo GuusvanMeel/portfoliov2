@@ -1,0 +1,19 @@
+.genericButton {
+  min-width: 74px;
+  min-height: 24px;
+  padding: 2px 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
