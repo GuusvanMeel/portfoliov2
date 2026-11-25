@@ -82,7 +82,7 @@ PR 1 (GitHub #39) was merged into `Development` with the full pipeline green. Th
 | Lint / typecheck / Prettier | pass |
 | `next build` | pass |
 | Full Cypress suite against `npm start` | **15/15 green** (admin 3, authorization 4, desktop 8) |
-| Vitest | 15 files, 61 tests pass |
+| Vitest | 10 files, 61 tests pass |
 | Vitest coverage | Statements 72.19% (135/187) · Branches 65.54% (78/119) · Functions 77.77% (49/63) · Lines 70.28% (123/175); baseline 42.56% statements |
 | Visual comparison with `baseline/` | **12/12 screenshots pixel-identical** (0 differing pixels) |
 | Dummy theme scratch test (SC-003) | pass on a throwaway branch: adding a fifth theme only touched `themeNames.ts`, `themes/dummy.ts` and `themes/index.ts`; it appears in the switcher and styles its buttons |
@@ -123,10 +123,10 @@ Run on `Development` at `e108d5b` (PR #59 merged), plus the CI changes of the fi
 |---|---|---|
 | Lint / typecheck | pass | pass |
 | Prettier (`format:check`) | no formatter | pass |
-| Vitest | 2 files, 13 tests (US1: 3 files, 22 tests) | 19 files, 70 tests |
+| Vitest | 1 file, 9 tests (after US1: 3 files, 22 tests) | 12 files, 70 tests |
 | Vitest statement coverage | 43.41% (56/129) | 77.04% |
 | Combined Vitest + Cypress line coverage | – | 76.6% (70.8% on PR #40) |
-| Cypress (full suite, against `npm start`) | all specs pass | 15/15 (admin 3, authorization 4, desktop 8) |
+| Cypress (full suite, against `npm start`) | admin and login only verifiable in CI (placeholder credentials) | 15/15 (admin 3, authorization 4, desktop 8) |
 | Visual comparison with `baseline/` | reference | 12/12 screenshots pixel-identical |
 | `__coverage__` in a production build | present (`.babelrc` instrumented every build) | none |
 | Failing E2E assertion fails the pipeline (SC-010) | – | yes (T086) |
