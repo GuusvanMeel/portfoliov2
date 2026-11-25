@@ -115,8 +115,10 @@ decisions below resolve the implementation choices the spec deferred to planning
 - **Decision**: Add `pull_request` (branches `Development`, `master`) to the triggers. Cypress and
   Lighthouse run for pushes to `Development`/`master` and for those pull requests. SonarCloud runs
   for the same events, without `continue-on-error`, so a failing gate fails the run (constitution
-  IX). Remove commented-out cache steps and translate summaries. PR 1 already adds the PR trigger
-  for E2E, so the safety net is verified on its own PR; PR 4 finishes the rest.
+  IX). Remove commented-out cache steps and translate summaries. PR 1 already adds the PR trigger,
+  E2E/Lighthouse on PRs and the blocking SonarCloud gate, so the safety net and every later PR are
+  verified before merge; PR 4 only finishes the cleanup. The current gate status on `master` is
+  checked first (Phase 1); if it fails, only those conditions are fixed in PR 1.
 - **Rationale**: FR-021, SC-010; Spec Kit feature branches are verified before merge.
 - **Alternatives considered**: Next.js build cache (`actions/cache` on `.next/cache`) — adds a
   working cache instead of removing; acceptable if measured faster, otherwise removed (FR-021
