@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import type { ThemeName } from "./type";
+import { defaultTheme, isThemeName, type ThemeName } from "@/features/theme/themeNames";
 
 type ThemeContextType = {
   theme: ThemeName;
@@ -9,11 +9,6 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
-const defaultTheme: ThemeName = "WinXP";
-
-export function isThemeName(value: string | null): value is ThemeName {
-  return value === "Win98" || value === "classicMac" || value === "WinXP" || value === "debug";
-}
 
 export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [currentTheme, setCurrentTheme] = useState<ThemeName>(defaultTheme);
@@ -30,7 +25,7 @@ export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode
   }, []);
 
   function setTheme(newTheme: ThemeName) {
-    //SET THE THEME, en slaat het ook op in localstorage
+    // Apply the theme and remember it in localStorage.
     setCurrentTheme(newTheme);
     localStorage.setItem("theme", newTheme);
   }

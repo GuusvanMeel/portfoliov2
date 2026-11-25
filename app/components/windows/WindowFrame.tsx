@@ -1,7 +1,7 @@
 "use client";
 import { WindowFrameProps } from "@/app/Features/Window/type";
 import styles from "./WindowFrame.module.css";
-import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 
 export default function WindowFrame({

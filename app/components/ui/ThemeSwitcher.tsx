@@ -1,9 +1,9 @@
 "use client";
 
-import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "../../Features/Window/windowThemes";
 import styles from "../windows/WindowFrame.module.css";
-import { ThemeName } from "../../Features/Theme/type";
+import { ThemeName } from "@/features/theme/themeNames";
 
 export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
