@@ -186,7 +186,7 @@ after another.
 - [X] T070 [P] [US2] Rename `cypress/support/logflowmetric.ts` to `cypress/support/logFlowMetric.ts` and update imports in `cypress/e2e/*.cy.ts`; rename `cypress/e2e/Admin.cy.ts` to `cypress/e2e/admin.cy.ts`; translate Dutch text in Cypress files
 - [X] T071 [US2] Update `sonar-project.properties` `sonar.sources` to `app,components,features,hooks,content,config,lib`
 - [X] T072 [US2] Repo-wide checks: no Dutch comments/identifiers/strings (`grep -riE "\b(het|een|deze|niet|wordt|ook|alleen|dit)\b" app components features hooks content config cypress`), no `=== "Win98"`-style theme comparisons, no component importing another component's `.module.css`, no `../../` imports where `@/` applies; fix any findings
-- [ ] T073 [US2] Verify: full Cypress suite, `npm run test:components:coverage` (coverage ≥ baseline), visual comparison with `specs/001-foundation-refactor/baseline/` screenshots, and the dummy-theme scratch test from [theme-definition.md](./contracts/theme-definition.md) on a throwaway branch (SC-003); then update `001-foundation-refactor` from `Development` and open PR 2 into `Development`
+- [X] T073 [US2] Verify: full Cypress suite, `npm run test:components:coverage` (coverage ≥ baseline), visual comparison with `specs/001-foundation-refactor/baseline/` screenshots, and the dummy-theme scratch test from [theme-definition.md](./contracts/theme-definition.md) on a throwaway branch (SC-003); then update `001-foundation-refactor` from `Development` and open PR 2 into `Development`
 
 **Checkpoint**: Clean codebase, identical behaviour, all tests green
 
