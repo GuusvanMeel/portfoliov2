@@ -1,0 +1,10 @@
+.next
+coverage
+node_modules
+public
+.specify
+specs
+lhci-*
+cypress/results
+.claude
+package-lock.json
