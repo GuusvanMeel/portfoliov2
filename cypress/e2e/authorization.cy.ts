@@ -21,6 +21,23 @@ describe('Authorization', () => {
     cy.url().should('include', '/admin')
   logFlowMetric('Logs in', start)
 })
+it('logs out and protects /admin again', () => {
+  const start = performance.now()
+  cy.visit('http://localhost:3000/admin')
+  cy.env(['TEST_EMAIL', 'TEST_PASSWORD']).then(({ TEST_EMAIL, TEST_PASSWORD }) => {
+    cy.get('[name="email"]').type(TEST_EMAIL)
+    cy.get('[name="password"]').type(TEST_PASSWORD, { log: false })
+  })
+  cy.get('button[type="submit"]').click()
+  cy.url().should('include', '/admin')
+
+  cy.contains('button', 'Logout').click()
+  cy.location('pathname').should('eq', '/')
+
+  cy.visit('http://localhost:3000/admin')
+  cy.url().should('include', '/login')
+  logFlowMetric('Logs out', start)
+})
 it('fails to log in', () => {
   const start = performance.now() 
   cy.visit('http://localhost:3000/admin')
