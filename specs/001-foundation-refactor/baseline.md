@@ -69,3 +69,8 @@ the failing conditions are fixed in PR 1.
 | Lint / typecheck | pass |
 | Admin suite with forced failure + clean re-run (FR-003a) | **not run locally**: local `cypress.env.json` has placeholder credentials. Verified in the PR 1 CI run instead (cleanup task runs in `before()` and `after()`). |
 | Logout test | **not run locally**, same reason; runs in CI |
+
+## T027 — PR 1
+
+PR 1 (GitHub #39) was merged into `Development` with the full pipeline green. The admin cleanup
+(forced failure + clean re-run) and the logout test were verified in that CI run, not locally.

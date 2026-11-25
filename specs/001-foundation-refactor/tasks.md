@@ -103,8 +103,8 @@ after another.
 
 ### Verification
 
-- [ ] T026 [US1] Run `desktop.cy.ts` 10 times locally against `npm start` and the admin suite once with a forced failure after project creation followed by a clean re-run; record results in `specs/001-foundation-refactor/baseline.md` (SC-001, FR-003a)
-- [ ] T027 [US1] Open PR 1 from `001-foundation-refactor` into `Development` (it also carries the spec documents); confirm all pipeline stages ran and passed
+- [X] T026 [US1] Run `desktop.cy.ts` 10 times locally against `npm start` and the admin suite once with a forced failure after project creation followed by a clean re-run; record results in `specs/001-foundation-refactor/baseline.md` (SC-001, FR-003a)
+- [X] T027 [US1] Open PR 1 from `001-foundation-refactor` into `Development` (it also carries the spec documents); confirm all pipeline stages ran and passed
 
 **Checkpoint**: Safety net in place; every later change is checked by it
 
