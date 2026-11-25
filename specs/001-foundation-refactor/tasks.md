@@ -237,7 +237,7 @@ after another.
 - [X] T088 [P] Compare Lighthouse scores of the last `Development` run with the baseline (accessibility ≥ 0.90; others not lower) (SC-009)
 - [X] T089 [P] Delete `specs/001-foundation-refactor/baseline/` screenshots if they are not needed anymore, or keep them referenced from `baseline.md`
 - [X] T090 Mark the spec status as "Implemented" in `specs/001-foundation-refactor/spec.md`
-- [ ] T091 Delete branch `001-foundation-refactor` locally and on GitHub after the last pull request of this spec is merged
+- [X] T091 Delete branch `001-foundation-refactor` locally and on GitHub after the last pull request of this spec is merged
 
 ---
 
