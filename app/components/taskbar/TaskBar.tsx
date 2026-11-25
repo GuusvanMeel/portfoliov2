@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import styles from "./TaskBar.module.css";
 import { useEffect, useRef, useState } from "react";

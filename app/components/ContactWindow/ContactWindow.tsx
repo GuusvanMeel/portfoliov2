@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import styles from "./ContactWindow.module.css";
 

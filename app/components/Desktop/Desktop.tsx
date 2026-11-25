@@ -1,7 +1,7 @@
 "use client";
 
 import { mapProjectToDisplayproject } from "@/app/Features/Projects/mapper";
-import { useTheme } from "@/app/Features/Theme/ThemeProvider";
+import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { Project } from "@/app/Features/Projects/types";
 import { useEffect, useState } from "react";
