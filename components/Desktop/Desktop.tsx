@@ -111,7 +111,6 @@ export default function Desktop({ projects }: Readonly<{ projects: Project[] }>)
                 title={getWindowTitle(window)}
                 onClose={() => closeWindow(window.id)}
                 onMinimize={() => minimizeWindow(window.id)}
-                onClick={() => focusWindow(window.id)}
               >
                 {app.render(window)}
               </WindowFrame>

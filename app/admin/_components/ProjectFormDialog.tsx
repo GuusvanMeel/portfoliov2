@@ -23,7 +23,7 @@ export default function ProjectFormDialog({
   const [isVisible, setIsVisible] = useState(project?.isVisible ?? true);
   const [imagePreview, setImagePreview] = useState(project?.imageSrc ?? "");
   const [imageError, setImageError] = useState(false);
-  async function handleSubmit(formData: FormData) {
+  function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const payload: ProjectInputData = {
         title: formData.get("title") as string,

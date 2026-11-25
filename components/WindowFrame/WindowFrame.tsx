@@ -10,7 +10,6 @@ type WindowFrameProps = {
   children: ReactNode;
   onClose?: () => void;
   onMinimize?: () => void;
-  onClick: () => void;
   windowId?: string;
   windowType?: string;
 };
@@ -20,7 +19,6 @@ export default function WindowFrame({
   children,
   onClose,
   onMinimize,
-  onClick,
   windowId,
   windowType,
 }: Readonly<WindowFrameProps>) {
@@ -32,7 +30,6 @@ export default function WindowFrame({
       data-window-id={windowId}
       data-window-type={windowType}
       className={`${styles.window} ${definition.window.frame}`}
-      onClick={onClick}
     >
       <div className={`${styles.titleBar} ${definition.window.titleBar} window-title-bar`}>
         <span className={styles.title}>{title}</span>
