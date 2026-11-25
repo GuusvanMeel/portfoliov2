@@ -1,8 +1,19 @@
 "use client";
-import { WindowFrameProps } from "@/app/Features/Window/type";
+
+import type { ReactNode } from "react";
+import { messages } from "@/content/en";
+import { useThemeDefinition } from "@/features/theme/useThemeDefinition";
 import styles from "./WindowFrame.module.css";
-import { useTheme } from "@/features/theme/ThemeProvider";
-import { windowThemes } from "@/app/Features/Window/windowThemes";
+
+type WindowFrameProps = {
+  title: string;
+  children: ReactNode;
+  onClose?: () => void;
+  onMinimize?: () => void;
+  onClick: () => void;
+  windowId?: string;
+  windowType?: string;
+};
 
 export default function WindowFrame({
   title,
@@ -13,42 +24,41 @@ export default function WindowFrame({
   windowId,
   windowType,
 }: Readonly<WindowFrameProps>) {
-  const { theme } = useTheme();
-  const selectedTheme = windowThemes[theme];
+  const { definition } = useThemeDefinition();
 
   return (
     <div
       data-cy="window"
       data-window-id={windowId}
       data-window-type={windowType}
-      className={`${styles.window} ${selectedTheme.frame}`}
+      className={`${styles.window} ${definition.window.frame}`}
       onClick={onClick}
     >
-      <div className={`${styles.titleBar} ${selectedTheme.titleBar} window-title-bar`}>
+      <div className={`${styles.titleBar} ${definition.window.titleBar} window-title-bar`}>
         <span className={styles.title}>{title}</span>
 
         <div className={styles.buttons}>
           {onMinimize && (
             <button
-              aria-label="Minimize"
+              aria-label={messages.desktop.minimizeWindow}
               data-cy="window-minimize"
               type="button"
               onClick={(event) => {
                 event.stopPropagation();
                 onMinimize();
               }}
-              className={`${styles.controlButton} ${selectedTheme.controlButton}`}
+              className={`${styles.controlButton} ${definition.controls.windowButton}`}
             >
               _
             </button>
           )}
           {onClose && (
             <button
-              aria-label="Close"
+              aria-label={messages.desktop.closeWindow}
               data-cy="window-close"
               type="button"
               onClick={onClose}
-              className={`${styles.controlButton} ${selectedTheme.closeButton}`}
+              className={`${styles.controlButton} ${definition.controls.closeButton}`}
             >
               X
             </button>
@@ -56,7 +66,7 @@ export default function WindowFrame({
         </div>
       </div>
 
-      <div className={`${styles.content} ${selectedTheme.content}`}>{children}</div>
+      <div className={`${styles.content} ${definition.window.content}`}>{children}</div>
     </div>
   );
 }

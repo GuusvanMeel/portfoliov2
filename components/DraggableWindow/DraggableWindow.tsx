@@ -2,8 +2,7 @@
 
 import { Rnd } from "react-rnd";
 import { useState, type ReactNode } from "react";
-import { useTheme } from "@/features/theme/ThemeProvider";
-import { windowThemes } from "../../Features/Window/windowThemes";
+import { useThemeDefinition } from "@/features/theme/useThemeDefinition";
 
 type DraggableWindowProps = {
   children: ReactNode;
@@ -13,6 +12,7 @@ type DraggableWindowProps = {
   onFocus: () => void;
   startPos: "default" | "right";
 };
+
 function getStartX(startPos: "default" | "right", width: number) {
   if (typeof window === "undefined") {
     return 80;
@@ -24,6 +24,7 @@ function getStartX(startPos: "default" | "right", width: number) {
 
   return window.innerWidth / 4;
 }
+
 export default function DraggableWindow({
   children,
   width,
@@ -33,8 +34,8 @@ export default function DraggableWindow({
   startPos,
 }: Readonly<DraggableWindowProps>) {
   const [isDragging, setIsDragging] = useState(false);
-  const { theme } = useTheme();
-  const selectedTheme = windowThemes[theme];
+  const { definition } = useThemeDefinition();
+
   return (
     <Rnd
       default={{
@@ -48,7 +49,7 @@ export default function DraggableWindow({
       minHeight={150}
       bounds="parent"
       onMouseDown={onFocus}
-      className={isDragging ? selectedTheme.draggingWindow : ""}
+      className={isDragging ? definition.window.dragging : ""}
       onDragStart={() => setIsDragging(true)}
       onDragStop={() => {
         setIsDragging(false);
