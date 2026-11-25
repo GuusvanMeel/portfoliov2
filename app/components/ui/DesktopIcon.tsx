@@ -26,6 +26,8 @@ export default function DesktopIcon({
     <button
       type="button"
       data-desktop-icon
+      data-cy="desktop-icon"
+      data-icon-id={id}
       className={`${styles.desktopIcon} ${selected ? styles.selected : ""}`}
       onClick={() => onSelect(id)}
       onDoubleClick={onOpen}

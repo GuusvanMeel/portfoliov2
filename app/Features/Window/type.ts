@@ -6,6 +6,8 @@ export type WindowFrameProps ={
     onClose?: () => void;
     onMinimize?: () =>void;
     onClick: () => void;
+    windowId?: string;
+    windowType?: string;
 }
 
 export type WindowTheme = {

@@ -16,6 +16,8 @@ export default function ThemeSwitcher() {
       {Object.keys(windowThemes).map((themeName) => (
   <button
     key={themeName}
+    data-cy="theme-option"
+    data-theme-option={themeName}
     className={`${styles.genericButton} ${selectedTheme.button}`}
     onClick={() => setTheme(themeName as ThemeName)}
   >
