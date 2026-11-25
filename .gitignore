@@ -51,3 +51,6 @@ lighthouse-report.json
 
 # cypress
 .nyc_output/
+
+# Claude Code local settings
+.claude/settings.local.json
