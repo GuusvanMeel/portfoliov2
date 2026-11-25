@@ -214,7 +214,8 @@ jobs:
           echo "## Cypress End-to-End Tests" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Tested flows:" >> $GITHUB_STEP_SUMMARY
-          echo "- Login" >> $GITHUB_STEP_SUMMARY
+          echo "- Desktop: startup, open window, bring to front, minimize and restore, close (window and taskbar), switch themes, open project" >> $GITHUB_STEP_SUMMARY
+          echo "- Login, logout, failed login" >> $GITHUB_STEP_SUMMARY
           echo "- Create project" >> $GITHUB_STEP_SUMMARY
           echo "- Edit project" >> $GITHUB_STEP_SUMMARY
           echo "- Toggle visibility" >> $GITHUB_STEP_SUMMARY

@@ -54,3 +54,5 @@ lighthouse-report.json
 
 # Claude Code local settings
 .claude/settings.local.json
+cypress/videos/
+cypress/screenshots/
