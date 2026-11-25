@@ -5,8 +5,8 @@ import { useTheme } from "@/features/theme/ThemeProvider";
 import { windowThemes } from "@/app/Features/Window/windowThemes";
 import { Project } from "@/app/Features/Projects/types";
 import { useEffect, useState } from "react";
-import Taskbar, { TaskbarWindow } from "../taskbar/TaskBar";
-import DesktopIcon from "../ui/DesktopIcon";
+import Taskbar, { type TaskbarWindow } from "@/components/Taskbar/Taskbar";
+import DesktopIcon from "@/components/DesktopIcon/DesktopIcon";
 import ThemeSwitcher from "@/components/ThemeSwitcher/ThemeSwitcher";
 
 const DraggableWindow = dynamic(() => import("@/components/DraggableWindow/DraggableWindow"), {
