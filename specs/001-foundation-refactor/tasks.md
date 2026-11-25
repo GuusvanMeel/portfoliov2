@@ -206,7 +206,7 @@ after another.
 - [X] T077 [US3] Add the "Proposed GitHub changes" table to `docs/backlog.md`: issues to close (with comment text), checkboxes to tick, `priority: high|medium|low` labels to create and apply, Dutch text to translate (keeping the original in `<details>`), new issues for every `F-n` item
 - [X] T078 [US3] Present the proposed changes table to the maintainer and wait for explicit approval per row (FR-023b); record approvals in the table's "Approved" column
 - [X] T079 [US3] Apply only the approved rows with `gh` (`gh label create`, `gh issue edit`, `gh issue comment`, `gh issue close`, `gh issue create`), logging each applied change with a timestamp in the "Applied changes log" of `docs/backlog.md`; on failure, stop and resume from the log without duplicates
-- [ ] T080 [US3] Update `docs/backlog.md` so `F-n` items reference their new issue numbers; verify with `gh issue list --state open` that every open issue appears exactly once (SC-008); open PR 3 from `001-foundation-refactor` into `Development`
+- [X] T080 [US3] Update `docs/backlog.md` so `F-n` items reference their new issue numbers; verify with `gh issue list --state open` that every open issue appears exactly once (SC-008); open PR 3 from `001-foundation-refactor` into `Development`
 
 **Checkpoint**: One trustworthy backlog in the repo and on GitHub
 
