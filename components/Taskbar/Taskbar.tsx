@@ -1,11 +1,12 @@
 "use client";
 
-import { useTheme } from "@/features/theme/ThemeProvider";
-import { windowThemes } from "@/app/Features/Window/windowThemes";
-import styles from "./TaskBar.module.css";
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { useCallback, useRef, useState } from "react";
+import { messages } from "@/content/en";
+import { useThemeDefinition } from "@/features/theme/useThemeDefinition";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import styles from "./Taskbar.module.css";
 
 export type TaskbarWindow = {
   id: string;
@@ -22,62 +23,48 @@ type TaskbarProps = {
   onCloseWindow: (id: string) => void;
 };
 
+const text = messages.taskbar;
+
 export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Readonly<TaskbarProps>) {
-  const { theme } = useTheme();
-  const selectedTheme = windowThemes[theme];
-
+  const { name, definition } = useThemeDefinition();
   const [startMenuOpen, setStartMenuOpen] = useState(false);
-
   const startMenuRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (startMenuRef.current && !startMenuRef.current.contains(event.target as Node)) {
-        setStartMenuOpen(false);
-      }
-    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+  const closeStartMenu = useCallback(() => setStartMenuOpen(false), []);
+  useClickOutside(startMenuRef, closeStartMenu, "mousedown");
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
   return (
-    <footer data-cy="taskbar" className={`${styles.taskbar} ${selectedTheme.taskbar}`}>
+    <footer data-cy="taskbar" className={`${styles.taskbar} ${definition.taskbar.bar}`}>
       <div className={styles.startArea} ref={startMenuRef}>
         {startMenuOpen && (
-          <div className={`${styles.startMenu} ${selectedTheme.taskbarWindowButton}`}>
+          <div className={`${styles.startMenu} ${definition.taskbar.windowButton}`}>
             <button type="button" className={styles.startMenuItem}>
-              About me
+              {text.startMenu.about}
             </button>
 
             <button type="button" className={styles.startMenuItem}>
-              Projects
+              {text.startMenu.projects}
             </button>
 
             <button type="button" className={styles.startMenuItem}>
-              Theme switcher
+              {text.startMenu.themeSwitcher}
             </button>
-            <Link
-              href="/admin"
-              className={styles.startMenuItem}
-              onClick={() => setStartMenuOpen(false)}
-            >
-              <Image src={`/icons/${theme}/Login.png`} alt="" width={32} height={32}></Image>
-              Admin login
+            <Link href="/admin" className={styles.startMenuItem} onClick={closeStartMenu}>
+              <Image src={definition.assets.loginIcon} alt="" width={32} height={32}></Image>
+              {text.startMenu.adminLogin}
             </Link>
           </div>
         )}
 
         <button
           type="button"
-          className={`${styles.startButton} ${selectedTheme.taskbarStartButton}`}
+          className={`${styles.startButton} ${definition.taskbar.startButton}`}
           onClick={() => setStartMenuOpen((open) => !open)}
         >
           <span className={styles.startIcon}>
-            <Image src={`/icons/${theme}/TaskbarLogo.png`} width={16} height={16} alt={""}></Image>
+            <Image src={definition.assets.taskbarLogo} width={16} height={16} alt={""}></Image>
           </span>
-          <span>GuusOS</span>
+          <span>{text.startButton}</span>
         </button>
       </div>
 
@@ -90,8 +77,8 @@ export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Reado
             data-active={window.active ? "true" : "false"}
             className={`${styles.windowItem} ${
               window.active
-                ? selectedTheme.taskbarWindowButtonActive
-                : selectedTheme.taskbarWindowButton
+                ? definition.taskbar.windowButtonActive
+                : definition.taskbar.windowButton
             }`}
           >
             <button
@@ -121,7 +108,7 @@ export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Reado
 
             <button
               type="button"
-              aria-label={`Close ${window.title}`}
+              aria-label={`${text.closeWindow} ${window.title}`}
               data-cy="taskbar-entry-close"
               className={styles.windowCloseButton}
               onClick={(event) => {
@@ -135,8 +122,8 @@ export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Reado
         ))}
       </div>
 
-      <div className={`${styles.tray} ${selectedTheme.taskbarTray}`}>
-        <span>{theme}</span>
+      <div className={`${styles.tray} ${definition.taskbar.tray}`}>
+        <span>{name}</span>
       </div>
     </footer>
   );
