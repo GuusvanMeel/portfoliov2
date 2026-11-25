@@ -1,4 +1,4 @@
-import { logFlowMetric } from "../support/logflowmetric";
+import { logFlowMetric } from "../support/logFlowMetric";
 
 // Desktop behaviour as visitors experience it. These tests never write data.
 const themes = ["Win98", "WinXP", "classicMac", "debug"] as const;
