@@ -58,3 +58,14 @@ private or not publicly visible). The SonarQube job on `master` succeeded on 202
 the scan step used `continue-on-error: true` and its logs expired, the actual gate status cannot be
 confirmed. The first PR run with the blocking gate (T005) shows the real status; if it fails, only
 the failing conditions are fixed in PR 1.
+
+## T026 — US1 verification (local, 2026-11-25)
+
+| Check | Result |
+|---|---|
+| `desktop.cy.ts` (8 tests) 10× in a row against `npm start` | **10/10 green**, 0 flaky failures (SC-001) |
+| Project window scenario | skipped with a log message: no visible projects in the database |
+| Vitest | 3 files, 22 tests pass; covered statements 56 → 63 (percentage 43.41% → 42.56% because `ThemeProvider.tsx` is now loaded by a test) |
+| Lint / typecheck | pass |
+| Admin suite with forced failure + clean re-run (FR-003a) | **not run locally**: local `cypress.env.json` has placeholder credentials. Verified in the PR 1 CI run instead (cleanup task runs in `before()` and `after()`). |
+| Logout test | **not run locally**, same reason; runs in CI |
