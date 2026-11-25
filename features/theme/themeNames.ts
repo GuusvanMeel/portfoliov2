@@ -1,5 +1,5 @@
 /** The only list of theme names; the type and validation are derived from it. */
-export const themeNames = ["Win98", "classicMac", "WinXP", "debug"] as const;
+export const themeNames = ["Win98", "WinXP", "classicMac", "debug"] as const;
 
 export type ThemeName = (typeof themeNames)[number];
 
