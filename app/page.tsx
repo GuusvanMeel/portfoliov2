@@ -1,4 +1,4 @@
-import Desktop from "./components/Desktop/Desktop";
+import Desktop from "@/components/Desktop/Desktop";
 import { getVisibleProjects } from "./Features/Projects/actions";
 
 export default async function Home() {
