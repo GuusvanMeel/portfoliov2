@@ -42,10 +42,10 @@ after another.
 
 **Purpose**: Baseline so every later step can be compared against today's behaviour
 
-- [ ] T001 Record the baseline: run `npm run lint`, `npm run typecheck`, `npm run test:components:coverage` and note the Vitest coverage summary in `specs/001-foundation-refactor/baseline.md`
-- [ ] T002 Build and start the app (`npm run build`, `npm start`), run `npx cypress run`, and record pass/fail per spec plus the Lighthouse scores from the last CI run on `Development` in `specs/001-foundation-refactor/baseline.md`
-- [ ] T003 [P] Take reference screenshots of the desktop in each theme (Win98, WinXP, classicMac, debug) with the contact window open, a project window open and the start menu open, and save them in `specs/001-foundation-refactor/baseline/` for visual comparison after US2
-- [ ] T004 Check the current SonarCloud quality gate for `master` (sonarcloud.io dashboard `GuusvanMeel_portfoliov2`); record its status and any failing conditions in `specs/001-foundation-refactor/baseline.md`. If it fails, fixing only those conditions (without behaviour changes) becomes part of PR 1
+- [X] T001 Record the baseline: run `npm run lint`, `npm run typecheck`, `npm run test:components:coverage` and note the Vitest coverage summary in `specs/001-foundation-refactor/baseline.md`
+- [X] T002 Build and start the app (`npm run build`, `npm start`), run `npx cypress run`, and record pass/fail per spec plus the Lighthouse scores from the last CI run on `Development` in `specs/001-foundation-refactor/baseline.md`
+- [X] T003 [P] Take reference screenshots of the desktop in each theme (Win98, WinXP, classicMac, debug) with the contact window open, a project window open and the start menu open, and save them in `specs/001-foundation-refactor/baseline/` for visual comparison after US2
+- [X] T004 Check the current SonarCloud quality gate for `master` (sonarcloud.io dashboard `GuusvanMeel_portfoliov2`); record its status and any failing conditions in `specs/001-foundation-refactor/baseline.md`. If it fails, fixing only those conditions (without behaviour changes) becomes part of PR 1
 
 ---
 
