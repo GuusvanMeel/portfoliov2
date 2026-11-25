@@ -55,7 +55,7 @@ after another.
 
 **⚠️ CRITICAL**: US1 work starts only after this phase
 
-- [ ] T005 Add a `pull_request` trigger for branches `Development` and `master` to `.github/workflows/main.yml`, and extend the `if:` conditions of the `cypress` and `lighthouse` jobs so they also run for those pull request events; let the `sonarqube` job run for pushes to `Development`/`master` and their pull requests and remove its `continue-on-error: true`, so a failing quality gate fails the run (constitution IX). The rest of the pipeline cleanup is US4
+- [X] T005 Add a `pull_request` trigger for branches `Development` and `master` to `.github/workflows/main.yml`, and extend the `if:` conditions of the `cypress` and `lighthouse` jobs so they also run for those pull request events; let the `sonarqube` job run for pushes to `Development`/`master` and their pull requests and remove its `continue-on-error: true`, so a failing quality gate fails the run (constitution IX). The rest of the pipeline cleanup is US4
 
 **Checkpoint**: Pull requests into `Development` run lint, typecheck, component tests, build, Cypress, Lighthouse and a blocking SonarCloud quality gate
 
@@ -71,35 +71,35 @@ after another.
 
 ### Test hooks (invisible markup only)
 
-- [ ] T006 [P] [US1] Add `data-cy="desktop"` and `data-theme={theme}` to the desktop root `div` in `app/components/Desktop/Desktop.tsx` (per [test-selectors.md](./contracts/test-selectors.md))
-- [ ] T007 [P] [US1] Add `data-cy="desktop-icon"` and `data-icon-id={id}` to the button in `app/components/ui/DesktopIcon.tsx`
-- [ ] T008 [P] [US1] Add `data-cy="window"`, `data-window-type` and `data-window-id` to the window root, and `data-cy="window-minimize"` / `data-cy="window-close"` to the control buttons in `app/components/windows/WindowFrame.tsx`; pass the two values in as new optional props from `app/components/Desktop/Desktop.tsx`
-- [ ] T009 [P] [US1] Add `data-cy="taskbar"` to the footer, `data-cy="taskbar-entry"` with `data-window-id` and `data-active` to each window item, and `data-cy="taskbar-entry-close"` to its close button in `app/components/taskbar/TaskBar.tsx`
-- [ ] T010 [P] [US1] Add `data-cy="theme-option"` and `data-theme-option={themeName}` to each theme button in `app/components/ui/ThemeSwitcher.tsx`
+- [X] T006 [P] [US1] Add `data-cy="desktop"` and `data-theme={theme}` to the desktop root `div` in `app/components/Desktop/Desktop.tsx` (per [test-selectors.md](./contracts/test-selectors.md))
+- [X] T007 [P] [US1] Add `data-cy="desktop-icon"` and `data-icon-id={id}` to the button in `app/components/ui/DesktopIcon.tsx`
+- [X] T008 [P] [US1] Add `data-cy="window"`, `data-window-type` and `data-window-id` to the window root, and `data-cy="window-minimize"` / `data-cy="window-close"` to the control buttons in `app/components/windows/WindowFrame.tsx`; pass the two values in as new optional props from `app/components/Desktop/Desktop.tsx`
+- [X] T009 [P] [US1] Add `data-cy="taskbar"` to the footer, `data-cy="taskbar-entry"` with `data-window-id` and `data-active` to each window item, and `data-cy="taskbar-entry-close"` to its close button in `app/components/taskbar/TaskBar.tsx`
+- [X] T010 [P] [US1] Add `data-cy="theme-option"` and `data-theme-option={themeName}` to each theme button in `app/components/ui/ThemeSwitcher.tsx`
 
 ### Desktop end-to-end tests
 
-- [ ] T011 [US1] Create `cypress/e2e/desktop.cy.ts` with a `beforeEach` that sets the viewport to 1440×900, clears local storage and visits `/`; add test "startup contact window is open and active in the taskbar"
-- [ ] T012 [US1] Add test "double-clicking a desktop icon opens its window in front and makes it the active taskbar entry" for the `about.exe` icon in `cypress/e2e/desktop.cy.ts` (spec US1 scenario 1)
-- [ ] T013 [US1] Add test "clicking a window behind brings it to the front": open two windows, click the back one's title bar, assert its computed `z-index` is higher and its taskbar entry has `data-active="true"` in `cypress/e2e/desktop.cy.ts` (scenario 2)
-- [ ] T014 [US1] Add test "minimize hides the window; clicking its taskbar entry restores it in front" in `cypress/e2e/desktop.cy.ts` (scenario 3)
-- [ ] T015 [US1] Add tests "close via window button" and "close via taskbar entry" asserting the window and its taskbar entry disappear in `cypress/e2e/desktop.cy.ts` (scenario 4)
-- [ ] T016 [US1] Add test "choosing each theme updates `data-theme` and the taskbar tray text" iterating over all `theme-option` buttons in `cypress/e2e/desktop.cy.ts` (scenario 5)
-- [ ] T017 [US1] Add test "double-clicking a visible project's `.exe` icon opens a projects window showing its title" in `cypress/e2e/desktop.cy.ts`, skipping with a clear log message when no project icon exists (scenario 6, edge case "zero visible projects")
-- [ ] T018 [US1] Add `logFlowMetric` calls to each desktop test, matching the existing pattern in `cypress/support/logflowmetric.ts`, and add "Desktop" flows to the Cypress summary step in `.github/workflows/main.yml`
+- [X] T011 [US1] Create `cypress/e2e/desktop.cy.ts` with a `beforeEach` that sets the viewport to 1440×900, clears local storage and visits `/`; add test "startup contact window is open and active in the taskbar"
+- [X] T012 [US1] Add test "double-clicking a desktop icon opens its window in front and makes it the active taskbar entry" for the `about.exe` icon in `cypress/e2e/desktop.cy.ts` (spec US1 scenario 1)
+- [X] T013 [US1] Add test "clicking a window behind brings it to the front": open two windows, click the back one's title bar, assert its computed `z-index` is higher and its taskbar entry has `data-active="true"` in `cypress/e2e/desktop.cy.ts` (scenario 2)
+- [X] T014 [US1] Add test "minimize hides the window; clicking its taskbar entry restores it in front" in `cypress/e2e/desktop.cy.ts` (scenario 3)
+- [X] T015 [US1] Add tests "close via window button" and "close via taskbar entry" asserting the window and its taskbar entry disappear in `cypress/e2e/desktop.cy.ts` (scenario 4)
+- [X] T016 [US1] Add test "choosing each theme updates `data-theme` and the taskbar tray text" iterating over all `theme-option` buttons in `cypress/e2e/desktop.cy.ts` (scenario 5)
+- [X] T017 [US1] Add test "double-clicking a visible project's `.exe` icon opens a projects window showing its title" in `cypress/e2e/desktop.cy.ts`, skipping with a clear log message when no project icon exists (scenario 6, edge case "zero visible projects")
+- [X] T018 [US1] Add `logFlowMetric` calls to each desktop test, matching the existing pattern in `cypress/support/logflowmetric.ts`, and add "Desktop" flows to the Cypress summary step in `.github/workflows/main.yml`
 
 ### Guaranteed admin test cleanup (FR-003a)
 
-- [ ] T019 [US1] Add `@supabase/supabase-js`-based task `cleanupTestProjects` to `setupNodeEvents` in `cypress.config.ts`: sign in with `TEST_EMAIL`/`TEST_PASSWORD` using `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, delete rows from `projects` whose `title` starts with `CYPRESS TEST`, return the number deleted (research R8)
-- [ ] T020 [US1] Create `cypress/support/testData.ts` exporting `TEST_PROJECT_PREFIX = 'CYPRESS TEST'` and the test project values currently inlined in `cypress/e2e/Admin.cy.ts`; translate the Dutch test description and duration to English
-- [ ] T021 [US1] In `cypress/e2e/Admin.cy.ts` import from `cypress/support/testData.ts`, call `cy.task('cleanupTestProjects')` in `before()` and `after()`, and rename the suite from `'template spec'` to `'Admin project management'`
-- [ ] T022 [US1] Add test "logout returns to the home page and `/admin` redirects to `/login` again" to `cypress/e2e/authorization.cy.ts`: log in, click Logout, assert the URL is `/`, visit `/admin`, assert the URL contains `/login` (SC-007)
-- [ ] T023 [US1] Pass `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the Cypress task environment (Cypress config `env` or `process.env`) in `cypress.config.ts` and confirm the `cypress` job in `.github/workflows/main.yml` already exposes them
+- [X] T019 [US1] Add `@supabase/supabase-js`-based task `cleanupTestProjects` to `setupNodeEvents` in `cypress.config.ts`: sign in with `TEST_EMAIL`/`TEST_PASSWORD` using `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, delete rows from `projects` whose `title` starts with `CYPRESS TEST`, return the number deleted (research R8)
+- [X] T020 [US1] Create `cypress/support/testData.ts` exporting `TEST_PROJECT_PREFIX = 'CYPRESS TEST'` and the test project values currently inlined in `cypress/e2e/Admin.cy.ts`; translate the Dutch test description and duration to English
+- [X] T021 [US1] In `cypress/e2e/Admin.cy.ts` import from `cypress/support/testData.ts`, call `cy.task('cleanupTestProjects')` in `before()` and `after()`, and rename the suite from `'template spec'` to `'Admin project management'`
+- [X] T022 [US1] Add test "logout returns to the home page and `/admin` redirects to `/login` again" to `cypress/e2e/authorization.cy.ts`: log in, click Logout, assert the URL is `/`, visit `/admin`, assert the URL contains `/login` (SC-007)
+- [X] T023 [US1] Pass `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the Cypress task environment (Cypress config `env` or `process.env`) in `cypress.config.ts` and confirm the `cypress` job in `.github/workflows/main.yml` already exposes them
 
 ### Component tests for existing logic
 
-- [ ] T024 [P] [US1] Create `app/Features/Projects/mapper.test.ts` covering `mapProjectRowToProject` (all fields; `tags: null` → `[]`), `mapUpdateProjectInputToRow` (DB names `imagesrc`, `Github_Link`, `is_visible`; `updated_at` is an ISO string) and `mapProjectToDisplayproject` (drops `isVisible` and `updatedAt`)
-- [ ] T025 [P] [US1] Export the existing `isThemeName` from `app/Features/Theme/ThemeProvider.tsx` (no behaviour change) and create `app/Features/Theme/ThemeProvider.test.tsx` covering: accepts `Win98`, `classicMac`, `WinXP`, `debug`; rejects `null`, `""`, `"winxp"`, `"Vista"`
+- [X] T024 [P] [US1] Create `app/Features/Projects/mapper.test.ts` covering `mapProjectRowToProject` (all fields; `tags: null` → `[]`), `mapUpdateProjectInputToRow` (DB names `imagesrc`, `Github_Link`, `is_visible`; `updated_at` is an ISO string) and `mapProjectToDisplayproject` (drops `isVisible` and `updatedAt`)
+- [X] T025 [P] [US1] Export the existing `isThemeName` from `app/Features/Theme/ThemeProvider.tsx` (no behaviour change) and create `app/Features/Theme/ThemeProvider.test.tsx` covering: accepts `Win98`, `classicMac`, `WinXP`, `debug`; rejects `null`, `""`, `"winxp"`, `"Vista"`
 
 ### Verification
 
