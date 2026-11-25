@@ -74,3 +74,33 @@ the failing conditions are fixed in PR 1.
 
 PR 1 (GitHub #39) was merged into `Development` with the full pipeline green. The admin cleanup
 (forced failure + clean re-run) and the logout test were verified in that CI run, not locally.
+
+## T073 — US2 verification (local, 2026-11-25)
+
+| Check | Result |
+|---|---|
+| Lint / typecheck / Prettier | pass |
+| `next build` | pass |
+| Full Cypress suite against `npm start` | **15/15 green** (admin 3, authorization 4, desktop 8) |
+| Vitest | 15 files, 61 tests pass |
+| Vitest coverage | Statements 72.19% (135/187) · Branches 65.54% (78/119) · Functions 77.77% (49/63) · Lines 70.28% (123/175); baseline 42.56% statements |
+| Visual comparison with `baseline/` | **12/12 screenshots pixel-identical** (0 differing pixels) |
+| Dummy theme scratch test (SC-003) | pass on a throwaway branch: adding a fifth theme only touched `themeNames.ts`, `themes/dummy.ts` and `themes/index.ts`; it appears in the switcher and styles its buttons |
+
+Notes on the visual comparison:
+
+- The database now has three visible projects (it had none when the baseline was taken). Their
+  desktop icons were hidden with injected CSS during the comparison, since they are data, not code.
+- Screenshots were taken with Puppeteer at 1440×900. The theme switcher window was opened with a
+  bare `dblclick` event (as Cypress `dblclick()` does), matching how the baseline was made; real
+  mouse clicks also select the icon, which is existing behaviour.
+
+Deviations from tasks.md:
+
+- `themeNames` is ordered `Win98, WinXP, classicMac, debug` (not `Win98, classicMac, WinXP, debug`)
+  because the theme switcher lists themes in that order today.
+- `WindowFrame.module.css` never had a `desktopIcons` rule (the class resolved to `undefined`), so
+  no `Desktop.module.css` was created; the wrapper `div` simply has no class.
+- The create-form test from `AdminProject.test.tsx` moved to `CreateProjectButton.test.tsx`, because
+  creating a project is now handled by `CreateProjectButton`. Mock paths use the `@/` alias.
+- `vitest-browser-react` stays on 2.2.0 when moved to devDependencies.
