@@ -66,3 +66,10 @@ Run by hand by the maintainer on `npm run dev` (2026-11-26):
   admin and a signed-in user on `/admin` is redirected to `/` (an earlier login session skips the
   login page). Not caused by spec 003; step 7 of `specs/002-reliable-e2e-test-db/quickstart.md`.
   Scenario 4 is covered by the admin E2E tests (which use the test environment's `ADMIN_EMAILS`).
+
+## CI: docs-only pushes on a pull request
+
+Added during this spec at the maintainer's request (`.github/workflows/main.yml`): a new push to a
+pull request is compared with the previous push when that push's CI run passed, so a commit that
+only changes documentation (docs/, specs/, .specify/, .claude/, \*.md) skips build, E2E, Lighthouse
+and SonarQube. This commit is itself docs-only and was used to check the skip on PR #63.
