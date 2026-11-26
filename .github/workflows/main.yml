@@ -23,6 +23,10 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
+    permissions:
+      contents: read
+      actions: read # read the previous push's run result
+
     outputs:
       code: ${{ steps.changes.outputs.code }}
 
@@ -34,11 +38,23 @@ jobs:
 
       # Documentation-only changes (docs/, specs/, .specify/, .claude/, *.md) skip everything after
       # this step. This job still reports, because it is a required check.
+      # A new push to a pull request is compared with the previous push when that push's run
+      # passed, so a docs-only follow-up commit does not re-run the whole pipeline.
       - name: Detect code changes
         id: changes
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PREVIOUS_HEAD: ${{ github.event.action == 'synchronize' && github.event.before || '' }}
+          GH_TOKEN: ${{ github.token }}
         run: |
+          if [ -n "$PREVIOUS_HEAD" ] && git cat-file -e "$PREVIOUS_HEAD^{commit}" 2>/dev/null; then
+            previous_result=$(gh run list --repo "${{ github.repository }}" --commit "$PREVIOUS_HEAD" \
+              --workflow CI --event pull_request --status completed --limit 1 \
+              --json conclusion --jq '.[0].conclusion' || true)
+            if [ "$previous_result" = "success" ]; then
+              BASE_SHA="$PREVIOUS_HEAD"
+            fi
+          fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$BASE_SHA" ] \
             || ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
             echo "code=true" >> "$GITHUB_OUTPUT"

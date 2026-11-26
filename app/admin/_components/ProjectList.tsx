@@ -5,25 +5,35 @@ import CreateProjectButton from "@/app/admin/_components/CreateProjectButton";
 import ProjectListItem from "@/app/admin/_components/ProjectListItem";
 import { messages } from "@/content/en";
 import type { Project } from "@/features/projects/types";
+import { viewModeCookie, type ViewMode } from "@/features/admin/viewMode";
+import { writePreferenceCookie } from "@/lib/preferenceCookie";
 
 const text = messages.admin.list;
 
-type View = "list" | "grid";
-
-export default function ProjectList({ projects }: Readonly<{ projects: Project[] }>) {
+export default function ProjectList({
+  projects,
+  initialView,
+}: Readonly<{ projects: Project[]; initialView: ViewMode }>) {
   const [items, setItems] = useState(projects);
-  const [view, setView] = useState<View>("list");
+  const [view, setView] = useState<ViewMode>(initialView);
+
+  function chooseView(newView: ViewMode) {
+    setView(newView);
+    writePreferenceCookie(viewModeCookie, newView);
+  }
 
   function handleCreated(newProject: Project) {
     setItems((prev) => [newProject, ...prev]);
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div data-cy="admin-projects" data-view={view} className="flex flex-col gap-8">
       <div className="flex items-center justify-between gap-4">
         <div className="inline-flex rounded-md border border-neutral-800 bg-neutral-900/60 p-1.5">
           <button
-            onClick={() => setView("list")}
+            data-cy="view-option"
+            data-view-option="list"
+            onClick={() => chooseView("list")}
             aria-pressed={view === "list"}
             className={`inline-flex items-center gap-3 px-5 py-3 text-base rounded transition ${
               view === "list" ? "bg-neutral-800 text-white" : "text-neutral-400 hover:text-white"
@@ -33,7 +43,9 @@ export default function ProjectList({ projects }: Readonly<{ projects: Project[]
             {text.listView}
           </button>
           <button
-            onClick={() => setView("grid")}
+            data-cy="view-option"
+            data-view-option="grid"
+            onClick={() => chooseView("grid")}
             aria-pressed={view === "grid"}
             className={`inline-flex items-center gap-3 px-5 py-3 text-base rounded transition ${
               view === "grid" ? "bg-neutral-800 text-white" : "text-neutral-400 hover:text-white"

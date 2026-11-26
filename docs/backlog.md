@@ -13,10 +13,13 @@
 Spec 002 (reliable end-to-end tests and a separate test database) resolves F-3 (#43), F-4 (#44),
 F-6 (#46) and F-15 (#53); see `specs/002-reliable-e2e-test-db/`.
 
+Spec 003 (theme and admin view preferences in cookies) resolves #20 and #22; see
+`specs/003-preferences-in-cookies/`.
+
 ## Recommended spec order
 
-1. **003 Theme and preferences in cookies** — #20, #22. Fixes the hydration risk at the root
-   (constitution VI); later specs that add preferences build on it.
+1. ~~**003 Theme and preferences in cookies** — #20, #22.~~ Done in spec 003; later specs that add
+   preferences reuse `lib/preferenceCookie.ts`.
 2. **Admin security hardening (rest)** — F-5 (#45) server-side sign-in. F-4 and F-3 were done in spec 002.
 3. **004 About Me and contact content** — #16, F-12, F-9 (#49). Replaces the visible placeholder and gives
    the start menu items real actions.
@@ -34,13 +37,13 @@ F-6 (#46) and F-15 (#53); see `specs/002-reliable-e2e-test-db/`.
 
 ### #20 Move theme storage from localStorage to cookies
 
-- Type: bug · Priority: high · Status: not started
-- Done: –
-- Remaining: store the theme in a cookie, read it on the server so the first render matches,
-  migrate an existing localStorage value once. The file mentioned in the issue moved to
-  `features/theme/ThemeProvider.tsx`.
+- Type: bug · Priority: high · Status: done in spec 003 (closes when the PR is merged)
+- Done: the theme is stored in the `theme` cookie and rendered by the server on the first render;
+  an existing localStorage theme is moved to the cookie once and then removed; invalid values fall
+  back to WinXP. See `specs/003-preferences-in-cookies/`.
+- Remaining: –
 - Depends on: –
-- Source: GitHub #20 · Suggested spec: 002
+- Source: GitHub #20 · Spec: 003
 
 ### #16 Migrate About me and contact window
 
@@ -91,11 +94,12 @@ F-6 (#46) and F-15 (#53); see `specs/002-reliable-e2e-test-db/`.
 
 ### #22 Persist admin project view preference using cookies
 
-- Type: enhancement · Priority: medium · Status: not started
-- Done: –
-- Remaining: remember list/grid view in a cookie (the `wontfix` label was removed; planned for spec 002).
+- Type: enhancement · Priority: medium · Status: done in spec 003 (closes when the PR is merged)
+- Done: the list/grid choice is stored per browser in the `admin-view` cookie and rendered by the
+  server; invalid values fall back to list. See `specs/003-preferences-in-cookies/`.
+- Remaining: –
 - Depends on: #20 (same cookie approach)
-- Source: GitHub #22 · Suggested spec: 002
+- Source: GitHub #22 · Spec: 003
 
 ### #23 Decent Ghosting effect for every style
 

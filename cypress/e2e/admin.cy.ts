@@ -123,6 +123,28 @@ describe("Admin project management", () => {
     logFlowMetric("Admin: delete project", start);
   });
 
+  it("remembers the grid view after a reload, from the first server render", () => {
+    cy.get('[data-cy="view-option"][data-view-option="grid"]').click();
+    cy.get('[data-cy="admin-projects"]').should("have.attr", "data-view", "grid");
+    cy.getCookie("admin-view").its("value").should("eq", "grid");
+
+    cy.request("/admin").its("body").should("contain", 'data-view="grid"');
+
+    cy.reload();
+    cy.get('[data-cy="view-option"][data-view-option="grid"]').should(
+      "have.attr",
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("falls back to the list view for an invalid view cookie", () => {
+    cy.setCookie("admin-view", "bogus");
+    cy.request("/admin").its("body").should("contain", 'data-view="list"');
+    cy.reload();
+    cy.get('[data-cy="admin-projects"]').should("have.attr", "data-view", "list");
+  });
+
   describe("when the server refuses a change", () => {
     const title = seedProjects.visibleA.title;
 

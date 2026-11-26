@@ -6,7 +6,10 @@ import { logout } from "@/app/admin/actions";
 import { githubUrl } from "@/config/site";
 import { messages } from "@/content/en";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { defaultViewMode, isViewMode, viewModeCookie } from "@/features/admin/viewMode";
+import { readPreference } from "@/lib/preferenceCookie";
 import { isCurrentUserAdmin } from "@/features/auth/requireAdmin";
 
 const text = messages.admin.header;
@@ -25,6 +28,11 @@ export default async function AdminPage() {
   }
 
   const projects = await getAllProjects();
+  const initialView = readPreference(
+    (await cookies()).get(viewModeCookie)?.value,
+    isViewMode,
+    defaultViewMode,
+  );
 
   return (
     <div className="w-full flex flex-col gap-10">
@@ -65,7 +73,7 @@ export default async function AdminPage() {
         </div>
       </header>
 
-      <ProjectList projects={projects} />
+      <ProjectList projects={projects} initialView={initialView} />
     </div>
   );
 }

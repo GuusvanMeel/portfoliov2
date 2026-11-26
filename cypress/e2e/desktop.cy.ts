@@ -21,6 +21,7 @@ describe("Desktop", () => {
   beforeEach(() => {
     cy.viewport(1440, 900);
     cy.clearLocalStorage();
+    cy.clearCookies();
     cy.visit("/");
     cy.get('[data-cy="desktop"]').should("exist");
   });
@@ -168,13 +169,73 @@ describe("Desktop", () => {
     logFlowMetric("Desktop: taskbar entries", start);
   });
 
-  it("keeps the chosen theme after a page reload", () => {
+  it("keeps the chosen theme after a page reload, from the first server render", () => {
     const start = performance.now();
     cy.get('[data-cy="theme-option"][data-theme-option="Win98"]').first().click();
     cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+    cy.getCookie("theme").its("value").should("eq", "Win98");
+
+    // The raw server HTML is the first render: it must already carry the chosen theme.
+    cy.request("/").its("body").should("contain", 'data-theme="Win98"');
 
     cy.reload();
     cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
     logFlowMetric("Desktop: theme after reload", start);
+  });
+
+  it("renders a saved theme without hydration errors", () => {
+    cy.setCookie("theme", "classicMac");
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.spy(win.console, "error").as("consoleError");
+      },
+    });
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "classicMac");
+    cy.get("@consoleError").then((spy) => {
+      const calls = (spy as unknown as sinon.SinonSpy).getCalls();
+      const hydrationErrors = calls.filter((call) =>
+        call.args.some((arg: unknown) => /hydrat|#418|#423|#425/i.test(String(arg))),
+      );
+      expect(hydrationErrors, "hydration errors").to.have.length(0);
+    });
+  });
+
+  it("falls back to WinXP for an invalid theme cookie", () => {
+    cy.setCookie("theme", "bogus");
+    cy.request("/").then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.contain('data-theme="WinXP"');
+    });
+    cy.visit("/");
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "WinXP");
+  });
+
+  it("moves a theme from localStorage to the cookie once", () => {
+    cy.clearCookies();
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("theme", "classicMac");
+      },
+    });
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "classicMac");
+    cy.getCookie("theme").its("value").should("eq", "classicMac");
+    cy.window().then((win) => expect(win.localStorage.getItem("theme")).to.be.null);
+    cy.request("/").its("body").should("contain", 'data-theme="classicMac"');
+  });
+
+  it("keeps the cookie theme when localStorage holds another one", () => {
+    cy.setCookie("theme", "Win98");
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("theme", "classicMac");
+      },
+    });
+    // Opening a window proves the page is hydrated, so mount effects (the migration) have run.
+    openApp("about");
+    windowOfType("about").should("be.visible");
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+    cy.getCookie("theme").its("value").should("eq", "Win98");
+    // With a valid cookie the old value is never read, so it is left untouched.
+    cy.window().then((win) => expect(win.localStorage.getItem("theme")).to.eq("classicMac"));
   });
 });

@@ -24,7 +24,7 @@ const project: DisplayProject = {
 
 function renderProject(overrides: Partial<DisplayProject> = {}) {
   return render(
-    <ThemeProvider>
+    <ThemeProvider initialTheme="WinXP" hasThemeCookie>
       <ProjectApp {...project} {...overrides} />
     </ThemeProvider>,
   );
