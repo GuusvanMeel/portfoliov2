@@ -220,12 +220,12 @@ after another.
 
 **Delivery**: PR 4 → `Development` (after PR 2, because it touches `package.json` and configs)
 
-- [ ] T081 [US4] Add `swc-plugin-coverage-instrument` as a devDependency (choose the version compatible with Next.js 16.2's SWC core) and enable it in `next.config.ts` via `experimental.swcPlugins` only when `process.env.CYPRESS_COVERAGE === "true"` (research R9)
-- [ ] T082 [US4] Delete `.babelrc` and `babel.config.js` and remove `babel-plugin-istanbul` from devDependencies; verify `npm run build` uses SWC and its output contains no `__coverage__`, and that a `CYPRESS_COVERAGE=true` build plus `npx cypress run` still produces `coverage/cypress/lcov.info` with coverage ≥ baseline; if no compatible plugin exists, apply the R9 fallback and document it in `specs/001-foundation-refactor/research.md`
-- [ ] T083 [US4] In `.github/workflows/main.yml`: remove all commented-out cache steps (or replace with a working `actions/cache` on `.next/cache` if it measurably shortens runs) and translate the SonarQube failure summary to English (the SonarQube job stays non-blocking for the rest of this spec; making it blocking again is backlog item from T076)
-- [ ] T084 [US4] Make the Cypress summary in `.github/workflows/main.yml` list the actual tested flows (desktop + admin) and keep links to videos/screenshots artifacts (FR-021)
-- [ ] T085 [P] [US4] Update `README.md`: project description, tech stack, folder structure (from plan.md), scripts, test setup including the admin test account and guaranteed cleanup, the CI pipeline stages, and credit for the Win98 icons that is in the README today
-- [ ] T086 [US4] Validate the pipeline: push a temporary commit with a failing assertion in `cypress/e2e/desktop.cy.ts` to the PR branch, confirm the run fails at the E2E stage, revert; then open PR 4 from `001-foundation-refactor` into `Development`
+- [X] T081 [US4] Add `swc-plugin-coverage-instrument` as a devDependency (choose the version compatible with Next.js 16.2's SWC core) and enable it in `next.config.ts` via `experimental.swcPlugins` only when `process.env.CYPRESS_COVERAGE === "true"` (research R9)
+- [X] T082 [US4] Delete `.babelrc` and `babel.config.js` and remove `babel-plugin-istanbul` from devDependencies; verify `npm run build` uses SWC and its output contains no `__coverage__`, and that a `CYPRESS_COVERAGE=true` build plus `npx cypress run` still produces `coverage/cypress/lcov.info` with coverage ≥ baseline; if no compatible plugin exists, apply the R9 fallback and document it in `specs/001-foundation-refactor/research.md`
+- [X] T083 [US4] In `.github/workflows/main.yml`: remove all commented-out cache steps (or replace with a working `actions/cache` on `.next/cache` if it measurably shortens runs) and translate the SonarQube failure summary to English (the SonarQube job stays non-blocking for the rest of this spec; making it blocking again is backlog item from T076)
+- [X] T084 [US4] Make the Cypress summary in `.github/workflows/main.yml` list the actual tested flows (desktop + admin) and keep links to videos/screenshots artifacts (FR-021)
+- [X] T085 [P] [US4] Update `README.md`: project description, tech stack, folder structure (from plan.md), scripts, test setup including the admin test account and guaranteed cleanup, the CI pipeline stages, and credit for the Win98 icons that is in the README today
+- [X] T086 [US4] Validate the pipeline: push a temporary commit with a failing assertion in `cypress/e2e/desktop.cy.ts` to the PR branch, confirm the run fails at the E2E stage, revert; then open PR 4 from `001-foundation-refactor` into `Development`
 
 **Checkpoint**: Tooling and pipeline match constitution IX
 
@@ -233,11 +233,11 @@ after another.
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T087 Run every validation in [quickstart.md](./quickstart.md) on `Development` after all four PRs are merged and record results in `specs/001-foundation-refactor/baseline.md` (before/after table)
-- [ ] T088 [P] Compare Lighthouse scores of the last `Development` run with the baseline (accessibility ≥ 0.90; others not lower) (SC-009)
-- [ ] T089 [P] Delete `specs/001-foundation-refactor/baseline/` screenshots if they are not needed anymore, or keep them referenced from `baseline.md`
-- [ ] T090 Mark the spec status as "Implemented" in `specs/001-foundation-refactor/spec.md`
-- [ ] T091 Delete branch `001-foundation-refactor` locally and on GitHub after the last pull request of this spec is merged
+- [X] T087 Run every validation in [quickstart.md](./quickstart.md) on `Development` after all four PRs are merged and record results in `specs/001-foundation-refactor/baseline.md` (before/after table)
+- [X] T088 [P] Compare Lighthouse scores of the last `Development` run with the baseline (accessibility ≥ 0.90; others not lower) (SC-009)
+- [X] T089 [P] Delete `specs/001-foundation-refactor/baseline/` screenshots if they are not needed anymore, or keep them referenced from `baseline.md`
+- [X] T090 Mark the spec status as "Implemented" in `specs/001-foundation-refactor/spec.md`
+- [X] T091 Delete branch `001-foundation-refactor` locally and on GitHub after the last pull request of this spec is merged
 
 ---
 

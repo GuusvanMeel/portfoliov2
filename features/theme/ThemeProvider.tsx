@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { defaultTheme, isThemeName, type ThemeName } from "@/features/theme/themeNames";
+import { themeCookie, type ThemeName } from "@/features/theme/themeNames";
+import { migrateLegacyTheme } from "@/features/theme/themeMigration";
+import { writePreferenceCookie } from "@/lib/preferenceCookie";
 
 type ThemeContextType = {
   theme: ThemeName;
@@ -10,24 +12,33 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [currentTheme, setCurrentTheme] = useState<ThemeName>(defaultTheme);
+type ThemeProviderProps = Readonly<{
+  /** The theme the server read from the cookie (or the default), so both renders match. */
+  initialTheme: ThemeName;
+  /** Whether the visitor already has a valid theme cookie; if not, an old localStorage theme is moved. */
+  hasThemeCookie: boolean;
+  children: React.ReactNode;
+}>;
+
+export function ThemeProvider({ initialTheme, hasThemeCookie, children }: ThemeProviderProps) {
+  const [currentTheme, setCurrentTheme] = useState<ThemeName>(initialTheme);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
+    if (hasThemeCookie) return;
 
-    if (isThemeName(savedTheme)) {
-      // Theme is stored client-side for now.
-      // Later this should move to cookies to avoid hydration mismatch.
+    // One-time move from the old localStorage mechanism. The server cannot see localStorage,
+    // so this visitor sees the default once; every later load is rendered by the server.
+    const legacyTheme = migrateLegacyTheme(localStorage);
+    if (legacyTheme) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCurrentTheme(savedTheme);
+      setCurrentTheme(legacyTheme);
+      writePreferenceCookie(themeCookie, legacyTheme);
     }
-  }, []);
+  }, [hasThemeCookie]);
 
   function setTheme(newTheme: ThemeName) {
-    // Apply the theme and remember it in localStorage.
     setCurrentTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+    writePreferenceCookie(themeCookie, newTheme);
   }
 
   return (

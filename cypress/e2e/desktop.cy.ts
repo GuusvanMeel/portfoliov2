@@ -1,6 +1,8 @@
 import { logFlowMetric } from "../support/logFlowMetric";
+import { seedProjects } from "../support/testData";
 
-// Desktop behaviour as visitors experience it. These tests never write data.
+// Desktop behaviour as visitors experience it. These tests never write data; projects come
+// from the test database seed.
 const themes = ["Win98", "WinXP", "classicMac", "debug"] as const;
 
 const windowOfType = (type: string) => cy.get(`[data-cy="window"][data-window-type="${type}"]`);
@@ -19,6 +21,7 @@ describe("Desktop", () => {
   beforeEach(() => {
     cy.viewport(1440, 900);
     cy.clearLocalStorage();
+    cy.clearCookies();
     cy.visit("/");
     cy.get('[data-cy="desktop"]').should("exist");
   });
@@ -112,24 +115,127 @@ describe("Desktop", () => {
     logFlowMetric("Desktop: switch themes", start);
   });
 
-  it("opens a project window from a visible project .exe icon", () => {
+  it("opens a project window from a project .exe icon and hides hidden projects", () => {
     const start = performance.now();
-    cy.get("body").then(($body) => {
-      const projectIcons = $body.find('[data-cy="desktop-icon"][data-icon-id^="project-"]');
+    const project = seedProjects.visibleA;
 
-      if (projectIcons.length === 0) {
-        cy.log("No visible projects in the database: skipping the project window check");
-        return;
-      }
+    cy.contains('[data-cy="desktop-icon"]', `${project.title}.exe`).dblclick();
+    windowOfType("projects")
+      .should("be.visible")
+      .and("contain.text", project.title)
+      .and("contain.text", project.description)
+      .and("contain.text", project.tags[0]);
 
-      const label = projectIcons
-        .first()
-        .text()
-        .trim()
-        .replace(/\.exe$/, "");
-      cy.wrap(projectIcons.first()).dblclick();
-      windowOfType("projects").should("be.visible").and("contain.text", label);
-    });
+    cy.contains('[data-cy="desktop-icon"]', seedProjects.visibleB.title).should("exist");
+    cy.contains('[data-cy="desktop-icon"]', seedProjects.hidden.title).should("not.exist");
     logFlowMetric("Desktop: open project", start);
+  });
+
+  it("opens and closes the start menu", () => {
+    const start = performance.now();
+    cy.get('[data-cy="start-menu"]').should("not.exist");
+
+    cy.get('[data-cy="start-button"]').click();
+    cy.get('[data-cy="start-menu"]')
+      .should("be.visible")
+      .and("contain.text", "About me")
+      .and("contain.text", "Admin login");
+    cy.get('[data-cy="start-button"]').should("have.attr", "aria-expanded", "true");
+
+    // The start button toggles the menu closed again.
+    cy.get('[data-cy="start-button"]').click();
+    cy.get('[data-cy="start-menu"]').should("not.exist");
+
+    // A click anywhere else on the page also closes it.
+    cy.get('[data-cy="start-button"]').click();
+    cy.get('[data-cy="start-menu"]').should("be.visible");
+    cy.get('[data-cy="desktop"]').click(700, 300);
+    cy.get('[data-cy="start-menu"]').should("not.exist");
+    logFlowMetric("Desktop: start menu", start);
+  });
+
+  it("shows one taskbar entry per open window and marks the front one", () => {
+    const start = performance.now();
+    openApp("about");
+    windowOfType("about").should("be.visible");
+
+    cy.get('[data-cy="taskbar-entry"]').should("have.length", 2);
+    cy.get('[data-cy="taskbar-entry"][data-active="true"]')
+      .should("have.length", 1)
+      .and("contain.text", "About");
+
+    windowOfType("about").find('[data-cy="window-close"]').click();
+    cy.get('[data-cy="taskbar-entry"]').should("have.length", 1);
+    logFlowMetric("Desktop: taskbar entries", start);
+  });
+
+  it("keeps the chosen theme after a page reload, from the first server render", () => {
+    const start = performance.now();
+    cy.get('[data-cy="theme-option"][data-theme-option="Win98"]').first().click();
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+    cy.getCookie("theme").its("value").should("eq", "Win98");
+
+    // The raw server HTML is the first render: it must already carry the chosen theme.
+    cy.request("/").its("body").should("contain", 'data-theme="Win98"');
+
+    cy.reload();
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+    logFlowMetric("Desktop: theme after reload", start);
+  });
+
+  it("renders a saved theme without hydration errors", () => {
+    cy.setCookie("theme", "classicMac");
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.spy(win.console, "error").as("consoleError");
+      },
+    });
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "classicMac");
+    cy.get("@consoleError").then((spy) => {
+      const calls = (spy as unknown as sinon.SinonSpy).getCalls();
+      const hydrationErrors = calls.filter((call) =>
+        call.args.some((arg: unknown) => /hydrat|#418|#423|#425/i.test(String(arg))),
+      );
+      expect(hydrationErrors, "hydration errors").to.have.length(0);
+    });
+  });
+
+  it("falls back to WinXP for an invalid theme cookie", () => {
+    cy.setCookie("theme", "bogus");
+    cy.request("/").then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.contain('data-theme="WinXP"');
+    });
+    cy.visit("/");
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "WinXP");
+  });
+
+  it("moves a theme from localStorage to the cookie once", () => {
+    cy.clearCookies();
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("theme", "classicMac");
+      },
+    });
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "classicMac");
+    cy.getCookie("theme").its("value").should("eq", "classicMac");
+    cy.window().then((win) => expect(win.localStorage.getItem("theme")).to.be.null);
+    cy.request("/").its("body").should("contain", 'data-theme="classicMac"');
+  });
+
+  it("keeps the cookie theme when localStorage holds another one", () => {
+    cy.setCookie("theme", "Win98");
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("theme", "classicMac");
+      },
+    });
+    // Opening a window proves the page is hydrated, so mount effects (the migration) have run.
+    openApp("about");
+    windowOfType("about").should("be.visible");
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+    cy.getCookie("theme").its("value").should("eq", "Win98");
+    // With a valid cookie the old value is never read, so it is left untouched.
+    cy.window().then((win) => expect(win.localStorage.getItem("theme")).to.eq("classicMac"));
   });
 });

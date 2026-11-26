@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-25
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "spec 001, Bekijk het hele project, en refactor alles zodat het op een
 best practice manier is opgebouwd, kijk tevens naar de issues in github en maak een backlog document

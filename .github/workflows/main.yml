@@ -1,70 +1,118 @@
 name: CI
 
 on:
+  # Feature branches are checked through their pull request only, so every push starts one run.
   push:
+    branches: [Development, master]
   pull_request:
     branches: [Development, master]
   workflow_dispatch:
+
+# A newer push to the same pull request or branch cancels the run that is still going.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     name: Lint, typecheck and build
     runs-on: ubuntu-latest
 
+    # Production-shaped build check; it may read live data to pre-render the page. Tests never do.
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+
+    permissions:
+      contents: read
+      actions: read # read the previous push's run result
+
+    outputs:
+      code: ${{ steps.changes.outputs.code }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Documentation-only changes (docs/, specs/, .specify/, .claude/, *.md) skip everything after
+      # this step. This job still reports, because it is a required check.
+      # A new push to a pull request is compared with the previous push when that push's run
+      # passed, so a docs-only follow-up commit does not re-run the whole pipeline.
+      - name: Detect code changes
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PREVIOUS_HEAD: ${{ github.event.action == 'synchronize' && github.event.before || '' }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$PREVIOUS_HEAD" ] && git cat-file -e "$PREVIOUS_HEAD^{commit}" 2>/dev/null; then
+            previous_result=$(gh run list --repo "${{ github.repository }}" --commit "$PREVIOUS_HEAD" \
+              --workflow CI --event pull_request --status completed --limit 1 \
+              --json conclusion --jq '.[0].conclusion' || true)
+            if [ "$previous_result" = "success" ]; then
+              BASE_SHA="$PREVIOUS_HEAD"
+            fi
+          fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -z "$BASE_SHA" ] \
+            || ! git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          code_files=$(git diff --name-only "$BASE_SHA" "$GITHUB_SHA" \
+            | grep -vE '^(docs/|specs/|\.specify/|\.claude/)|\.md$' || true)
+          if [ -n "$code_files" ]; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=false" >> "$GITHUB_OUTPUT"
+            echo "Documentation-only change: tests, build, E2E, Lighthouse and SonarQube are skipped." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Setup Node.js
+        if: steps.changes.outputs.code == 'true'
         uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
 
       - name: Install dependencies
+        if: steps.changes.outputs.code == 'true'
         run: npm ci
 
       - name: Run lint
+        if: steps.changes.outputs.code == 'true'
         run: npm run lint
 
       - name: Run typecheck
+        if: steps.changes.outputs.code == 'true'
         run: npm run typecheck
 
       - name: Install Playwright browser
+        if: steps.changes.outputs.code == 'true'
         run: npx playwright install chromium
 
       - name: Run component tests
+        if: steps.changes.outputs.code == 'true'
         run: npm run test:components:coverage
 
       - name: Upload Vitest coverage report
-        if: always()
+        if: always() && steps.changes.outputs.code == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: vitest-coverage-report
           path: coverage/vitest/lcov.info
           if-no-files-found: error
 
-      # - name: Cache Next.js build
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: .next/cache
-      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
-
       - name: Build project
+        if: steps.changes.outputs.code == 'true'
         run: npm run build
 
   sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
     needs: [build, cypress]
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development'
+    if: needs.build.outputs.code == 'true' && (github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development')
     # Non-blocking for now; making the quality gate blocking again is a backlog item (spec 001, T076).
     continue-on-error: true
 
@@ -100,7 +148,7 @@ jobs:
         run: |
           echo "## SonarQube Quality Gate failed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "SonarCloud heeft de Quality Gate niet gehaald." >> $GITHUB_STEP_SUMMARY
+          echo "SonarCloud did not pass the quality gate." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[Open SonarCloud dashboard](https://sonarcloud.io/dashboard?id=GuusvanMeel_portfoliov2&branch=master)" >> $GITHUB_STEP_SUMMARY
 
@@ -108,13 +156,26 @@ jobs:
     name: Lighthouse
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development'
+    if: needs.build.outputs.code == 'true' && (github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development')
+    # Runs that use the test database never overlap. GitHub keeps one pending run per group; a
+    # newer run replaces a pending one, which is fine because only the latest commit matters.
+    concurrency:
+      group: test-db
+      cancel-in-progress: false
 
+    # Lighthouse builds the app itself against the test database (NEXT_PUBLIC_* values are fixed
+    # at build time, so the build job's output would point at the live database).
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+      TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      ADMIN_EMAILS: ${{ secrets.TEST_ADMIN_EMAIL }}
 
     steps:
       - name: Checkout repository
@@ -129,17 +190,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: Cache Next.js build
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: .next/cache
-      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+      - name: Reset test database
+        run: npm run test:db:reset
+
+      - name: Build project against the test database
+        run: npm run build
 
       - name: Run Lighthouse CI
         id: lighthouse_ci
-        run: npm run lighthouse:ci
+        run: npx lhci autorun
 
       - name: Add Lighthouse summary
         id: lighthouse_summary
@@ -159,13 +218,25 @@ jobs:
     name: End-to-End
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development'
+    if: needs.build.outputs.code == 'true' && (github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development')
+
+    # Runs that use the test database never overlap. GitHub keeps one pending run per group; a
+    # newer run replaces a pending one, which is fine because only the latest commit matters.
+    concurrency:
+      group: test-db
+      cancel-in-progress: false
 
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      CYPRESS_TEST_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      CYPRESS_TEST_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+      TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      ADMIN_EMAILS: ${{ secrets.TEST_ADMIN_EMAIL }}
       CYPRESS_COVERAGE: true
 
     steps:
@@ -180,14 +251,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      # - name: Cache Next.js coverage build
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: .next/cache
-      #     key: ${{ runner.os }}-nextjs-coverage-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-coverage-${{ hashFiles('package-lock.json') }}-
 
       - name: Build Next.js app with coverage
         run: npm run build
@@ -215,13 +278,14 @@ jobs:
         run: |
           echo "## Cypress End-to-End Tests" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Tested flows:" >> $GITHUB_STEP_SUMMARY
-          echo "- Desktop: startup, open window, bring to front, minimize and restore, close (window and taskbar), switch themes, open project" >> $GITHUB_STEP_SUMMARY
-          echo "- Login, logout, failed login" >> $GITHUB_STEP_SUMMARY
-          echo "- Create project" >> $GITHUB_STEP_SUMMARY
-          echo "- Edit project" >> $GITHUB_STEP_SUMMARY
-          echo "- Toggle visibility" >> $GITHUB_STEP_SUMMARY
-          echo "- Delete project" >> $GITHUB_STEP_SUMMARY
+          echo "Tested flows (against the test database):" >> $GITHUB_STEP_SUMMARY
+          echo "- Desktop: startup, open window, bring to front, minimize and restore, close (window and taskbar), switch themes, theme after reload, start menu, taskbar entries, open project" >> $GITHUB_STEP_SUMMARY
+          echo "- Contact form: send succeeds, send fails (requests intercepted)" >> $GITHUB_STEP_SUMMARY
+          echo "- Sign in, sign out, failed sign-in, non-admin refused" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin: create, edit, toggle visibility, delete" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin errors: failed save, failed delete, failed visibility toggle" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Videos (and screenshots on failure) are in the cypress-videos and cypress-screenshots artifacts of [this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ -f cypress/results/metrics.md ]; then

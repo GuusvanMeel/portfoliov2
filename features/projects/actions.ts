@@ -1,6 +1,7 @@
 "use server";
 
 import { createServer } from "@/lib/supabase/server";
+import { requireAdmin } from "@/features/auth/requireAdmin";
 import { Project, ProjectInputData } from "@/features/projects/types";
 import { mapProjectRowToProject, mapUpdateProjectInputToRow } from "@/features/projects/mappers";
 
@@ -34,6 +35,7 @@ export async function getVisibleProjects(): Promise<Project[]> {
 }
 
 export async function updateProjectVisibility(id: number, isVisible: boolean) {
+  await requireAdmin();
   const supabase = await createServer();
   const { error } = await supabase.from("projects").update({ is_visible: isVisible }).eq("id", id);
   if (error) {
@@ -42,6 +44,7 @@ export async function updateProjectVisibility(id: number, isVisible: boolean) {
   }
 }
 export async function updateProject(id: number, input: ProjectInputData): Promise<Project> {
+  await requireAdmin();
   const supabase = await createServer();
 
   const { data, error } = await supabase
@@ -58,6 +61,7 @@ export async function updateProject(id: number, input: ProjectInputData): Promis
   return mapProjectRowToProject(data);
 }
 export async function createProject(input: ProjectInputData): Promise<Project> {
+  await requireAdmin();
   const supabase = await createServer();
   const { data, error } = await supabase
     .from("projects")
@@ -73,6 +77,7 @@ export async function createProject(input: ProjectInputData): Promise<Project> {
   return mapProjectRowToProject(data);
 }
 export async function deleteProject(id: number) {
+  await requireAdmin();
   const supabase = await createServer();
   const { error } = await supabase.from("projects").delete().eq("id", id);
 

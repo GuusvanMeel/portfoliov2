@@ -10,12 +10,17 @@
 - Follow-ups from spec 001: 15 (`F-1` … `F-15`); 13 are on GitHub as #41–#53, F-11 is
   informational and F-12 is covered by #16
 
+Spec 002 (reliable end-to-end tests and a separate test database) resolves F-3 (#43), F-4 (#44),
+F-6 (#46) and F-15 (#53); see `specs/002-reliable-e2e-test-db/`.
+
+Spec 003 (theme and admin view preferences in cookies) resolves #20 and #22; see
+`specs/003-preferences-in-cookies/`.
+
 ## Recommended spec order
 
-1. **002 Theme and preferences in cookies** — #20, #22. Fixes the hydration risk at the root
-   (constitution VI); later specs that add preferences build on it.
-2. **003 Admin security hardening** — F-4 (#44), F-5 (#45), F-3 (#43). Auth checks in every mutation, server-side
-   sign-in, a separate test database. Depends on nothing; high risk while open.
+1. ~~**003 Theme and preferences in cookies** — #20, #22.~~ Done in spec 003; later specs that add
+   preferences reuse `lib/preferenceCookie.ts`.
+2. **Admin security hardening (rest)** — F-5 (#45) server-side sign-in. F-4 and F-3 were done in spec 002.
 3. **004 About Me and contact content** — #16, F-12, F-9 (#49). Replaces the visible placeholder and gives
    the start menu items real actions.
 4. **005 Mobile OS** — #30. Reuses the chrome-free apps from spec 001.
@@ -25,20 +30,20 @@
 8. **009 Boot screen** — #19.
 9. **010 Project versions** — #15 (v1/v2 windows).
 10. **011 Space marine pinball** — #12.
-11. **Tech debt, any time** — F-2 (#42), F-6 (#46), F-8 (#48), F-10 (#50), F-11, F-13 (#51), F-14 (#52), F-15 (#53).
+11. **Tech debt, any time** — F-2 (#42), F-8 (#48), F-10 (#50), F-11, F-13 (#51), F-14 (#52), F-16.
 12. **Needs a decision first** — #24, F-10 (#50).
 
 ## Items
 
 ### #20 Move theme storage from localStorage to cookies
 
-- Type: bug · Priority: high · Status: not started
-- Done: –
-- Remaining: store the theme in a cookie, read it on the server so the first render matches,
-  migrate an existing localStorage value once. The file mentioned in the issue moved to
-  `features/theme/ThemeProvider.tsx`.
+- Type: bug · Priority: high · Status: done in spec 003 (closes when the PR is merged)
+- Done: the theme is stored in the `theme` cookie and rendered by the server on the first render;
+  an existing localStorage theme is moved to the cookie once and then removed; invalid values fall
+  back to WinXP. See `specs/003-preferences-in-cookies/`.
+- Remaining: –
 - Depends on: –
-- Source: GitHub #20 · Suggested spec: 002
+- Source: GitHub #20 · Spec: 003
 
 ### #16 Migrate About me and contact window
 
@@ -89,11 +94,12 @@
 
 ### #22 Persist admin project view preference using cookies
 
-- Type: enhancement · Priority: medium · Status: not started
-- Done: –
-- Remaining: remember list/grid view in a cookie (the `wontfix` label was removed; planned for spec 002).
+- Type: enhancement · Priority: medium · Status: done in spec 003 (closes when the PR is merged)
+- Done: the list/grid choice is stored per browser in the `admin-view` cookie and rendered by the
+  server; invalid values fall back to list. See `specs/003-preferences-in-cookies/`.
+- Remaining: –
 - Depends on: #20 (same cookie approach)
-- Source: GitHub #22 · Suggested spec: 002
+- Source: GitHub #22 · Spec: 003
 
 ### #23 Decent Ghosting effect for every style
 
@@ -166,9 +172,11 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
 
 ### F-3 (#43) Separate test database for end-to-end tests
 
-- Type: tech-debt · Priority: high
+- Type: tech-debt · Priority: high · Status: **done in spec 002**
 - Admin tests write `CYPRESS TEST` projects to the live database (cleaned up afterwards).
 - Left out because: no database changes in spec 001.
+- Done: separate Supabase test project, schema in `supabase/migrations/`, seed and reset script,
+  guard that refuses the live database; Cypress and Lighthouse use it locally and in CI.
 
 ### F-4 (#44) Admin check in every data-changing server action
 
@@ -177,6 +185,8 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
   `features/projects/actions.ts` do not check the signed-in user; protection relies on the proxy
   and row-level security only (constitution V asks for a check in every mutation).
 - Left out because: no authentication changes in spec 001.
+- Status: **done in spec 002** — `requireAdmin()` with the `ADMIN_EMAILS` allowlist in all four
+  actions; a signed-in non-admin on `/admin` is sent to `/`.
 
 ### F-5 (#45) Server-side sign-in
 
@@ -186,7 +196,7 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
 
 ### F-6 (#46) Typo `supebase_url` in `lib/supabase/server.ts`
 
-- Type: tech-debt · Priority: low
+- Type: tech-debt · Priority: low · Status: **done in spec 002**
 - Left out because: `lib/supabase/*` was frozen in spec 001.
 
 ### F-7 (#47) Invalid debug theme class `outline-dotted-[#00ffff]`
@@ -248,6 +258,23 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
 - The Cypress coverage report covers few desktop lines although the desktop suite exercises them;
   check the instrumentation together with the SWC switch in spec 001 US4.
 - Left out because: tooling is US4.
+- Status: **done in spec 002** — desktop flows are in the report (numbers in
+  `specs/002-reliable-e2e-test-db/verification.md`); `.nycrc.json` fixes the reported folders.
+  Server-rendered code is still not counted: see F-16.
+
+### F-17 Project id type is `number`, the database uses uuid
+
+- Type: tech-debt · Priority: low
+- `Project.id`, `ProjectRow.id` and the action parameters are typed `number`; the `projects.id`
+  column is a uuid (string). It works because the id is passed through untouched.
+- Left out because: type change across admin components; found at the end of spec 002.
+
+### F-16 Server-side code in Cypress coverage
+
+- Type: tech-debt · Priority: low
+- Cypress coverage only collects browser-side counters; server components and server actions are
+  never counted, and some client components map back to very few statements (e.g. `AboutApp`).
+- Left out because: needs a server coverage endpoint; out of scope for spec 002.
 
 ## Proposed GitHub changes
 

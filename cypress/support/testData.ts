@@ -1,12 +1,13 @@
-// Test data for the admin end-to-end tests.
-// Every project created by a test MUST start with TEST_PROJECT_PREFIX, so the
-// cleanupTestProjects task can remove leftovers (also after a failed run).
+import { seedProjects } from "../../supabase/seed/projects";
+
+export { seedProjects };
+
+/** Titles of projects created by tests start with this, so they are easy to recognise. */
 export const TEST_PROJECT_PREFIX = "CYPRESS TEST";
 
 export const testProject = {
   title: `${TEST_PROJECT_PREFIX} PROJECT`,
-  description:
-    "THIS IS A CYPRESS TEST PROJECT. IF YOU SEE THIS ON THE PORTFOLIO, A TEST RUN DID NOT CLEAN UP.",
+  description: "Project created by the end-to-end tests in the test database.",
   tags: "tag1, tag2, tag 3",
   duration: "2 weeks",
   imageUrl:
@@ -14,9 +15,9 @@ export const testProject = {
   githubUrl: "https://github.com/GuusvanMeel/Next-Episode-WPF",
 };
 
-export const editedTestProject = {
+export const editedProject = {
   title: `${TEST_PROJECT_PREFIX} PROJECT - edited title`,
-  description: "edited description THIS IS A CYPRESS TEST PROJECT",
+  description: "Edited description from the end-to-end tests.",
   tags: "edited-tag, tag2, tag 3",
   duration: "edited duration",
 };

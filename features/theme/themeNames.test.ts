@@ -6,7 +6,7 @@ describe("isThemeName", () => {
     expect(isThemeName(name)).toBe(true);
   });
 
-  test.each([null, "", "winxp", "Vista"])("rejects %s", (value) => {
+  test.each([null, undefined, "", "winxp", "Vista"])("rejects %s", (value) => {
     expect(isThemeName(value)).toBe(false);
   });
 });

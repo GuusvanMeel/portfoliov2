@@ -1,3 +1,16 @@
+<!--
+Sync Impact Report
+- Version change: 1.0.0 → 1.1.0 (MINOR: materially expanded guidance in principle IX)
+- Modified principles: IX. Automated Testing and the CI Pipeline Are Part of the Product (title
+  unchanged) — added: every spec delivers end-to-end tests for its behaviour; every new or changed
+  E2E test is sabotaged locally before it counts as working, with the result recorded in the
+  spec's verification notes; rationale extended
+- Added sections: none
+- Removed sections: none
+- Templates: not modified (dependent templates read the constitution at runtime)
+- Follow-up TODOs: none
+-->
+
 # GuusOS Constitution
 
 GuusOS is a personal developer portfolio that imitates a classic desktop operating system.
@@ -104,6 +117,12 @@ Rationale: a portfolio must be findable and usable by everyone, including recrui
 - Every spec MUST state which test layers it adds or changes, and its tasks MUST include writing
   those tests. New or changed logic MUST get tests; a bug fix MUST get a test that fails without
   the fix.
+- Every spec MUST deliver end-to-end tests for the user-facing behaviour it adds or changes, as
+  tasks within that spec (not deferred to a later spec).
+- Every new or changed end-to-end test MUST be sabotaged before it counts as working: temporarily
+  break the code or the assertion so the test must fail, confirm it fails for the intended reason,
+  revert the sabotage, and record the result in the spec's verification notes. Sabotage is done
+  locally and MUST NOT add pushes or commits to the shared branch.
 - Feature work MUST pass the full pipeline (including end-to-end and Lighthouse) before it is
   merged into `Development` or `master`.
 - Tests MUST NOT depend on production data they can damage: end-to-end tests that write data
@@ -113,7 +132,8 @@ Rationale: a portfolio must be findable and usable by everyone, including recrui
 - One code formatter configuration MUST be used for the whole repository.
 
 Rationale: automated testing is a showcase skill of this portfolio and the safety net for every
-refactor.
+refactor. A test that has never been seen to fail proves nothing; sabotage shows each end-to-end
+test actually guards the behaviour it claims to cover.
 
 ### X. Consistent Conventions
 
@@ -167,4 +187,4 @@ Rationale: a small, clean codebase is easier to evolve and reflects well on the 
   materially expanding guidance, PATCH for clarifications and wording.
 - Every pull request and code review MUST check compliance with these principles.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-25
+**Version**: 1.1.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-26

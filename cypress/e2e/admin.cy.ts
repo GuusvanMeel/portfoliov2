@@ -1,33 +1,43 @@
 import { logFlowMetric } from "../support/logFlowMetric";
-import { editedTestProject, testProject } from "../support/testData";
+import { editedProject, seedProjects, testProject } from "../support/testData";
+
+// Admin flows against the TEST database, reset to the seed before every test.
 
 const logIn = () => {
-  cy.visit("http://localhost:3000/admin");
-  cy.env(["TEST_EMAIL", "TEST_PASSWORD"]).then(({ TEST_EMAIL, TEST_PASSWORD }) => {
-    cy.get('[name="email"]').type(TEST_EMAIL);
-    cy.get('[name="password"]').type(TEST_PASSWORD, { log: false });
-  });
+  cy.visit("/admin");
+  cy.env(["TEST_ADMIN_EMAIL", "TEST_ADMIN_PASSWORD"]).then(
+    ({ TEST_ADMIN_EMAIL, TEST_ADMIN_PASSWORD }) => {
+      cy.get('[name="email"]').type(TEST_ADMIN_EMAIL);
+      cy.get('[name="password"]').type(TEST_ADMIN_PASSWORD, { log: false });
+    },
+  );
   cy.get('button[type="submit"]').click();
-  // The create button is always present on the admin page, even with zero projects.
-  cy.get('[data-cy="create-project"]', { timeout: 15000 }).should("exist");
+  cy.location("pathname").should("eq", "/admin");
+  cy.get('[data-cy="create-project"]').should("be.visible");
 };
 
+const adminProject = (title: string) => cy.contains('[data-cy="admin-project"]', title);
+
+/** Makes the next server action on /admin fail, as if the database refused it. */
+const failNextServerAction = () => {
+  cy.intercept(
+    { method: "POST", pathname: "/admin", headers: { "next-action": /.+/ }, times: 1 },
+    { statusCode: 500, body: "forced failure" },
+  ).as("failedAction");
+};
+
+const desktopIcon = (title: string) =>
+  cy.contains('[data-cy="desktop-icon"][data-icon-id^="project-"]', title);
+
 describe("Admin project management", () => {
-  // Remove leftover test projects before the run (covers aborted runs) and after it
-  // (the after hook also runs when a test fails).
-  before(() => {
-    cy.task("cleanupTestProjects");
-  });
-
-  after(() => {
-    cy.task("cleanupTestProjects");
-  });
-
-  it("Create project", function () {
-    const start = performance.now();
+  beforeEach(() => {
+    // Every admin test starts from the seed, so a failing test never affects the next one.
+    cy.task("resetTestDatabase");
     logIn();
+  });
 
-    // open create form
+  it("creates a project that is listed, kept after reload and shown on the desktop", () => {
+    const start = performance.now();
     cy.get('[data-cy="create-project"]').click();
 
     cy.get('[data-cy="edit-project-form"]').within(() => {
@@ -35,93 +45,156 @@ describe("Admin project management", () => {
       cy.get("#project-description").type(testProject.description);
       cy.get('[name="tags"]').type(testProject.tags);
       cy.get('[name="duration"]').type(testProject.duration);
-
-      cy.get('[name="image"]').clear().invoke("val", testProject.imageUrl).trigger("input");
-
+      cy.get('[name="image"]').clear().type(testProject.imageUrl);
       cy.get('[name="git"]').type(testProject.githubUrl);
-
-      // New projects are visible by default; the after hook removes the project again.
+      // New projects are visible by default.
       cy.get('[data-cy="form-visibility-checkbox"]').should("be.checked");
-      cy.get('[data-cy="form-visibility-status"]').should("contain.text", "Visible on portfolio");
-
       cy.get('[data-cy="save-project"]').click();
     });
 
-    // Check that the project was really created
-    cy.contains('[data-cy="admin-project"]', testProject.title).within(() => {
-      cy.contains(testProject.title).should("be.visible");
+    cy.get('[data-cy="edit-project-form"]').should("not.exist");
+    adminProject(testProject.title).within(() => {
       cy.contains(testProject.description).should("be.visible");
-      cy.contains("tag1").should("be.visible");
-      cy.contains("tag2").should("be.visible");
       cy.contains("tag 3").should("be.visible");
       cy.get('[data-cy="visibility-pill"]').should("contain.text", "Visible");
-      logFlowMetric("Create project flow", start);
     });
+
+    cy.reload();
+    adminProject(testProject.title).should("be.visible");
+
+    cy.visit("/");
+    desktopIcon(testProject.title).should("be.visible");
+    logFlowMetric("Admin: create project", start);
   });
 
-  it("Edit existing project", function () {
+  it("edits a project and keeps the changes after reload", () => {
     const start = performance.now();
-    logIn();
+    adminProject(seedProjects.visibleB.title).find('[data-cy="edit-project"]').click();
 
-    const project = () => cy.contains('[data-cy="admin-project"]', testProject.title);
-
-    project().within(() => {
-      cy.get('[data-cy="visibility-toggle"]').click();
-      cy.get('[data-cy="visibility-pill"]').should("contain.text", "Hidden");
+    cy.get('[data-cy="edit-project-form"]').within(() => {
+      cy.get('[name="title"]').clear().type(editedProject.title);
+      cy.get("#project-description").clear().type(editedProject.description);
+      cy.get('[name="tags"]').clear().type(editedProject.tags);
+      cy.get('[name="duration"]').clear().type(editedProject.duration);
+      cy.get('[data-cy="save-project"]').click();
     });
 
-    project().within(() => {
-      cy.get('[data-cy="visibility-toggle"]').click();
-      cy.get('[data-cy="visibility-pill"]').should("contain.text", "Visible");
-    });
-
-    project().within(() => {
-      cy.get('[data-cy="edit-project"]').click();
-    });
-
-    cy.get('[name="title"]').clear().type(editedTestProject.title);
-    cy.get("#project-description").clear().type(editedTestProject.description);
-    cy.get('[name="tags"]').clear().type(editedTestProject.tags);
-    cy.get('[name="duration"]').clear().type(editedTestProject.duration);
-
-    cy.get('[data-cy="form-visibility-toggle"]').click();
-    cy.get('[data-cy="form-visibility-checkbox"]').should("not.be.checked");
-    cy.get('[data-cy="form-visibility-status"]').should("contain.text", "Hidden on portfolio");
-    cy.get('[data-cy="form-visibility-toggle"]').click();
-    cy.get('[data-cy="form-visibility-checkbox"]').should("be.checked");
-    cy.get('[data-cy="form-visibility-status"]').should("contain.text", "Visible on portfolio");
-
-    cy.get('[data-cy="save-project"]').click();
-
-    cy.contains('[data-cy="admin-project"]', editedTestProject.title).within(() => {
-      cy.contains(editedTestProject.title).should("be.visible");
-      cy.contains(editedTestProject.description).should("be.visible");
+    cy.get('[data-cy="edit-project-form"]').should("not.exist");
+    adminProject(editedProject.title).within(() => {
+      cy.contains(editedProject.description).should("be.visible");
       cy.contains("edited-tag").should("be.visible");
-      cy.contains("tag2").should("be.visible");
-      cy.contains("tag 3").should("be.visible");
-      cy.get('[data-cy="visibility-pill"]').should("contain.text", "Visible");
     });
-    logFlowMetric("Edit project flow", start);
+
+    cy.reload();
+    adminProject(editedProject.title).should("be.visible");
+    cy.contains('[data-cy="admin-project"]', seedProjects.visibleB.title).should("not.exist");
+    logFlowMetric("Admin: edit project", start);
   });
 
-  it("Delete project", function () {
+  it("hides a project from the desktop and shows it again", () => {
     const start = performance.now();
-    logIn();
+    const title = seedProjects.visibleA.title;
 
-    cy.contains('[data-cy="admin-project"]', editedTestProject.title).as("editedProject");
+    adminProject(title).find('[data-cy="visibility-toggle"]').click();
+    adminProject(title).find('[data-cy="visibility-pill"]').should("contain.text", "Hidden");
+    cy.visit("/");
+    cy.get('[data-cy="desktop"]').should("be.visible");
+    desktopIcon(title).should("not.exist");
 
-    cy.get("@editedProject").within(() => {
-      cy.contains(editedTestProject.title).should("be.visible");
-    });
+    cy.visit("/admin");
+    adminProject(title).find('[data-cy="visibility-toggle"]').click();
+    adminProject(title).find('[data-cy="visibility-pill"]').should("contain.text", "Visible");
+    cy.visit("/");
+    desktopIcon(title).should("be.visible");
+    logFlowMetric("Admin: toggle visibility", start);
+  });
 
-    // accept the confirm popup
+  it("deletes a project after confirmation", () => {
+    const start = performance.now();
+    const title = seedProjects.hidden.title;
+
     cy.on("window:confirm", () => true);
+    adminProject(title).find('[data-cy="delete-project"]').click();
+    adminProject(title).should("not.exist");
 
-    cy.get("@editedProject").within(() => {
-      cy.get('[data-cy="delete-project"]').click();
+    cy.reload();
+    cy.get('[data-cy="create-project"]').should("be.visible");
+    cy.contains('[data-cy="admin-project"]', title).should("not.exist");
+    logFlowMetric("Admin: delete project", start);
+  });
+
+  it("remembers the grid view after a reload, from the first server render", () => {
+    cy.get('[data-cy="view-option"][data-view-option="grid"]').click();
+    cy.get('[data-cy="admin-projects"]').should("have.attr", "data-view", "grid");
+    cy.getCookie("admin-view").its("value").should("eq", "grid");
+
+    cy.request("/admin").its("body").should("contain", 'data-view="grid"');
+
+    cy.reload();
+    cy.get('[data-cy="view-option"][data-view-option="grid"]').should(
+      "have.attr",
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("falls back to the list view for an invalid view cookie", () => {
+    cy.setCookie("admin-view", "bogus");
+    cy.request("/admin").its("body").should("contain", 'data-view="list"');
+    cy.reload();
+    cy.get('[data-cy="admin-projects"]').should("have.attr", "data-view", "list");
+  });
+
+  describe("when the server refuses a change", () => {
+    const title = seedProjects.visibleA.title;
+
+    it("shows an error when saving fails and keeps the project unchanged", () => {
+      adminProject(title).find('[data-cy="edit-project"]').click();
+      cy.get('[data-cy="edit-project-form"]').within(() => {
+        cy.get('[name="title"]').clear().type("Title that must not be saved");
+        failNextServerAction();
+        cy.get('[data-cy="save-project"]').click();
+      });
+
+      cy.wait("@failedAction");
+      cy.get('[data-cy="save-error"]').should("contain.text", "Could not save the project");
+      cy.get('[data-cy="edit-project-form"]').should("be.visible");
+
+      cy.reload();
+      adminProject(title).should("be.visible");
+      cy.contains('[data-cy="admin-project"]', "Title that must not be saved").should("not.exist");
     });
 
-    cy.contains('[data-cy="admin-project"]', editedTestProject.title).should("not.exist");
-    logFlowMetric("delete project", start);
+    it("shows an error when deleting fails and keeps the project", () => {
+      const alert = cy.stub().as("alert");
+      cy.on("window:alert", alert);
+      cy.on("window:confirm", () => true);
+
+      failNextServerAction();
+      adminProject(title).find('[data-cy="delete-project"]').click();
+
+      cy.wait("@failedAction");
+      cy.get("@alert").should(
+        "have.been.calledWith",
+        "Could not delete project. Please try again.",
+      );
+      adminProject(title).should("be.visible");
+      cy.reload();
+      adminProject(title).should("be.visible");
+    });
+
+    it("shows an error when changing visibility fails and keeps the old state", () => {
+      const alert = cy.stub().as("alert");
+      cy.on("window:alert", alert);
+
+      failNextServerAction();
+      adminProject(title).find('[data-cy="visibility-toggle"]').click();
+
+      cy.wait("@failedAction");
+      cy.get("@alert").should("have.been.calledWith", "Could not update project visibility.");
+      adminProject(title).find('[data-cy="visibility-pill"]').should("contain.text", "Visible");
+      cy.reload();
+      adminProject(title).find('[data-cy="visibility-pill"]').should("contain.text", "Visible");
+    });
   });
 });
