@@ -86,8 +86,8 @@ description: "Task list for spec 003: theme and admin view preferences in cookie
 - [X] T029 Run `npm run lighthouse:ci` and record the results against the T002 baseline in `specs/003-preferences-in-cookies/verification.md` (no category lower)
 - [X] T030 Walk through the manual scenarios in `specs/003-preferences-in-cookies/quickstart.md` (including blocked cookies) and note the results in `specs/003-preferences-in-cookies/verification.md`
 - [X] T031 Update `docs/backlog.md`: mark the theme-cookie (#20) and admin-view (#22) items done with a reference to spec 003
-- [ ] T032 Update GitHub issues #20 and #22 with a short summary and a link to the spec/PR, and close them when the PR is merged (`gh issue comment` / `gh issue close`)
-- [ ] T033 Commit in batches and push once when everything passes locally; open the PR to `master` and confirm the full pipeline (E2E and Lighthouse) is green
+- [X] T032 Update GitHub issues #20 and #22 with a short summary and a link to the spec/PR, and close them when the PR is merged (`gh issue comment` / `gh issue close`)
+- [X] T033 Commit in batches and push once when everything passes locally; open the PR to `master` and confirm the full pipeline (E2E and Lighthouse) is green
 
 ---
 
