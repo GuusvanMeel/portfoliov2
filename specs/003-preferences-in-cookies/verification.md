@@ -38,7 +38,17 @@ Baseline: CI run 45727957009 (commit 1beab09, same app code as `Development` bef
 | /login | 100 | 100 | 100 | 66 |
 | /admin | 100 | 96 | 100 | 69 |
 
-Result: _pending the CI run on the PR_ (local Lighthouse scores are not comparable to CI).
+Result: CI run 45734322946 on PR #63 (commit 062d40f): identical to the baseline for every URL
+and category, so no regression.
+
+| URL | Performance | Accessibility | Best practices | SEO |
+|-----|---:|---:|---:|---:|
+| home | 98 | 100 | 100 | 100 |
+| /login | 100 | 100 | 100 | 66 |
+| /admin | 100 | 96 | 100 | 69 |
+
+SonarCloud reported 78.4% coverage on new code (gate ≥ 80%). The Sonar gate is non-blocking for
+now (see the backlog item that re-enables it), so this is noted, not fixed, in this spec.
 
 ## Hydration warnings check
 

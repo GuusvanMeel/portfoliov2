@@ -83,7 +83,7 @@ description: "Task list for spec 003: theme and admin view preferences in cookie
 - [X] T026 Search the repo for remaining `localStorage` theme usage and the old "Later this should move to cookies" comment and remove them (`grep -rn "localStorage" features components app`)
 - [X] T027 Run `npm run typecheck`, `npm run lint`, `npm run format:check` and `npm run test:components`; fix any failures
 - [X] T028 Run `npm run test:db:reset` and `npm run test:e2e` locally; all specs pass
-- [ ] T029 Run `npm run lighthouse:ci` and record the results against the T002 baseline in `specs/003-preferences-in-cookies/verification.md` (no category lower)
+- [X] T029 Run `npm run lighthouse:ci` and record the results against the T002 baseline in `specs/003-preferences-in-cookies/verification.md` (no category lower)
 - [X] T030 Walk through the manual scenarios in `specs/003-preferences-in-cookies/quickstart.md` (including blocked cookies) and note the results in `specs/003-preferences-in-cookies/verification.md`
 - [X] T031 Update `docs/backlog.md`: mark the theme-cookie (#20) and admin-view (#22) items done with a reference to spec 003
 - [ ] T032 Update GitHub issues #20 and #22 with a short summary and a link to the spec/PR, and close them when the PR is merged (`gh issue comment` / `gh issue close`)
