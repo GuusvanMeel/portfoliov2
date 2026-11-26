@@ -4,7 +4,7 @@
 -- Never run against the live project: the live schema already exists and is the source of truth.
 
 create table if not exists public.projects (
-  id bigint generated always as identity primary key,
+  id uuid primary key default gen_random_uuid(),
   title text not null,
   description text,
   desktop_icon_src text,

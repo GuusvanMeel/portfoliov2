@@ -14,6 +14,16 @@ The live database is never changed by tests. Tests only use the separate test pr
 2. Paste and run each file in `migrations/`, oldest first.
 3. Run `npm run test:db:reset` to create the test users and load the seed.
 
+## Rebuild the test table
+
+Only in the **test** project, when a migration file changed after it was applied:
+
+```sql
+drop table if exists public.projects cascade;
+```
+
+Then run every file in `migrations/` again, oldest first, and `npm run test:db:reset`.
+
 ## Compare with the live schema
 
 Run this in the **live** project's SQL editor (read-only) and compare the result with the

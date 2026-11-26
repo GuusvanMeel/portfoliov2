@@ -258,6 +258,13 @@ Left out of spec 001 because it allowed no visible, database, authentication or 
   `specs/002-reliable-e2e-test-db/verification.md`); `.nycrc.json` fixes the reported folders.
   Server-rendered code is still not counted: see F-16.
 
+### F-17 Project id type is `number`, the database uses uuid
+
+- Type: tech-debt · Priority: low
+- `Project.id`, `ProjectRow.id` and the action parameters are typed `number`; the `projects.id`
+  column is a uuid (string). It works because the id is passed through untouched.
+- Left out because: type change across admin components; found at the end of spec 002.
+
 ### F-16 Server-side code in Cypress coverage
 
 - Type: tech-debt · Priority: low

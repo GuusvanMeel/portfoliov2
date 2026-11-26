@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-26
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Reliable end-to-end tests and a separate test database. Goal: every end-to-end test is useful and trustworthy, and no test ever reads from or writes to the live database." (full description: E2E audit, coverage gaps, separate test database F-3 #43, admin check in every data-changing action F-4 #44, small fixes F-6 #46 and F-15 #53, README testing section, sabotage of every new or changed E2E test. The original "ten consecutive green runs" requirement was dropped in clarification.)
 

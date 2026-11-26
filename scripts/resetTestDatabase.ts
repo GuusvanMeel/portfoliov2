@@ -40,7 +40,7 @@ export async function resetTestDatabase(
   await ensureUser(admin, config.adminEmail, config.adminPassword);
   await ensureUser(admin, config.userEmail, config.userPassword);
 
-  const { error: deleteError } = await admin.from("projects").delete().gte("id", 0);
+  const { error: deleteError } = await admin.from("projects").delete().not("id", "is", null);
   if (deleteError) throw new Error(`clearing projects failed: ${deleteError.message}`);
 
   const { data, error: insertError } = await admin

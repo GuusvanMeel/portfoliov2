@@ -18,7 +18,12 @@ Decision: keep the strict policies in the migration and tighten live instead (th
 `Allow all for now` in live and created the five policies from `0001_initial_schema.sql`
 (2026-11-26). Visitors see no difference: they still read only visible projects.
 
-Columns: _pending — maintainer to run the `information_schema.columns` query in live._
+Columns (live, read with the public key, 2026-11-26): `id, title, description, tags, is_visible,
+created_at, updated_at, duration, imagesrc, Github_Link, desktop_icon_src` — same names as the
+migration. Difference found: live `id` is a **uuid**, the first migration had `bigint identity`.
+Fixed in `0001_initial_schema.sql`. The test project was created with the old version; it is
+rebuilt with the SQL in `supabase/README.md` → "Rebuild the test table". The app's `Project.id:
+number` type is wrong for both (it never broke because the id is passed through as-is): F-17.
 
 ## E2E audit (T025)
 

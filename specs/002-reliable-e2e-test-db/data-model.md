@@ -1,13 +1,13 @@
 # Data Model: Reliable End-to-End Tests and a Separate Test Database
 
-No change to the live schema. This documents the schema the migration must reproduce, the seed and
+No column change to the live schema (the live RLS policies were tightened; see verification.md). This documents the schema the migration must reproduce, the seed and
 the configuration.
 
 ## `public.projects` (reproduced by `supabase/migrations/0001_initial_schema.sql`)
 
 | Column | Type | Rules |
 |---|---|---|
-| `id` | bigint identity, PK | |
+| `id` | uuid, PK, default `gen_random_uuid()` | matches live; the app types still say `number` (backlog F-17) |
 | `title` | text, not null | test-created rows start with `TEST_PROJECT_PREFIX` |
 | `description` | text | |
 | `desktop_icon_src` | text | |
