@@ -2,47 +2,13 @@ import { defineConfig } from "cypress";
 import fs from "fs";
 import path from "path";
 import codeCoverageTask from "@cypress/code-coverage/task";
-import { loadEnvConfig } from "@next/env";
-import { createClient } from "@supabase/supabase-js";
-import { TEST_PROJECT_PREFIX } from "./cypress/support/testData";
+import { loadLocalTestEnvFile, readTestEnvironment } from "./lib/testEnvironment";
+import { resetTestDatabase } from "./scripts/resetTestDatabase";
 
-// Load NEXT_PUBLIC_SUPABASE_* from .env.local locally; in CI they come from the job environment.
-loadEnvConfig(process.cwd());
-
-/**
- * Deletes every project whose title starts with TEST_PROJECT_PREFIX.
- * Signs in as the admin test account, so normal row-level security applies.
- */
-async function cleanupTestProjects(email: string, password: string): Promise<number> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anonKey) {
-    throw new Error(
-      "cleanupTestProjects: missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY",
-    );
-  }
-  if (!email || !password) {
-    throw new Error("cleanupTestProjects: missing TEST_EMAIL or TEST_PASSWORD");
-  }
-
-  const supabase = createClient(url, anonKey, { auth: { persistSession: false } });
-  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-  if (signInError) {
-    throw new Error(`cleanupTestProjects: sign-in failed: ${signInError.message}`);
-  }
-
-  const { data, error } = await supabase
-    .from("projects")
-    .delete()
-    .like("title", `${TEST_PROJECT_PREFIX}%`)
-    .select("id");
-  await supabase.auth.signOut();
-
-  if (error) {
-    throw new Error(`cleanupTestProjects: delete failed: ${error.message}`);
-  }
-  return data?.length ?? 0;
-}
+// Tests only ever use the separate test database. Locally the settings come from
+// .env.test.local; in CI they are secrets. readTestEnvironment() refuses to start when anything
+// is missing or points at the live database.
+loadLocalTestEnvFile();
 
 const metricsDir = "cypress/results";
 const metricsFile = path.join(metricsDir, "metrics.md");
@@ -51,11 +17,14 @@ export default defineConfig({
   allowCypressEnv: true,
   video: true,
   screenshotOnRunFailure: true,
+  // No automatic retries: a flaky test must fail visibly.
+  retries: { runMode: 0, openMode: 0 },
 
   e2e: {
     baseUrl: "http://localhost:3000",
 
     setupNodeEvents(on, config) {
+      const testEnvironment = readTestEnvironment();
       codeCoverageTask(on, config);
 
       fs.mkdirSync(metricsDir, { recursive: true });
@@ -64,14 +33,20 @@ export default defineConfig({
       fs.writeFileSync(metricsFile, "| Flow | Time |\n|---|---:|\n");
 
       on("task", {
-        cleanupTestProjects() {
-          return cleanupTestProjects(config.env.TEST_EMAIL, config.env.TEST_PASSWORD);
+        async resetTestDatabase() {
+          const result = await resetTestDatabase();
+          return result.projects;
         },
         logMetric({ name, ms }) {
           fs.appendFileSync(metricsFile, `| ${name} | ${ms} ms |\n`);
           return null;
         },
       });
+
+      config.env.TEST_ADMIN_EMAIL = testEnvironment.adminEmail;
+      config.env.TEST_ADMIN_PASSWORD = testEnvironment.adminPassword;
+      config.env.TEST_USER_EMAIL = testEnvironment.userEmail;
+      config.env.TEST_USER_PASSWORD = testEnvironment.userPassword;
 
       return config;
     },

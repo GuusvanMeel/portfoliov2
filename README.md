@@ -50,48 +50,61 @@ Requirements: Node.js 22.
    ```bash
    NEXT_PUBLIC_SUPABASE_URL=...
    NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   ADMIN_EMAILS=you@example.com   # who may change projects in /admin
    ```
 
 3. `npm run dev` and open <http://localhost:3000>
 
 ## Scripts
 
-| Script                                       | What it does                                               |
-| -------------------------------------------- | ---------------------------------------------------------- |
-| `npm run dev`                                | development server                                         |
-| `npm run build` / `npm start`                | production build and server                                |
-| `npm run lint` / `npm run typecheck`         | ESLint and TypeScript checks                               |
-| `npm run format` / `npm run format:check`    | format with Prettier / check formatting                    |
-| `npm run test:components`                    | Vitest component tests in a headless browser               |
-| `npm run test:components:coverage`           | the same with coverage (`coverage/vitest/`)                |
-| `npm run cypress:open`                       | Cypress in interactive mode (needs a running app)          |
-| `npm run dev:coverage`                       | development server with coverage instrumentation (Windows) |
-| `npm run coverage:report`                    | coverage report from a Cypress run                         |
-| `npm run lighthouse:local` / `lighthouse:ci` | Lighthouse against the local app / Lighthouse CI           |
+| Script                                       | What it does                                      |
+| -------------------------------------------- | ------------------------------------------------- |
+| `npm run dev`                                | development server                                |
+| `npm run build` / `npm start`                | production build and server                       |
+| `npm run lint` / `npm run typecheck`         | ESLint and TypeScript checks                      |
+| `npm run format` / `npm run format:check`    | format with Prettier / check formatting           |
+| `npm run test:components`                    | Vitest component tests in a headless browser      |
+| `npm run test:components:coverage`           | the same with coverage (`coverage/vitest/`)       |
+| `npm run dev:test`                           | development server against the test database      |
+| `npm run test:db:reset`                      | reset the test database to the seed               |
+| `npm run test:e2e`                           | Cypress end-to-end tests (needs a running app)    |
+| `npm run cypress:open`                       | Cypress in interactive mode (needs a running app) |
+| `npm run coverage:report`                    | coverage report from a Cypress run                |
+| `npm run lighthouse:local` / `lighthouse:ci` | Lighthouse against the local app / Lighthouse CI  |
 
-## Tests
+## Testing
 
-- **Component tests** (Vitest browser mode): hooks, the window reducer, theme names, mappers and
-  components. Test files sit next to the code as `*.test.ts(x)`. Run `npx playwright install
-chromium` once before the first run.
-- **End-to-end tests** (Cypress) in `cypress/e2e/`: the desktop (open, focus, minimize, restore and
-  close windows, switch themes, open a project) and the admin flows (log in and out, create, edit,
-  toggle visibility and delete a project). Run them against a production build:
+Tests never touch the live database. Everything that reads or writes data uses a separate
+Supabase **test project**, reset to the committed seed (`supabase/seed/projects.ts`) before every
+end-to-end run. The schema lives in `supabase/migrations/`.
 
-  ```bash
-  npm run build
-  npm start
-  npx cypress run
-  ```
+| Layer                 | What it covers                                                                                                                             | Where                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| Vitest, browser group | components, hooks, window manager, theme names, mappers                                                                                    | `*.test.ts(x)` next to the code                   |
+| Vitest, node group    | server-only logic: admin check, project actions, test-environment guard                                                                    | `*.server.test.ts`, `lib/testEnvironment.test.ts` |
+| Cypress               | desktop (windows, taskbar, start menu, themes, project windows), contact form, admin flows and their error paths, sign-in and admin access | `cypress/e2e/`                                    |
+| Lighthouse CI         | accessibility (hard gate), performance, best practices, SEO                                                                                | `lighthouserc.js`                                 |
+| SonarCloud            | quality gate fed by Vitest and Cypress coverage                                                                                            | `sonar-project.properties`                        |
 
-- **Admin test account**: the admin and login tests sign in with `TEST_EMAIL` and `TEST_PASSWORD`
-  from `cypress.env.json` (not committed; in CI they come from the `ADMIN_EMAIL` and
-  `ADMIN_PASSWORD` secrets).
-- **Guaranteed cleanup**: admin tests only create projects whose title starts with `CYPRESS TEST`.
-  The `cleanupTestProjects` task in `cypress.config.ts` deletes all of them before and after the
-  admin suite, so an aborted run leaves no test data behind.
-- **Coverage**: set `CYPRESS_COVERAGE=true` when building to instrument the app with
-  `swc-plugin-coverage-instrument`; normal and production builds are never instrumented.
+### Run the tests locally
+
+One-time setup: create the test project and `.env.test.local` as described in
+`specs/002-reliable-e2e-test-db/quickstart.md`. Run `npx playwright install chromium` once for
+Vitest.
+
+```bash
+npm run test:components     # Vitest (browser + node groups)
+npm run test:db:reset       # optional: reset the test database by hand
+npm run build:test          # production build against the test database, with coverage
+npm run start:test          # terminal 1: serve that build
+npm run test:e2e            # terminal 2: Cypress (resets the test database first)
+npm run coverage:report     # Cypress coverage summary
+```
+
+Run Cypress against `build:test` + `start:test`, like CI does; the development server compiles
+pages on first visit, which makes clicks land before the page is ready. The tests refuse to start
+when `.env.test.local` is missing or points at the live database.
+Cypress runs without retries, so a flaky test fails visibly.
 
 ## CI pipeline
 

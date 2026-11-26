@@ -37,7 +37,10 @@ export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Reado
     <footer data-cy="taskbar" className={`${styles.taskbar} ${definition.taskbar.bar}`}>
       <div className={styles.startArea} ref={startMenuRef}>
         {startMenuOpen && (
-          <div className={`${styles.startMenu} ${definition.taskbar.windowButton}`}>
+          <div
+            data-cy="start-menu"
+            className={`${styles.startMenu} ${definition.taskbar.windowButton}`}
+          >
             <button type="button" className={styles.startMenuItem}>
               {text.startMenu.about}
             </button>
@@ -58,6 +61,8 @@ export default function Taskbar({ windows, onWindowClick, onCloseWindow }: Reado
 
         <button
           type="button"
+          data-cy="start-button"
+          aria-expanded={startMenuOpen}
           className={`${styles.startButton} ${definition.taskbar.startButton}`}
           onClick={() => setStartMenuOpen((open) => !open)}
         >

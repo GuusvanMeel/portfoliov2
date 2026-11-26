@@ -6,6 +6,8 @@ import { logout } from "@/app/admin/actions";
 import { githubUrl } from "@/config/site";
 import { messages } from "@/content/en";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { isCurrentUserAdmin } from "@/features/auth/requireAdmin";
 
 const text = messages.admin.header;
 
@@ -17,6 +19,11 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
+  // Signed-out visitors are sent to /login by the proxy; a signed-in non-admin goes to the desktop.
+  if (!(await isCurrentUserAdmin())) {
+    redirect("/");
+  }
+
   const projects = await getAllProjects();
 
   return (

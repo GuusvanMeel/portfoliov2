@@ -127,6 +127,7 @@ export const messages = {
       hiddenOnPortfolio: "Hidden on portfolio",
       save: "Save Changes",
       saving: "Saving...",
+      saveFailed: "Could not save the project. Please try again.",
     },
   },
   login: {
