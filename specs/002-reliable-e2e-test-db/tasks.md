@@ -115,10 +115,10 @@ description: "Task list for spec 002 – reliable E2E tests and a separate test 
 ## Phase 8: Polish & close-out
 
 - [X] T042 Run lint, typecheck, `npm run test:components:coverage`, `npm run build`, full `npm run test:e2e` locally; all green with retries 0.
-- [ ] T043 Verify the live database is unchanged against the T002 baseline (ask the maintainer); record in `verification.md`.
+- [X] T043 Verify the live database is unchanged against the T002 baseline (ask the maintainer); record in `verification.md`.
 - [X] T044 Push once, open the PR to `Development` with `pr-description.md` (manual steps incl. Vercel `ADMIN_EMAILS`, sign-ups off, migration apply step); CI green once; record run link and the first Lighthouse scores on the test database (new baseline; thresholds in `lighthouserc.js` unchanged) in `verification.md`.
 - [X] T045 Update `docs/backlog.md`: mark F-3, F-4, F-6, F-15 done (spec 002), add follow-ups found; update roadmap line for "003 Admin security hardening" (F-4, F-3 now done; F-5 remains).
-- [ ] T046 Comment on and close issues #43, #44, #46, #53 via `gh` with a short summary and PR link (after maintainer approval of the wording).
+- [X] T046 Comment on and close issues #43, #44, #46, #53 via `gh` with a short summary and PR link (after maintainer approval of the wording).
 - [X] T047 Mark spec status Implemented in `spec.md` after merge.
 
 ---

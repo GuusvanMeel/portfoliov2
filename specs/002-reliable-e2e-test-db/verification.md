@@ -5,7 +5,7 @@
 | Moment | `projects` row count | Latest `updated_at` | Source |
 |---|---|---|---|
 | Before (T002) | 6 | 2026-07-14 21:48:31.995+00 | maintainer, live SQL editor, 2026-11-26 |
-| After (T043) | _pending_ | _pending_ | |
+| After (T043) | 6 | 2026-07-14 21:48:31.995+00 | maintainer, live SQL editor, after merge — unchanged |
 
 ## Schema check (T006)
 
