@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { siteName, siteUrl } from "@/config/site";
 import { messages } from "@/content/en";
+import { cookies } from "next/headers";
 import { ThemeProvider } from "@/features/theme/ThemeProvider";
+import { defaultTheme, isThemeName, themeCookie } from "@/features/theme/themeNames";
+import { readPreference } from "@/lib/preferenceCookie";
 
 const site = messages.site;
 
@@ -48,15 +51,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // The server renders the chosen theme, so the first render matches what the visitor sees.
+  const savedTheme = (await cookies()).get(themeCookie)?.value;
+  const initialTheme = readPreference(savedTheme, isThemeName, defaultTheme);
+
   return (
     <html lang="en" suppressHydrationWarning className={` h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider initialTheme={initialTheme} hasThemeCookie={isThemeName(savedTheme)}>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

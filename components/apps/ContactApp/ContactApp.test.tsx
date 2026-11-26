@@ -14,7 +14,7 @@ async function fillAndSend() {
 
 function renderContactApp() {
   return render(
-    <ThemeProvider>
+    <ThemeProvider initialTheme="WinXP" hasThemeCookie>
       <ContactApp />
     </ThemeProvider>,
   );
