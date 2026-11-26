@@ -1,6 +1,8 @@
 import { logFlowMetric } from "../support/logFlowMetric";
+import { seedProjects } from "../support/testData";
 
-// Desktop behaviour as visitors experience it. These tests never write data.
+// Desktop behaviour as visitors experience it. These tests never write data; projects come
+// from the test database seed.
 const themes = ["Win98", "WinXP", "classicMac", "debug"] as const;
 
 const windowOfType = (type: string) => cy.get(`[data-cy="window"][data-window-type="${type}"]`);
@@ -112,24 +114,67 @@ describe("Desktop", () => {
     logFlowMetric("Desktop: switch themes", start);
   });
 
-  it("opens a project window from a visible project .exe icon", () => {
+  it("opens a project window from a project .exe icon and hides hidden projects", () => {
     const start = performance.now();
-    cy.get("body").then(($body) => {
-      const projectIcons = $body.find('[data-cy="desktop-icon"][data-icon-id^="project-"]');
+    const project = seedProjects.visibleA;
 
-      if (projectIcons.length === 0) {
-        cy.log("No visible projects in the database: skipping the project window check");
-        return;
-      }
+    cy.contains('[data-cy="desktop-icon"]', `${project.title}.exe`).dblclick();
+    windowOfType("projects")
+      .should("be.visible")
+      .and("contain.text", project.title)
+      .and("contain.text", project.description)
+      .and("contain.text", project.tags[0]);
 
-      const label = projectIcons
-        .first()
-        .text()
-        .trim()
-        .replace(/\.exe$/, "");
-      cy.wrap(projectIcons.first()).dblclick();
-      windowOfType("projects").should("be.visible").and("contain.text", label);
-    });
+    cy.contains('[data-cy="desktop-icon"]', seedProjects.visibleB.title).should("exist");
+    cy.contains('[data-cy="desktop-icon"]', seedProjects.hidden.title).should("not.exist");
     logFlowMetric("Desktop: open project", start);
+  });
+
+  it("opens and closes the start menu", () => {
+    const start = performance.now();
+    cy.get('[data-cy="start-menu"]').should("not.exist");
+
+    cy.get('[data-cy="start-button"]').click();
+    cy.get('[data-cy="start-menu"]')
+      .should("be.visible")
+      .and("contain.text", "About me")
+      .and("contain.text", "Admin login");
+    cy.get('[data-cy="start-button"]').should("have.attr", "aria-expanded", "true");
+
+    // The start button toggles the menu closed again.
+    cy.get('[data-cy="start-button"]').click();
+    cy.get('[data-cy="start-menu"]').should("not.exist");
+
+    // A click anywhere else on the page also closes it.
+    cy.get('[data-cy="start-button"]').click();
+    cy.get('[data-cy="start-menu"]').should("be.visible");
+    cy.get('[data-cy="desktop"]').click(700, 300);
+    cy.get('[data-cy="start-menu"]').should("not.exist");
+    logFlowMetric("Desktop: start menu", start);
+  });
+
+  it("shows one taskbar entry per open window and marks the front one", () => {
+    const start = performance.now();
+    openApp("about");
+    windowOfType("about").should("be.visible");
+
+    cy.get('[data-cy="taskbar-entry"]').should("have.length", 2);
+    cy.get('[data-cy="taskbar-entry"][data-active="true"]')
+      .should("have.length", 1)
+      .and("contain.text", "About");
+
+    windowOfType("about").find('[data-cy="window-close"]').click();
+    cy.get('[data-cy="taskbar-entry"]').should("have.length", 1);
+    logFlowMetric("Desktop: taskbar entries", start);
+  });
+
+  it("keeps the chosen theme after a page reload", () => {
+    const start = performance.now();
+    cy.get('[data-cy="theme-option"][data-theme-option="Win98"]').first().click();
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+
+    cy.reload();
+    cy.get('[data-cy="desktop"]').should("have.attr", "data-theme", "Win98");
+    logFlowMetric("Desktop: theme after reload", start);
   });
 });

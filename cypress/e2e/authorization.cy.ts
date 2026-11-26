@@ -1,49 +1,66 @@
 import { logFlowMetric } from "../support/logFlowMetric";
 
+const signIn = (emailKey: string, passwordKey: string) => {
+  cy.env([emailKey, passwordKey]).then((env) => {
+    cy.get('[name="email"]').type(env[emailKey]);
+    cy.get('[name="password"]').type(env[passwordKey], { log: false });
+  });
+  cy.get('button[type="submit"]').click();
+};
+
 describe("Authorization", () => {
-  it("Gets redirected to login", () => {
+  it("sends a signed-out visitor from /admin to the login page", () => {
     const start = performance.now();
-    cy.visit("http://localhost:3000/admin");
-    cy.url().should("include", "/login");
-    logFlowMetric("Authorization", start);
+    cy.visit("/admin");
+    cy.location("pathname").should("eq", "/login");
+    logFlowMetric("Authorization: redirect to login", start);
   });
 
-  it("logs in", () => {
+  it("lets the admin sign in and see the admin panel", () => {
     const start = performance.now();
-    cy.visit("http://localhost:3000/admin");
-    cy.env(["TEST_EMAIL", "TEST_PASSWORD"]).then(({ TEST_EMAIL, TEST_PASSWORD }) => {
-      cy.get('[name="email"]').type(TEST_EMAIL);
-      cy.get('[name="password"]').type(TEST_PASSWORD, { log: false });
-    });
-    cy.get('button[type="submit"]').click();
-
-    cy.url().should("include", "/admin");
-    logFlowMetric("Logs in", start);
+    cy.visit("/admin");
+    signIn("TEST_ADMIN_EMAIL", "TEST_ADMIN_PASSWORD");
+    cy.location("pathname").should("eq", "/admin");
+    cy.get('[data-cy="create-project"]').should("be.visible");
+    logFlowMetric("Authorization: admin signs in", start);
   });
+
   it("logs out and protects /admin again", () => {
     const start = performance.now();
-    cy.visit("http://localhost:3000/admin");
-    cy.env(["TEST_EMAIL", "TEST_PASSWORD"]).then(({ TEST_EMAIL, TEST_PASSWORD }) => {
-      cy.get('[name="email"]').type(TEST_EMAIL);
-      cy.get('[name="password"]').type(TEST_PASSWORD, { log: false });
-    });
-    cy.get('button[type="submit"]').click();
-    cy.url().should("include", "/admin");
+    cy.visit("/admin");
+    signIn("TEST_ADMIN_EMAIL", "TEST_ADMIN_PASSWORD");
+    cy.get('[data-cy="create-project"]').should("be.visible");
 
     cy.contains("button", "Logout").click();
     cy.location("pathname").should("eq", "/");
 
-    cy.visit("http://localhost:3000/admin");
-    cy.url().should("include", "/login");
-    logFlowMetric("Logs out", start);
+    cy.visit("/admin");
+    cy.location("pathname").should("eq", "/login");
+    logFlowMetric("Authorization: log out", start);
   });
-  it("fails to log in", () => {
+
+  it("shows an error for a wrong password", () => {
     const start = performance.now();
-    cy.visit("http://localhost:3000/admin");
-    cy.get("#email").type("vanmeelguu@gmail.com");
-    cy.get("#password").type("blablabla");
+    cy.visit("/admin");
+    cy.get("#email").type("nobody@test.invalid");
+    cy.get("#password").type("wrong-password", { log: false });
     cy.get('button[type="submit"]').click();
-    cy.contains("Invalid email or password.");
-    logFlowMetric("fails to Logs in", start);
+    cy.contains("Invalid email or password.").should("be.visible");
+    cy.location("pathname").should("eq", "/login");
+    logFlowMetric("Authorization: failed sign-in", start);
+  });
+
+  it("sends a signed-in user who is not an admin from /admin to the desktop", () => {
+    const start = performance.now();
+    cy.visit("/admin");
+    signIn("TEST_USER_EMAIL", "TEST_USER_PASSWORD");
+
+    cy.location("pathname").should("eq", "/");
+    cy.get('[data-cy="desktop"]').should("be.visible");
+    cy.get('[data-cy="create-project"]').should("not.exist");
+
+    cy.visit("/admin");
+    cy.location("pathname").should("eq", "/");
+    logFlowMetric("Authorization: non-admin refused", start);
   });
 });
