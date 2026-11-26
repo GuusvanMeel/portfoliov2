@@ -8,8 +8,7 @@ on:
     branches: [Development, master]
   workflow_dispatch:
 
-# A newer push to the same pull request or branch cancels the run that is still going, so runs
-# never overlap (they share the live database used by the admin end-to-end tests).
+# A newer push to the same pull request or branch cancels the run that is still going.
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -19,10 +18,10 @@ jobs:
     name: Lint, typecheck and build
     runs-on: ubuntu-latest
 
+    # Production-shaped build check; it may read live data to pre-render the page. Tests never do.
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
 
     outputs:
       code: ${{ steps.changes.outputs.code }}
@@ -93,19 +92,6 @@ jobs:
         if: steps.changes.outputs.code == 'true'
         run: npm run build
 
-      # Lighthouse measures this build instead of building again.
-      - name: Upload production build
-        if: steps.changes.outputs.code == 'true'
-        uses: actions/upload-artifact@v7
-        with:
-          name: next-build
-          path: |
-            .next
-            !.next/cache
-          include-hidden-files: true
-          retention-days: 1
-          if-no-files-found: error
-
   sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
@@ -155,12 +141,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: needs.build.outputs.code == 'true' && (github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development')
+    # Runs that use the test database never overlap. GitHub keeps one pending run per group; a
+    # newer run replaces a pending one, which is fine because only the latest commit matters.
+    concurrency:
+      group: test-db
+      cancel-in-progress: false
 
+    # Lighthouse builds the app itself against the test database (NEXT_PUBLIC_* values are fixed
+    # at build time, so the build job's output would point at the live database).
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+      TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      ADMIN_EMAILS: ${{ secrets.TEST_ADMIN_EMAIL }}
 
     steps:
       - name: Checkout repository
@@ -175,11 +174,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Download production build
-        uses: actions/download-artifact@v7
-        with:
-          name: next-build
-          path: .next
+      - name: Reset test database
+        run: npm run test:db:reset
+
+      - name: Build project against the test database
+        run: npm run build
 
       - name: Run Lighthouse CI
         id: lighthouse_ci
@@ -205,11 +204,23 @@ jobs:
     needs: build
     if: needs.build.outputs.code == 'true' && (github.event_name == 'pull_request' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Development')
 
+    # Runs that use the test database never overlap. GitHub keeps one pending run per group; a
+    # newer run replaces a pending one, which is fine because only the latest commit matters.
+    concurrency:
+      group: test-db
+      cancel-in-progress: false
+
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-      CYPRESS_TEST_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      CYPRESS_TEST_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+      TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      ADMIN_EMAILS: ${{ secrets.TEST_ADMIN_EMAIL }}
       CYPRESS_COVERAGE: true
 
     steps:
@@ -251,13 +262,12 @@ jobs:
         run: |
           echo "## Cypress End-to-End Tests" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Tested flows:" >> $GITHUB_STEP_SUMMARY
-          echo "- Desktop: startup, open window, bring to front, minimize and restore, close (window and taskbar), switch themes, open project" >> $GITHUB_STEP_SUMMARY
-          echo "- Login, logout, failed login" >> $GITHUB_STEP_SUMMARY
-          echo "- Create project" >> $GITHUB_STEP_SUMMARY
-          echo "- Edit project" >> $GITHUB_STEP_SUMMARY
-          echo "- Toggle visibility" >> $GITHUB_STEP_SUMMARY
-          echo "- Delete project" >> $GITHUB_STEP_SUMMARY
+          echo "Tested flows (against the test database):" >> $GITHUB_STEP_SUMMARY
+          echo "- Desktop: startup, open window, bring to front, minimize and restore, close (window and taskbar), switch themes, theme after reload, start menu, taskbar entries, open project" >> $GITHUB_STEP_SUMMARY
+          echo "- Contact form: send succeeds, send fails (requests intercepted)" >> $GITHUB_STEP_SUMMARY
+          echo "- Sign in, sign out, failed sign-in, non-admin refused" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin: create, edit, toggle visibility, delete" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin errors: failed save, failed delete, failed visibility toggle" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Videos (and screenshots on failure) are in the cypress-videos and cypress-screenshots artifacts of [this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

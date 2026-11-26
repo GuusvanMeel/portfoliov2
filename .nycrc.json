@@ -1,0 +1,15 @@
+{
+  "include": [
+    "app/**",
+    "components/**",
+    "config/**",
+    "content/**",
+    "features/**",
+    "hooks/**",
+    "lib/**"
+  ],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "cypress/**", "lib/testEnvironment.ts"],
+  "extension": [".ts", ".tsx"],
+  "excludeAfterRemap": true,
+  "reporter": ["lcov", "text-summary"]
+}
