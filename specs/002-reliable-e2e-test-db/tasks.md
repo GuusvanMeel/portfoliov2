@@ -21,7 +21,7 @@ description: "Task list for spec 002 – reliable E2E tests and a separate test 
 ## Phase 1: Setup
 
 - [X] T001 Create `specs/002-reliable-e2e-test-db/verification.md` with empty sections: "E2E audit", "Sabotage log" (columns: test, sabotage applied, observed failure message, reverted ✓), "Coverage before/after (F-15)", "Live database unchanged check", "CI run".
-- [ ] T002 Record the live-database baseline in `verification.md` → "Live database unchanged check": ask the maintainer for the current row count and the latest `updated_at` of `projects` in the live project (do not query live from scripts).
+- [X] T002 Record the live-database baseline in `verification.md` → "Live database unchanged check": ask the maintainer for the current row count and the latest `updated_at` of `projects` in the live project (do not query live from scripts).
 - [X] T003a Split `vitest.config.ts` into two projects (research R0): `browser` (current settings; include `**/*.test.{ts,tsx}`, exclude `**/*.server.test.ts` and `lib/testEnvironment.test.ts`) and `node` (`environment: "node"`, include those two patterns); keep merged coverage at `coverage/vitest/lcov.info`; verify `npm run test:components` and `npm run test:components:coverage` still pass.
 - [X] T003 [P] Record the current Cypress coverage summary (F-15 baseline) in `verification.md` by running the existing suite with `CYPRESS_COVERAGE=true` and `npm run coverage:report` (note per-folder line % for `components/`, `features/windows/`, `features/theme/`).
 

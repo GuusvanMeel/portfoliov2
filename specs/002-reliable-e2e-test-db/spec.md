@@ -210,7 +210,7 @@ tests against the test database.
 - The maintainer performs all account-level steps (creating the project, the admin test account and the CI secrets); the implementation only documents them and provides the files and commands.
 - "Admin" means a signed-in user whose email is on the configured admin allowlist; no role system or schema change is introduced. The production allowlist is set by the maintainer as part of the manual steps (FR-006).
 - Contact form and admin failure paths are tested by intercepting or forcing failures; no real messages are sent and no real outages are needed.
-- The live database's current schema is the source for the first migration; no schema change to production is part of this spec.
+- The live database's current schema is the source for the first migration. One intentional exception, found during implementation: the live `projects` table had a single policy "Allow all for now" (all commands for `public`, including anonymous visitors), so anyone with the public anon key could change or delete projects directly. The maintainer replaced it on 2026-11-26 with the policies in `0001_initial_schema.sql` (visitors read visible projects; signed-in users read all and write). No columns changed.
 - The maintainer is the only real user and the only admin of the live site; the non-admin account exists only in the test database to prove the refusal.
 - The production build (`next build` in the build job and on Vercel) may read live data to pre-render the page; tests never do.
 - Server-side sign-in (F-5, #45) stays out of scope.

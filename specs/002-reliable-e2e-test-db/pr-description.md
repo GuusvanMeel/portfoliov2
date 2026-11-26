@@ -15,6 +15,9 @@ Resolves #43, #44, #46, #53.
 3. Test project setup and GitHub secrets: `specs/002-reliable-e2e-test-db/quickstart.md` §1.
 4. After merge and a green CI run: delete the old secrets `ADMIN_EMAIL`, `ADMIN_PASSWORD` and the local `cypress.env.json`.
 
+## Live database change (already applied)
+The live `projects` table had one policy, `Allow all for now` (all commands for anonymous visitors too). It was replaced in live by the five policies from `0001_initial_schema.sql`. After merging, check once on the live site that the desktop shows the projects and that `/admin` can edit.
+
 ## Migration
 `supabase/migrations/0001_initial_schema.sql` is applied **only to the test project**, in the SQL editor. The live schema is unchanged.
 

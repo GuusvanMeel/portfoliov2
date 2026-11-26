@@ -4,12 +4,21 @@
 
 | Moment | `projects` row count | Latest `updated_at` | Source |
 |---|---|---|---|
-| Before (T002) | _pending — maintainer_ | _pending_ | |
+| Before (T002) | 6 | 2026-07-14 21:48:31.995+00 | maintainer, live SQL editor, 2026-11-26 |
 | After (T043) | _pending_ | _pending_ | |
 
 ## Schema check (T006)
 
-_Pending: maintainer export of the live schema compared with `supabase/migrations/0001_initial_schema.sql`._
+Policies (live, before): one policy `Allow all for now` — `ALL` for `{public}`, `using true`, `with check true`.
+Anyone with the public anon key could insert, update and delete projects and read hidden ones,
+bypassing the app's admin check.
+
+Decision: keep the strict policies in the migration and tighten live instead (the opposite of the
+"fix the migration" rule, because the live state was the defect). The maintainer dropped
+`Allow all for now` in live and created the five policies from `0001_initial_schema.sql`
+(2026-11-26). Visitors see no difference: they still read only visible projects.
+
+Columns: _pending — maintainer to run the `information_schema.columns` query in live._
 
 ## E2E audit (T025)
 
