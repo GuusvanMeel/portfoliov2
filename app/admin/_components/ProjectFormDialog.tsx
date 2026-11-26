@@ -10,6 +10,11 @@ import type { Project, ProjectInputData } from "@/features/projects/types";
 
 const text = messages.admin.form;
 
+/** The preview only renders complete http(s) URLs, so typing a URL never breaks the form. */
+function isAbsoluteUrl(value: string): boolean {
+  return /^https?:\/\/[^/\s]+\.[^/\s]+/.test(value);
+}
+
 export default function ProjectFormDialog({
   project,
   onSaved,
@@ -23,6 +28,7 @@ export default function ProjectFormDialog({
   const [isVisible, setIsVisible] = useState(project?.isVisible ?? true);
   const [imagePreview, setImagePreview] = useState(project?.imageSrc ?? "");
   const [imageError, setImageError] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
   function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const payload: ProjectInputData = {
@@ -39,12 +45,15 @@ export default function ProjectFormDialog({
         githubLink: formData.get("git") as string,
       };
 
-      if (project) {
-        const updatedProject = await updateProject(project.id, payload);
-        onSaved(updatedProject);
-      } else {
-        const newProject = await createProject(payload);
-        onSaved(newProject);
+      setSaveFailed(false);
+      try {
+        const saved = project
+          ? await updateProject(project.id, payload)
+          : await createProject(payload);
+        onSaved(saved);
+      } catch (error) {
+        console.error("Failed to save project:", error);
+        setSaveFailed(true);
       }
     });
   }
@@ -139,7 +148,7 @@ export default function ProjectFormDialog({
               />
             </div>
 
-            {imagePreview && (
+            {isAbsoluteUrl(imagePreview) && (
               <div className="border border-neutral-700 rounded-lg overflow-hidden bg-neutral-900 min-h-32">
                 {imageError ? (
                   <div className="h-32 flex items-center justify-center text-sm text-neutral-500">
@@ -199,6 +208,12 @@ export default function ProjectFormDialog({
               </span>
             </label>
           </div>
+
+          {saveFailed && (
+            <p data-cy="save-error" role="alert" className="text-sm text-red-400">
+              {text.saveFailed}
+            </p>
+          )}
 
           <button
             data-cy="save-project"
